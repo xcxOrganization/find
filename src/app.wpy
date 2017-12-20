@@ -9,8 +9,10 @@ export default class extends wepy.app {
             'pages/index',
             'pages/my',
             'pages/find',
-            'pages/referrer',
-            'pages/referee'
+	    'pages/referrer',
+            'pages/referee',
+            'pages/about',     //关于页面
+            'pages/history'     //找人记录
         ],
         window: {
             backgroundTextStyle: 'light',

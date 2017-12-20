@@ -1,0 +1,526 @@
+<template>
+    <view class="page">
+        <view class="nav flex">
+            <view class="{{curIndex == index ? 'nav-li flex-xy active' : 'nav-li flex-xy'}}" wx:for="{{tabs}}" wx:key="index" item="item" data-index="{{index}}" @tap="changeTab">
+                {{item}}
+                <view class="nav-bottom-main" wx-if="{{curIndex == index}}">
+                    <view class="nav-bottom"></view>
+                </view>
+            </view>
+        </view>
+
+        <view wx-if="{{curIndex == 0}}" style="margin-top: 140rpx;">
+            <view class='circle_bg'>
+                <view class='circle'>
+                    <view class='txt'>累计奖励</view>
+                    <view class='num'>{{rewardSum}}</view>
+                </view>
+            </view>
+            <view class="historyContainer">
+                <view class='list-title' @tap='showTip'>明细
+                    <image class='warning' src='{{warningImg}}'></image>
+                </view>
+                <view class='list flex-xy' wx:for='{{inviteRewardRecords}}' wx:key='index' item='item' data-item='{{item}}'>
+                    <view class='list-left flex-xy'>
+                        <image src='./../assets/images/behaviorType1.png'></image>
+                        <!--<image wx:if="{{item.behaviorType == 1}}" src='./../assets/images/behaviorType1.png'></image>
+                        <image wx:if="{{item.behaviorType == 2}}" src='./../assets/images/behaviorType2.png'></image>-->
+                        <view class="listLabel">
+                            <view class="desc">{{item.showTitle}}</view>
+                            <view class="date">{{item.createdAt}}</view>
+                        </view>
+                    </view>
+                    <view class='list-right'>{{item.reward>0?'+':'-'}}{{item.reward}}</view>
+                </view>
+                <view wx:if="{{!inviteRewardRecords || inviteRewardRecords.length==0}}" class="default">
+                    <view>
+                        <image src='{{defaultImg}}'></image>
+                    </view>
+                    <view>暂无记录1</view>
+                </view>
+            </view>
+        </view>
+
+        <view wx-if="{{curIndex == 1}}" class="container">
+            <view class='list flex-xy' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
+                <view class='list-left flex-xy'>
+                    <image src='{{imgUrl}}'></image>
+                    <view>{{item.createdAt}}</view>
+                </view>
+                <view class='list-right'>{{item.reward}}元</view>
+            </view>
+            <view wx:if="{{!list2 || list2.length==0}}" class="default">
+                <view>
+                    <image src='{{defaultImg}}'></image>
+                </view>
+                <view>暂无记录2</view>
+            </view>
+        </view>
+        <view wx-if="{{curIndex == 2}}" class="container">
+            <view class='list flex-xy' wx:for='{{list3}}' wx:key='index' item='item' data-item='{{item}}'>
+                <view class='list-left flex-xy'>
+                    <image src='{{imgUrl}}'></image>
+                    <view>{{item.createdAt}}</view>
+                </view>
+                <view class='list-right'>{{item.reward}}元</view>
+            </view>
+            <view wx:if="{{!list3 || list3.length==0}}" class="default">
+                <view>
+                    <image src='{{defaultImg}}'></image>
+                </view>
+                <view>暂无记录3</view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+import wepy from "wepy";
+import request from "../utils/request.js";
+import mixin from "../mixins/redux";
+
+export default class WithdrawHistory extends wepy.page {
+  data = {
+    inviteRewardRecords: [], //邀请记录
+    list2: [], //领取记录
+    list3: [], //领取记录
+    rewardSum: "0.00", //累计邀请奖励金额
+    tabs: ["邀请记录", "领取记录", "领取记录"],
+    curIndex: 0,
+    curPage1: 0,
+    total1: 1,
+    curPage2: 0,
+    total2: 1,
+    curPage3: 0,
+    total3: 1,
+    imgUrl: request.getImgServerApi() + "my/RMB.png",
+    defaultImg: request.getImgServerApi() + "my/record_empty@2x.png",
+    warningImg: request.getImgServerApi() + "my/warning.png"
+  };
+  mixins = [mixin];
+  config = {
+    navigationBarTitleText: "记录"
+  };
+  methods = {
+    changeTab(e) {
+      let that = this;
+      let tabIndex = e.currentTarget.dataset.index;
+      that.curIndex = tabIndex;
+    },
+    showTip() {
+      wepy.showModal({
+        showCancel: false,
+        content: "明细包含你的邀请奖励及用户购保奖励"
+      });
+    }
+  };
+  events = {};
+  onLoad() {}
+  onShow() {
+    let that = this;
+    that.curPage1 = 0;
+    that.curPage2 = 0;
+    that.curPage3 = 0;
+    that.list2 = [];
+    that.inviteRewardRecords = [];
+    that.list3 = [];
+    that.$apply();
+
+    that.send_PackageList_req();
+    that.send_inviteRewardRecord_req();
+    that.send_list3_req();
+  }
+  send_PackageList_req() {
+    //发起请求
+    let that = this,
+      newPage = that.curPage2 - 0 + 1,
+      list = [];
+    let sign = that.refuseMuchClick(); //防止多次触发
+    if (!sign) {
+      return;
+    }
+    request.request(
+      "inviter/inviteRewardTask/" + newPage,
+      "GET",
+      {},
+      res => {
+        if (!res) {
+          return;
+        }
+        that.curPage2 = newPage;
+        list = that.list2;
+        if (res.list && res.list.length > 0) {
+          for (var i = 0, len = res.list.length; i < len; i++) {
+            list.push(res.list[i]);
+          }
+          that.total2 = res.total;
+          that.list2 = list;
+        }
+        that.$apply();
+      },
+      function() {}
+    );
+  }
+  send_inviteRewardRecord_req() {
+    //发起请求
+    let that = this,
+      newPage = that.curPage1 - 0 + 1,
+      list = [];
+    let sign = that.refuseMuchClick(); //防止多次触发
+    if (!sign) {
+      return;
+    }
+    request.request(
+      "inviter/inviteRewardRecord/" + newPage,
+      "GET",
+      {},
+      res => {
+        if (!res) {
+          return;
+        }
+        that.rewardSum = res.rewardSum
+          ? Number(res.rewardSum).toFixed(2)
+          : "0.00";
+        that.curPage1 = newPage;
+        list = that.inviteRewardRecords;
+        if (res.list && res.list.length > 0) {
+          for (var i = 0, len = res.list.length; i < len; i++) {
+            list.push(res.list[i]);
+          }
+          that.total1 = res.total;
+          that.inviteRewardRecords = list;
+        }
+        that.$apply();
+      },
+      function() {}
+    );
+  }
+  send_list3_req() {
+    //发起请求
+    let that = this,
+      newPage = that.curPage3 - 0 + 1,
+      list = [];
+    let sign = that.refuseMuchClick(); //防止多次触发
+    if (!sign) {
+      return;
+    }
+    request.request(
+      "inviter/inviteRewardRecord/" + newPage,
+      "GET",
+      {},
+      res => {
+        if (!res) {
+          return;
+        }
+        that.rewardSum = res.rewardSum
+          ? Number(res.rewardSum).toFixed(2)
+          : "0.00";
+        that.curPage3 = newPage;
+        list = that.inviteRewardRecords;
+        if (res.list && res.list.length > 0) {
+          for (var i = 0, len = res.list.length; i < len; i++) {
+            list.push(res.list[i]);
+          }
+          that.total3 = res.total;
+          that.list3 = list;
+        }
+        that.$apply();
+      },
+      function() {}
+    );
+  }
+  onReachBottom() {
+    let that = this;
+    if (that.curIndex == 0) {
+      //邀请记录分页
+      if (that.curPage1 < that.total1) {
+        that.send_inviteRewardRecord_req();
+      }
+    } else if (that.curIndex == 1) {
+      if (that.curPage2 < that.total2) {
+        that.send_PackageList_req();
+      }
+    } else if (that.curIndex == 2) {
+      if (that.curPage3 < that.total3) {
+        that.send_list3_req();
+      }
+    }
+  }
+}
+</script>
+
+<style lang='less'>
+page {
+  .default {
+    margin-top: 80rpx;
+    text-align: center;
+    font-size: 26rpx;
+    color: #818183;
+    image {
+      width: 220rpx;
+      height: 220rpx;
+    }
+  }
+  .circle_bg {
+    position: relative;
+    background: #f6f6f6;
+    border-radius: 50%;
+    border: 0;
+    padding: 0;
+    width: 310rpx;
+    height: 310rpx;
+    margin: 50rpx auto;
+    .circle {
+      text-align: center;
+      position: absolute;
+      top: 10rpx;
+      left: 10rpx;
+      width: 290rpx;
+      height: 290rpx;
+      background: #fff;
+      border-radius: 50%;
+      border: 0;
+      padding: 0;
+      .txt {
+        padding: 80rpx 0 0 0;
+        font-size: 24rpx;
+        color: #9a9a9a;
+      }
+      .num {
+        font-size: 66rpx;
+        color: #e25539;
+      }
+    }
+  } // 失效样式
+  .grayscale {
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
+  }
+  button::after {
+    border: 0;
+  }
+  .no-button {
+    background: #fff;
+    margin: 0;
+    padding: 0;
+    font-size: 26rpx;
+    color: inherit;
+  }
+  .nav {
+    height: 90rpx;
+    width: 100%;
+    background: #fff;
+    font-size: 30rpx;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    .nav-li {
+      width: 50%;
+      float: left;
+      color: #9e9e9e;
+      position: relative;
+      border-bottom: 1rpx solid #f3f3f7;
+    }
+    .active {
+      color: #e04326;
+    }
+    .nav-bottom-main {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      .nav-bottom {
+        height: 5rpx;
+        width: 30rpx;
+        background: #e04326;
+        margin: 0 auto;
+      }
+    }
+    .nav-bottom-dot {
+      width: 50%;
+      position: absolute;
+      right: 54rpx;
+      top: 22rpx;
+      .nav-bottom {
+        height: 14rpx;
+        width: 14rpx;
+        background: #e04326;
+        margin: 0 auto;
+        border-radius: 50%;
+      }
+    }
+  }
+  .nav-color {
+    width: 100%;
+    height: 20rpx;
+    background: #f3f3f7;
+  }
+  .container {
+    padding: 20rpx;
+    margin-top: 90rpx;
+    box-sizing: border-box;
+  }
+  .historyContainer {
+    padding: 0 30rpx;
+    .list-right {
+      flex: none;
+      width: 100rpx;
+      text-align: right;
+      margin-right: 20rpx;
+    }
+  }
+
+  .list-title {
+    color: #a7a7a7;
+    font-size: 26rpx;
+    padding: 30rpx 0;
+    height: 93rpx;
+    line-height: 33rpx;
+    border-bottom: 1rpx solid #f3f3f7;
+    box-sizing: border-box;
+    .warning {
+      width: 29rpx;
+      height: 29rpx;
+      padding: 2rpx 30rpx 0 10rpx;
+      vertical-align: top;
+    }
+  }
+  .list {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    padding: 50rpx 0;
+    background: #fff;
+    justify-content: space-between;
+    border-bottom: 1rpx solid #f3f3f7;
+    font-size: 30rpx;
+    .list-left {
+      .listLabel {
+        flex-grow: 1;
+      }
+      image {
+        flex: none;
+        width: 55rpx;
+        height: 55rpx;
+        margin-right: 20rpx;
+      }
+    }
+
+    .list-item {
+      flex-grow: 1;
+      width: 100%;
+      height: 320rpx;
+      margin-bottom: 60rpx;
+      position: relative;
+      image {
+        width: 100%;
+        height: 250rpx;
+        display: block;
+      }
+      .list-item-title {
+        height: 70rpx;
+        background: #fff;
+        border-bottom-left-radius: 20rpx;
+        border-bottom-right-radius: 20rpx;
+        font-size: 26rpx;
+        color: #6b80a5;
+      }
+    }
+    .list-item-policy {
+      width: 100%;
+      height: 210rpx;
+      margin-bottom: 60rpx;
+      position: relative;
+      image {
+        width: 100%;
+        height: 210rpx;
+      }
+      .policy-main {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 45rpx;
+        box-sizing: border-box;
+        width: 100%;
+        .policy-title {
+          font-size: 34rpx;
+          font-weight: bold;
+          margin-bottom: 48rpx;
+        }
+        .policy-time {
+          font-size: 28rpx;
+          color: #898989;
+        }
+        .policy-state {
+          position: absolute;
+          top: 46rpx;
+          right: 48rpx;
+          font-size: 24rpx;
+          width: 110rpx;
+          height: 46rpx;
+          color: #ef7349;
+          font-weight: bold;
+        }
+      }
+    }
+    .order_sts {
+      position: absolute;
+      right: 0;
+      top: 10%;
+      color: #fff;
+      font-size: 32rpx;
+      font-weight: 500;
+      padding: 0 12rpx 0 24rpx;
+      height: 50rpx;
+      line-height: 50rpx;
+      width: 70rpx;
+      .bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        right: 16rpx;
+        top: 0;
+        padding: 0 12rpx 0 24rpx;
+        opacity: 0.2;
+        background: #000;
+        border-top-left-radius: 25rpx;
+        border-bottom-left-radius: 25rpx;
+        line-height: 50rpx;
+      }
+      .txt {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        right: 16rpx;
+        top: 0;
+        color: #fff;
+        font-size: 28rpx;
+        font-weight: 500;
+        padding: 0 12rpx 0 24rpx;
+        text-align: center;
+        line-height: 50rpx;
+      }
+    }
+    .listLabel {
+      .desc {
+        font-size: 30rpx;
+      }
+      .date {
+        font-size: 26rpx;
+        color: #898989;
+      }
+    }
+  }
+  .parallelogram {
+    position: absolute;
+    top: 45rpx;
+    right: 45rpx;
+    width: 110rpx;
+    height: 46rpx;
+    transform: skew(-10deg);
+    border: 1px solid #ef7349;
+    border-radius: 10rpx;
+  }
+}
+</style>

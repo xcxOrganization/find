@@ -9,42 +9,21 @@ let log = Log(),
 	server = config.env,
 	user_id = -1, accessToken = '';
 
-//扫一扫 数码公众号地址（request）
-function getScreenDServerApi() {
-	return `${config.apiScreenD}`;
-}
-
-//扫一扫 websocket链接（socket通信地址）
-function getScreenSServerApi() {
-	return `${config.apiScreenS}`;
-}
-
-//扫一扫 生成token的请求地址（request）
-function getScreenTServerApi() {
-	return `${config.apiScreenT}`;
-}
-
 //图片地址：开发、生产
 function getImgServerApi() {
 	return `${config.imgApi}`;
 }
 
-// 获取小程序二维码
-function getQRCodeApi() {
-	return `${config.apiQRCode}`
-}
-
-
 //配置环境：本地、开发、生产 (区分活动、 common请求)
 function getServerUrl(route) {
-	// return `${config.apiBase}${route}`;
-	return route.match(/https/g) && route.match(/https/g).length ? `${route}` : `${config.apiBase}${route}`;
+	return `${config.apiBase}${route}`;
 }
 
 function request(route, method, data, success, fail, other) {
 	accessToken = wx.getStorageSync(server + 'token');
 	let args = arguments;
 	if (accessToken == '') {
+		return;
 		new Login().init();//登录
 		observer.list.push(function () {
 			request.apply(null, args);
@@ -165,10 +144,6 @@ module.exports = {
 	getServerUrl,
 	request,
 	getImgServerApi,
-	getScreenDServerApi,
-	getScreenSServerApi,
-	getScreenTServerApi,
 	refreshUserInfo,
 	preLogin,
-	getQRCodeApi
 }

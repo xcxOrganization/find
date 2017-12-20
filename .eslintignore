@@ -12,6 +12,7 @@ src/pages/detectScreen.wpy
 src/pages/activateSuccess.wpy
 src/pages/withdrawHistory.wpy
 src/pages/activeCard.wpy
+src/pages/index.wpy
 src/pages/activeScreenCard.wpy
 src/components/poster.wpy
 src/pages/friendsSupport.wpy

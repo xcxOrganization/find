@@ -17,7 +17,7 @@ var pt = Login.prototype;
 pt.wechatapplogin = function (parm, fn) {
 	let that = this;
 	wx.request({
-		url: `${config.apiBase}` + 'user/login' + '?' + getApp()._channel,
+		url: `${config.apiBase}` + 'user/login',
 		data: parm,
 		method: 'POST',
 		header: {

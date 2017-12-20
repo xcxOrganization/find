@@ -1,41 +1,553 @@
 <template>
-    <view class="container">
-        <view class="cont">
-            my
+    <view>
+        <view class='head'>
+            <view class='userImg' @tap="tapHeadImg">
+                <image src="{{userInfo.headimgurl}}" style="border-radius:50%; float: left;"></image>
+                <view style="float: left; max-width: 70%; overflow: hidden;">
+                    <view class='userName'>{{userInfo.nickname}}</view>
+                    <view class='userid' wx-if="{{userInfo.id}}">福利号：{{'1000' + userInfo.id}}</view>
+                </view>
+            </view>
+
+            <view wx-if="{{inviteEnable}}" class="{{isAnimate ? 'head-left music-animate' : 'head-left'}}" @tap="toWithDrawHistory">
+                <image class="red" src="{{img_prefixer}}/icon/redPackage.png"></image>
+            </view>
         </view>
-        <view class="desc">
-            当前版本：{{version}}
+    </view>
+    <view class='menu'>
+        <view class='menu-item'>
+            <view class='mi-left'>
+                <image src='{{img_prefixer}}/icon/account.png'></image>
+                <view class='miText'>账户余额</view>
+            </view>
+            <view class='mi-right'>
+                <view style="margin-right: 44rpx;">{{userInfo.balance}} 元</view>
+            </view>
         </view>
+        <view class='menu-item' style="position: relative" @tap='toHistory'>
+            <view class='mi-left'>
+                <image src='{{img_prefixer}}/icon/gift.png'></image>
+                <view class='miText'>找人记录</view>
+            </view>
+            <view class='mi-right'>
+                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'></image>
+            </view>
+        </view>
+        <view class='menu-item' style="position: relative">
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 27px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 54px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 81px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 108px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 135px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 162px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 189px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 216px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 243px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 270px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 189px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 216px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 243px;"></contact-button>
+            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 270px;"></contact-button>
+            <view class='mi-left'>
+                <image src='{{img_prefixer}}/icon/kefuer.png'></image>
+                <view class='miText'>联系客服</view>
+            </view>
+            <view class='mi-right'>
+                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'></image>
+            </view>
+        </view>
+        <view class='menu-item' style="position: relative" @tap="toAbout">
+            <view class='mi-left'>
+                <image src='{{img_prefixer}}/icon/about.png'></image>
+                <view class='miText'>关于</view>
+            </view>
+            <view class='mi-right'>
+                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'></image>
+            </view>
+        </view>
+    </view>
+
+    <view class="bottomText">
+        <image src="{{stitle}}" style="display:inline-block;height:69rpx;width:265rpx;"></image>
+        <view>XXXXXX成立，</view>
+        <view>XXXXXX</view>
+    </view>
+
+    <!--兼容无法分享问题-->
+    <view wx-if="{{shareSign}}" class="little_modal_bg" bindtap="closeShare"></view>
+    <view wx-if="{{shareSign}}" class="modal_img" bindtap="closeShare">
+        <image class="share_warning_img" src="https://cdn-qcloud.zhongan.com/a00000/Project/Health_Tuan/ClaimMini/card/img/2/modal.png"></image>
+    </view>
     </view>
 </template>
 
 <script>
-import wx from 'wepy'
-// import request from '../utils/request.js'
-import config from '../config'
-export default class extends wx.page {
-    config = {
-        navigationBarBackgroundColor: '#fff',
-        navigationBarTitleText: '我的'
+import wepy from "wepy";
+import http from "../utils/request.js";
+import config from "../config";
+import mixin from "../mixins/redux";
+let needUpdate = false; //是否需要重新登录
+export default class My extends wepy.page {
+  config = {
+    navigationBarTitleText: "我的"
+  };
+  mixins = [mixin];
+  data = {
+    isAnimate: false,
+    redPacketStatus: false,
+    showQuestion: false,
+    preData: null,
+    stitle: http.getImgServerApi() + "detail/stitle@2x.png",
+    frontImg: http.getImgServerApi() + "my/front.png",
+    backImg: http.getImgServerApi() + "my/back.png",
+    imgApi: http.getImgServerApi(),
+    userInfo: {
+      headimgurl: http.getImgServerApi() + "icon/noAvatar.png",
+      nickname: "加载中..."
+    },
+    cacheUserInfo: {
+      headimgurl: http.getImgServerApi() + "icon/noAvatar.png",
+      nickname: "加载中..."
+    },
+    zaCardId: 0,
+    canIShare: wepy.canIUse ? wepy.canIUse("button.open-type.share") : false,
+    shareSign: false,
+    inviteEnable: false,
+    balance: 0,
+    rePacketAmount: 0.0,
+    allCards: ""
+  };
+
+  methods = {
+    showQuestion() {
+      this.showQuestion = !this.showQuestion;
+    },
+    toAbout() {
+      wx.navigateTo({
+        url: "/pages/about"
+      });
+    },
+    toHistory() {
+      wx.navigateTo({
+        url: "/pages/history"
+      });
+    },
+    // 去到 我的保障卡
+    toMySecurity(e) {
+      let that = this;
+      request.preLogin(() => {
+        that.upnewData();
+        that.$navigate("./mySecurity");
+      });
+      that.saveFormId.call(e);
+    },
+    // 去到 我的保单
+    toMyPolicy(e) {
+      let that = this;
+      wx.getUserInfo({
+        success: res => {
+          wepy.removeStorageSync("newPolicy");
+          that.$navigate("./mySecurity?tab=1");
+          http.preLogin();
+        },
+        fail: res => {
+          wepy.removeStorageSync("newPolicy");
+          that.$navigate("./mySecurity?tab=1");
+        }
+      });
+      that.saveFormId.call(e);
+    },
+    // 去到storage 获得的卡片
+    myToDetail() {
+      wepy.navigateTo({
+        url: "./mySecurity"
+      });
+    },
+    // 关闭分享提示
+    closeShare() {
+      let that = this;
+      that.shareSign = false;
+      that.$apply();
+    },
+
+    showShare() {
+      let that = this;
+      that.shareSign = true;
+      that.$apply();
     }
-    data = {
-        version: config.version
+  };
+  onShow() {}
+
+  onLoad(options) {
+    // 处理 sharke 动画
+    let that = this;
+    // 设置红包背景图片 宽高
+    let res = http.systemInfo;
+    let rw = res.windowWidth;
+    that.getUserInfo();
+    that.$apply();
+    setTimeout(function() {
+      that.isAnimate = true;
+      that.$apply();
+    }, 500);
+
+    setInterval(function() {
+      that.isAnimate = false;
+      that.$apply();
+      setTimeout(function() {
+        that.isAnimate = true;
+        that.$apply();
+      }, 100);
+    }, 3000);
+
+    // 处理转赠的 卡片
+    if (options && options.shareId && options.type) {
+      let id = options.shareId;
+      let type = options.type;
+      that.getCard(id, type);
     }
+
+    http.preLogin();
+  }
+
+  // 获取用户信息
+  getUserInfo() {
+    let that = this;
+    http.request(
+      "user/userinfo",
+      "get",
+      {},
+      function(res) {},
+      function(err) {},
+      { noToast: true }
+    );
+  }
+
+  // 分享
+  onShareAppMessage() {
+    return {
+      title: "[微信红包] 恭喜你被抽中了！一键开启惊喜，有红包噢～",
+      path: "pages/index",
+      imageUrl: http.getImgServerApi() + "imgs/share.jpg",
+      success: res => {},
+      fail: () => {}
+    };
+  }
 }
 </script>
 
 <style lang="less">
+contact-button.cx6 {
+  position: absolute;
+  opacity: 0;
+  top: 26rpx;
+  z-index: 29;
+}
+
+.modal_img image {
+  margin-top: 15%;
+}
+
+.grayscale {
+  -webkit-filter: grayscale(1);
+  filter: grayscale(1);
+}
+
+.flex(@dir: row, @ai: center) {
+  display: flex;
+  flex-direction: @dir;
+  align-items: @ai;
+}
+
+.moreIcon {
+  width: 40rpx;
+  height: 40rpx;
+  background: #fff;
+}
+
 page {
-    background: #fff;
-    .container {
-        position: relative;
-        .desc {
-            width: 100%;
-            text-align: center;
-            font-size: 26rpx;
-            color: #ccc;
-            margin-bottom: 20rpx;
-        }
+  background: #f3f3f7;
+  position: relative;
+  height: 100%;
+}
+
+.head {
+  height: 200rpx;
+  background: #fff;
+  justify-content: space-between;
+  padding: 0 30rpx;
+  .flex();
+  .userName {
+    font-weight: 600;
+    margin-top: 30rpx;
+    margin-left: 32rpx;
+    height: 60rpx;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 50rpx;
+  }
+  .userid {
+    margin-top: 20rpx;
+    margin-left: 32rpx;
+    height: 60rpx;
+    max-width: 100%; // overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; // float: left;
+    color: #bbb;
+    font-size: 24rpx;
+  }
+  .bouns {
+    font-size: 28rpx;
+    color: #888;
+  }
+  .userImg {
+    // background: lightblue;
+    border-radius: 50rpx;
+  }
+  .userImg image {
+    width: 140rpx;
+    height: 140rpx;
+  }
+  .red {
+    width: 160rpx;
+    height: 160rpx;
+    margin-top: 10rpx;
+  }
+  .head-left {
+    position: relative;
+  }
+}
+
+.menu {
+  margin-top: 30rpx;
+  background: #fff;
+  .flex(@dir: column);
+  .menu-item {
+    .flex();
+    width: 93%;
+    justify-content: space-between;
+    padding: 30rpx 0;
+    margin-left: 20rpx;
+    border-bottom: 1rpx solid #eee;
+  }
+  .mi-left {
+    .flex();
+  }
+  .mi-left image {
+    width: 44rpx;
+    height: 44rpx;
+    margin-right: 10rpx;
+  }
+  .miText {
+    font-size: 28rpx;
+  }
+  .mi-right {
+    .flex();
+    font-size: 28rpx;
+    color: #888;
+  }
+}
+
+.bottomText {
+  width: 100%;
+  font-size: 25rpx;
+  color: #bbb;
+  text-align: center;
+  padding: 30rpx 0;
+  bottom: 0;
+}
+
+.type10 {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+}
+
+.full {
+  width: 100%;
+  height: 100%;
+}
+
+.subform {
+  opacity: 0;
+  z-index: 999;
+  position: absolute;
+  top: 47%;
+  height: 180rpx;
+  width: 180rpx;
+  left: 50%;
+  margin-left: -90rpx;
+}
+
+.sharebg {
+  position: relative;
+  text-align: center;
+  margin-top: 10%;
+  z-index: 10;
+  margin-bottom: 30rpx;
+  animation: pulse 0.4s alternate ease-in-out;
+
+  @keyframes pulse {
+    from {
+      transform: scale3d(0, 0, 0);
     }
+    to {
+      transform: scale3d(1, 1, 1);
+    }
+  }
+  .red-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 38rpx;
+    box-sizing: border-box;
+    .red-main-colse {
+      width: 40rpx;
+      height: 40rpx;
+      display: block;
+    }
+    .user {
+      margin-top: 18rpx;
+      text-align: center;
+      .user-avatar {
+        width: 140rpx;
+        height: 140rpx;
+        border-radius: 50%;
+      }
+    }
+    .user-red {
+      width: 100%;
+      text-align: center;
+      margin-top: 10rpx;
+      font-size: 28rpx;
+      color: #f5c797;
+    }
+    .user-solo {
+      width: 100%;
+      text-align: center;
+      margin-top: 20rpx;
+      font-size: 36rpx;
+      color: #f5c797;
+      position: relative;
+    }
+    .user-record {
+      position: absolute;
+      bottom: 38rpx;
+      width: 88%;
+      text-align: center;
+      color: #f5c797;
+      font-size: 30rpx;
+      image {
+        width: 30rpx;
+        height: 30rpx;
+      }
+    }
+  }
+}
+
+.red-share {
+  position: relative;
+  background: #fde3ae;
+  color: #1f1c15;
+  font-size: 32rpx;
+  margin-top: 42rpx;
+  border-radius: 10rpx;
+  height: 100rpx;
+  margin: 0 auto;
+  position: relative;
+  top: 870rpx;
+}
+
+.box_top_container {
+  position: absolute;
+  top: -60%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.circle_container {
+  position: absolute;
+  width: 200rpx;
+  height: 200rpx;
+  top: 54%;
+  left: 50%;
+  margin-left: -100rpx;
+  z-index: 12;
+}
+
+.circle_name {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 29.4%;
+  color: #ffe9b7;
+  font-size: 40rpx;
+}
+
+.circle_top {
+  width: 100%;
+  height: 100%;
+}
+
+.circle_top_click {
+  transform: perspective(200px) rotateY(90deg);
+  transition: transform 300ms ease-out, opacity 300ms ease;
+  -webkit-transition: transform 300ms ease-out, opacity 300ms ease;
+}
+
+.circle_bottom {
+  width: 100%;
+  height: 100%;
+  transform: perspective(200px) rotateY(270deg);
+}
+
+.circle_bottom_click {
+  transform: perspective(200px) rotateY(2340deg);
+  transition: transform 6900ms ease-in 300ms;
+  -webkit-transition: transform 6900ms ease-in 300ms;
+}
+
+.circle_bottom {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modal.little {
+  height: auto;
+  opacity: 1;
+  top: 300rpx;
+  width: 80%;
+  left: 10%;
+  border: 1rpx solid #ccc;
+  border-radius: 16rpx;
+  z-index: 30;
+}
+
+.iknow {
+  height: 90rpx;
+  border-top: 1px solid#E3E4E7;
+  color: #12b312;
+}
+
+.modal {
+  background: #000;
+  opacity: 0.7;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
 }
 </style>
