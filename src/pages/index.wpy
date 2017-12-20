@@ -12,7 +12,7 @@
                 <view class="rightB">一支穿云箭</view>
             </view>
         </view>
-        <view class="box">
+        <view class="box" @tap="toReferrer">
             <view class="left">
                 <image class="leftImg" src="../assets/images/home-on.png"/>
             </view>
@@ -43,6 +43,11 @@ export default class extends wx.page {
         toFind() {
             wx.navigateTo({
                 url: '/pages/find'
+            })
+        },
+        toReferrer() {
+            wx.navigateTo({
+                url: '/pages/referrer'
             })
         }
     }

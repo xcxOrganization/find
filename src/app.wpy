@@ -8,7 +8,9 @@ export default class extends wepy.app {
         pages: [
             'pages/index',
             'pages/my',
-            'pages/find'
+            'pages/find',
+            'pages/referrer',
+            'pages/referee'
         ],
         window: {
             backgroundTextStyle: 'light',
