@@ -1,0 +1,41 @@
+<template>
+    <view class="container">
+        <view class="cont">
+            my
+        </view>
+        <view class="desc">
+            当前版本：{{version}}
+        </view>
+    </view>
+</template>
+
+<script>
+import wx from 'wepy'
+// import request from '../utils/request.js'
+import config from '../config'
+export default class extends wx.page {
+    config = {
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: '我的'
+    }
+    data = {
+        version: config.version
+    }
+}
+</script>
+
+<style lang="less">
+page {
+    background: #fff;
+    .container {
+        position: relative;
+        .desc {
+            width: 100%;
+            text-align: center;
+            font-size: 26rpx;
+            color: #ccc;
+            margin-bottom: 20rpx;
+        }
+    }
+}
+</style>

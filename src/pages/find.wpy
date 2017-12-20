@@ -1,0 +1,117 @@
+<template>
+    <view class="container">
+        <view class="top">          
+            <image class="topImg" src="../assets/images/find-banner.png" style="width:100%; height: 360rpx;"/>
+        </view>
+        <view class="form" wx:if="{{type==1}}">        
+            <form bindsubmit="formSubmit">
+                <view class="row">
+                    <text>红包</text>
+                    <input v-model="form.redPacket" type="text" name="redPacket" placeholder="请输入红包金额" />
+                </view>
+                <view class="row">
+                    <text>我想找</text>
+                    <input v-model="form.iWant" type="text" name="iWant" placeholder="一句话描述你想找的人，限25字" />
+                </view>
+                <view class="row">
+                    <text>你的微信</text>
+                    <input v-model="form.uWx" type="text" name="uWx" placeholder="请留下你的微信，引荐成功后方便联系" />
+                </view>
+                <view class="row">
+                    <button type="primary" @tap='eventHandle'>提交</button>
+                </view>
+            </form>
+        </view>      
+        <view class="form" wx:if="{{type==2}}">       
+            <form bindsubmit="formSubmit">
+                <view class="row">
+                    <text>红包</text><text>10元</text>
+                </view>
+                <view class="row">
+                    <text>找人码</text><text>abc</text>
+                </view>
+                <view class="row">
+                    <text>我想找</text><text>XXX</text>
+                </view>
+                <view class="row">
+                    <button type="primary" form-type="submit">邀请好友帮忙</button>
+                    <button type="primary" form-type="submit">生成找人海报</button>
+                </view>
+            </form>
+        </view>    
+        <view class="desc">
+            当前版本：{{version}}
+        </view>
+    </view>
+</template>
+
+<script>
+import wx from 'wepy'
+// import request from '../utils/request.js'
+import config from '../config'
+export default class extends wx.page {
+    config = {
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: '我的'
+    }
+    data = {
+        version: config.version,
+        type: 1,
+        form: {
+            redPacket: '',
+            iWant: '',
+            uWx: ''
+        }
+    }
+    eventHandle() {
+        this.type = 2
+    }
+}
+</script>
+
+<style lang="less">
+page {
+    background: #fff;
+    .container {
+        position: relative;
+        .top{  
+            .topImg{
+                
+            }
+        }
+        .form{
+            padding: 25rpx;
+            .row{
+                display: flex;
+                align-items: center;               
+                margin-bottom: 35rpx;
+                text{
+                    flex-grow: 1;
+                    font-size: 32rpx;
+                    text-align: left;
+                }
+                input{
+                    flex-grow: 3;
+                    font-size: 26rpx;
+                    color: #111;
+                    border: 1px solid #0099CC;
+                    display: inline-block;
+                    box-shadow: 0 0 15rpx #aaa;
+                    border-radius: 10rpx;
+                    padding: 10rpx;
+                }
+                button{
+                    padding: 0 66rpx;
+                }
+            }   
+        }             
+        .desc {
+            width: 100%;
+            text-align: center;
+            font-size: 26rpx;
+            color: #ccc;
+            margin-bottom: 20rpx;
+        }
+    }
+}
+</style>
