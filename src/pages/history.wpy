@@ -81,10 +81,10 @@ import mixin from "../mixins/redux";
 
 export default class WithdrawHistory extends wepy.page {
   data = {
-    inviteRewardRecords: [], //邀请记录
-    list2: [], //领取记录
-    list3: [], //领取记录
-    rewardSum: "0.00", //累计邀请奖励金额
+    inviteRewardRecords: [],//邀请记录
+    list2: [],//领取记录
+    list3: [],//领取记录
+    rewardSum: "0.00",//累计邀请奖励金额
     tabs: ["邀请记录", "领取记录", "领取记录"],
     curIndex: 0,
     curPage1: 0,

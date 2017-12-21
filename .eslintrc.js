@@ -18,13 +18,12 @@ module.exports = {
   },
   // add your custom rules here
   'rules': {
-    // allow paren-less arrow functions
-    'arrow-parens': 0,
-    // allow async-await
-    'generator-star-spacing': 0,
+	'no-func-assign': 2,//禁止重复的函数声明
+	"no-irregular-whitespace": 0,//允许有不规则的空格
+	"quotes": [0, "single"],//引号类型 `` "" ''
+	"semi": [0, "never"],//分号
+	"space-before-function-paren": [0, "always"],
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'space-before-function-paren': 0,
-    'indent': ["error", 4]
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
 }
