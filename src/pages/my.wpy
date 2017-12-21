@@ -85,9 +85,7 @@
 <script>
 import wepy from "wepy";
 import http from "../utils/request.js";
-import config from "../config";
 import mixin from "../mixins/redux";
-let needUpdate = false; //是否需要重新登录
 export default class My extends wepy.page {
   config = {
     navigationBarTitleText: "我的"
@@ -133,31 +131,6 @@ export default class My extends wepy.page {
         url: "/pages/history"
       });
     },
-    // 去到 我的保障卡
-    toMySecurity(e) {
-      let that = this;
-      request.preLogin(() => {
-        that.upnewData();
-        that.$navigate("./mySecurity");
-      });
-      that.saveFormId.call(e);
-    },
-    // 去到 我的保单
-    toMyPolicy(e) {
-      let that = this;
-      wx.getUserInfo({
-        success: res => {
-          wepy.removeStorageSync("newPolicy");
-          that.$navigate("./mySecurity?tab=1");
-          http.preLogin();
-        },
-        fail: res => {
-          wepy.removeStorageSync("newPolicy");
-          that.$navigate("./mySecurity?tab=1");
-        }
-      });
-      that.saveFormId.call(e);
-    },
     // 去到storage 获得的卡片
     myToDetail() {
       wepy.navigateTo({
@@ -182,11 +155,7 @@ export default class My extends wepy.page {
   onLoad(options) {
     // 处理 sharke 动画
     let that = this;
-    // 设置红包背景图片 宽高
-    let res = http.systemInfo;
-    let rw = res.windowWidth;
     that.getUserInfo();
-    that.$apply();
     setTimeout(function() {
       that.isAnimate = true;
       that.$apply();
@@ -213,7 +182,6 @@ export default class My extends wepy.page {
 
   // 获取用户信息
   getUserInfo() {
-    let that = this;
     http.request(
       "user/userinfo",
       "get",
