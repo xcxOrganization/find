@@ -2,7 +2,7 @@
     <view class="container">
         <view class="box">
             <view class="row">
-                <text @tap="toRule">找人规则</text>
+                <text @tap="toRule">找人规则1</text>
             </view>
             <view class="row">
                 <view class="item"><image class="avatar" src="../assets/images/home-on.png"/></view>
