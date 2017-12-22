@@ -28,82 +28,82 @@
 </template>
 
 <script>
-import wx from 'wepy'
+import wx from "wepy";
 // import request from '../utils/request.js'
-import config from '../config'
+import config from "../config";
 export default class extends wx.page {
-    config = {
-        navigationBarBackgroundColor: '#fff',
-        navigationBarTitleText: '帮忙找人'
+  config = {
+    navigationBarBackgroundColor: "#fff",
+    navigationBarTitleText: "帮忙找人"
+  };
+  data = {
+    version: config.version
+  };
+  methods = {
+    toFind() {
+      wx.navigateTo({
+        url: "/pages/find"
+      });
+    },
+    toReferrer() {
+      wx.navigateTo({
+        url: "/pages/referrer"
+      });
     }
-    data = {
-        version: config.version
-    }
-    methods = {
-        toFind() {
-            wx.navigateTo({
-                url: '/pages/find'
-            })
-        },
-        toReferrer() {
-            wx.navigateTo({
-                url: '/pages/referrer'
-            })
-        }
-    }
+  };
 }
 </script>
 
 <style lang="less">
 page {
-    background: #fff;
-    .container {
-        position: relative;
-        .top{
-            width: 100%;
-            text-align: center;
-            font-size: 32rpx;
-            margin: 30rpx 0rpx;
-        }
-        .box{
-            .left{
-                .leftImg{
-                    width: 100%;
-                    height: 100%;
-                }
-                width: 40%;
-                display: flex;
-                //  垂直居中
-                //  align-items:center; 
-                //  水平居中
-                // justify-content:center;
-            }
-            .right{
-                .rightA{
-                    font-size: 55rpx;
-                }
-                .rightB{
-                    font-size: 32rpx;
-                    color: #aaa;
-                }
-                width: 60%;
-                padding-top: 50rpx;
-                padding-left: 35rpx;
-            }
-            display: flex;
-            width: 80%;
-            background: #eee;
-            margin: 20rpx auto;
-            border-radius: 20rpx; 
-            padding: 75rpx 35rpx;
-        }
-        .desc {
-            width: 100%;
-            text-align: center;
-            font-size: 26rpx;
-            color: #ccc;
-            margin-bottom: 20rpx;
-        }
+  background: #fff;
+  .container {
+    position: relative;
+    .top {
+      width: 100%;
+      text-align: center;
+      font-size: 32rpx;
+      margin: 30rpx 0rpx;
     }
+    .box {
+      .left {
+        .leftImg {
+          width: 100%;
+          height: 100%;
+        }
+        width: 40%;
+        display: flex;
+        //  垂直居中
+        //  align-items:center;
+        //  水平居中
+        // justify-content:center;
+      }
+      .right {
+        .rightA {
+          font-size: 55rpx;
+        }
+        .rightB {
+          font-size: 32rpx;
+          color: #aaa;
+        }
+        width: 60%;
+        padding-top: 50rpx;
+        padding-left: 35rpx;
+      }
+      display: flex;
+      width: 80%;
+      background: #eee;
+      margin: 20rpx auto;
+      border-radius: 20rpx;
+      padding: 75rpx 35rpx;
+    }
+    .desc {
+      width: 100%;
+      text-align: center;
+      font-size: 26rpx;
+      color: #ccc;
+      margin-bottom: 20rpx;
+    }
+  }
 }
 </style>

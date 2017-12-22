@@ -18,13 +18,13 @@
             </view>
             <view class="historyContainer">
                 <view class='list-title' @tap='showTip'>明细
-                    <image class='warning' src='{{warningImg}}'></image>
+                    <image class='warning' src='{{warningImg}}'/>
                 </view>
                 <view class='list flex-xy' wx:for='{{inviteRewardRecords}}' wx:key='index' item='item' data-item='{{item}}'>
                     <view class='list-left flex-xy'>
-                        <image src='./../assets/images/behaviorType1.png'></image>
-                        <!--<image wx:if="{{item.behaviorType == 1}}" src='./../assets/images/behaviorType1.png'></image>
-                        <image wx:if="{{item.behaviorType == 2}}" src='./../assets/images/behaviorType2.png'></image>-->
+                        <image src='./../assets/images/behaviorType1.png'/>
+                        <!--<image wx:if="{{item.behaviorType == 1}}" src='./../assets/images/behaviorType1.png'/>
+                        <image wx:if="{{item.behaviorType == 2}}" src='./../assets/images/behaviorType2.png'/>-->
                         <view class="listLabel">
                             <view class="desc">{{item.showTitle}}</view>
                             <view class="date">{{item.createdAt}}</view>
@@ -34,7 +34,7 @@
                 </view>
                 <view wx:if="{{!inviteRewardRecords || inviteRewardRecords.length==0}}" class="default">
                     <view>
-                        <image src='{{defaultImg}}'></image>
+                        <image src='{{defaultImg}}'/>
                     </view>
                     <view>暂无记录1</view>
                 </view>
@@ -44,14 +44,14 @@
         <view wx-if="{{curIndex == 1}}" class="container">
             <view class='list flex-xy' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
                 <view class='list-left flex-xy'>
-                    <image src='{{imgUrl}}'></image>
+                    <image src='{{imgUrl}}'/>
                     <view>{{item.createdAt}}</view>
                 </view>
                 <view class='list-right'>{{item.reward}}元</view>
             </view>
             <view wx:if="{{!list2 || list2.length==0}}" class="default">
                 <view>
-                    <image src='{{defaultImg}}'></image>
+                    <image src='{{defaultImg}}'/>
                 </view>
                 <view>暂无记录2</view>
             </view>
@@ -59,14 +59,14 @@
         <view wx-if="{{curIndex == 2}}" class="container">
             <view class='list flex-xy' wx:for='{{list3}}' wx:key='index' item='item' data-item='{{item}}'>
                 <view class='list-left flex-xy'>
-                    <image src='{{imgUrl}}'></image>
+                    <image src='{{imgUrl}}'/>
                     <view>{{item.createdAt}}</view>
                 </view>
                 <view class='list-right'>{{item.reward}}元</view>
             </view>
             <view wx:if="{{!list3 || list3.length==0}}" class="default">
                 <view>
-                    <image src='{{defaultImg}}'></image>
+                    <image src='{{defaultImg}}'/>
                 </view>
                 <view>暂无记录3</view>
             </view>
@@ -81,10 +81,10 @@ import mixin from "../mixins/redux";
 
 export default class WithdrawHistory extends wepy.page {
   data = {
-    inviteRewardRecords: [],//邀请记录
-    list2: [],//领取记录
-    list3: [],//领取记录
-    rewardSum: "0.00",//累计邀请奖励金额
+    inviteRewardRecords: [], //邀请记录
+    list2: [], //领取记录
+    list3: [], //领取记录
+    rewardSum: "0.00", //累计邀请奖励金额
     tabs: ["邀请记录", "领取记录", "领取记录"],
     curIndex: 0,
     curPage1: 0,

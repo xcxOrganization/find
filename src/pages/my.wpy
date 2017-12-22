@@ -2,7 +2,7 @@
     <view>
         <view class='head'>
             <view class='userImg' @tap="tapHeadImg">
-                <image src="{{userInfo.headimgurl}}" style="border-radius:50%; float: left;"></image>
+                <image src="{{userInfo.headimgurl}}" style="border-radius:50%; float: left;"/>
                 <view style="float: left; max-width: 70%; overflow: hidden;">
                     <view class='userName'>{{userInfo.nickname}}</view>
                     <view class='userid' wx-if="{{userInfo.id}}">福利号：{{'1000' + userInfo.id}}</view>
@@ -10,14 +10,14 @@
             </view>
 
             <view wx-if="{{inviteEnable}}" class="{{isAnimate ? 'head-left music-animate' : 'head-left'}}" @tap="toWithDrawHistory">
-                <image class="red" src="{{img_prefixer}}/icon/redPackage.png"></image>
+                <image class="red" src="{{img_prefixer}}/icon/redPackage.png"/>
             </view>
         </view>
     </view>
     <view class='menu'>
         <view class='menu-item'>
             <view class='mi-left'>
-                <image src='{{img_prefixer}}/icon/account.png'></image>
+                <image src='{{img_prefixer}}/icon/account.png'/>
                 <view class='miText'>账户余额</view>
             </view>
             <view class='mi-right'>
@@ -26,11 +26,11 @@
         </view>
         <view class='menu-item' style="position: relative" @tap='toHistory'>
             <view class='mi-left'>
-                <image src='{{img_prefixer}}/icon/gift.png'></image>
+                <image src='{{img_prefixer}}/icon/gift.png'/>
                 <view class='miText'>找人记录</view>
             </view>
             <view class='mi-right'>
-                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'></image>
+                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'/>
             </view>
         </view>
         <view class='menu-item' style="position: relative">
@@ -50,26 +50,26 @@
             <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 243px;"></contact-button>
             <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 270px;"></contact-button>
             <view class='mi-left'>
-                <image src='{{img_prefixer}}/icon/kefuer.png'></image>
+                <image src='{{img_prefixer}}/icon/kefuer.png'/>
                 <view class='miText'>联系客服</view>
             </view>
             <view class='mi-right'>
-                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'></image>
+                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'/>
             </view>
         </view>
         <view class='menu-item' style="position: relative" @tap="toAbout">
             <view class='mi-left'>
-                <image src='{{img_prefixer}}/icon/about.png'></image>
+                <image src='{{img_prefixer}}/icon/about.png'/>
                 <view class='miText'>关于</view>
             </view>
             <view class='mi-right'>
-                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'></image>
+                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'/>
             </view>
         </view>
     </view>
 
     <view class="bottomText">
-        <image src="{{stitle}}" style="display:inline-block;height:69rpx;width:265rpx;"></image>
+        <image src="{{stitle}}" style="display:inline-block;height:69rpx;width:265rpx;"/>
         <view>XXXXXX成立，</view>
         <view>XXXXXX</view>
     </view>
@@ -77,7 +77,7 @@
     <!--兼容无法分享问题-->
     <view wx-if="{{shareSign}}" class="little_modal_bg" bindtap="closeShare"></view>
     <view wx-if="{{shareSign}}" class="modal_img" bindtap="closeShare">
-        <image class="share_warning_img" src="https://cdn-qcloud.zhongan.com/a00000/Project/Health_Tuan/ClaimMini/card/img/2/modal.png"></image>
+        <image class="share_warning_img" src="https://cdn-qcloud.zhongan.com/a00000/Project/Health_Tuan/ClaimMini/card/img/2/modal.png"/>
     </view>
     </view>
 </template>
@@ -122,12 +122,12 @@ export default class My extends wepy.page {
       this.showQuestion = !this.showQuestion;
     },
     toAbout() {
-      wx.navigateTo({
+      wepy.navigateTo({
         url: "/pages/about"
       });
     },
     toHistory() {
-      wx.navigateTo({
+      wepy.navigateTo({
         url: "/pages/history"
       });
     },
@@ -182,14 +182,9 @@ export default class My extends wepy.page {
 
   // 获取用户信息
   getUserInfo() {
-    http.request(
-      "user/userinfo",
-      "get",
-      {},
-      function(res) {},
-      function(err) {},
-      { noToast: true }
-    );
+    http.request("user/userinfo", "get", {}, (res) => {}, (err) => {}, {
+      noToast: true
+    });
   }
 
   // 分享

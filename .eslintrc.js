@@ -22,8 +22,11 @@ module.exports = {
 	"no-irregular-whitespace": 0,//允许有不规则的空格
 	"quotes": [0, "single"],//引号类型 `` "" ''
 	"semi": [0, "never"],//分号
+	"indent": [0, 4, {"SwitchCase": 1}],
+	"spaced-comment": [0, "always"],
 	"space-before-function-paren": [0, "always"],
 	"semi-spacing": [0, { "before": false, "after": true }],
+	"comma-spacing": [0, { "before": false, "after": true }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
