@@ -23,6 +23,7 @@ module.exports = {
 	"quotes": [0, "single"],//引号类型 `` "" ''
 	"semi": [0, "never"],//分号
 	"space-before-function-paren": [0, "always"],
+	"semi-spacing": [0, { "before": false, "after": true }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   }
