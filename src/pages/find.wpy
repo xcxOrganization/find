@@ -98,38 +98,10 @@ import wx from "wepy";
 // import request from '../utils/request.js'
 import config from "../config";
 export default class extends wx.page {
-  config = {
-    navigationBarBackgroundColor: "#fff",
-    navigationBarTitleText: "我要找人"
-  };
-  data = {
-    version: config.version,
-    type: 1,
-    ruleModal: false,
-    form: {
-      redPacket: "",
-      iWant: "",
-      uWx: "",
-      findNum: ""
-    }
-<<<<<<< HEAD
-  };
-  toRule() {
-    this.ruleModal = true;
-  }
-  bindredPacket(e) {
-    this.form.redPacket = e.detail.value;
-  }
-  bindiWant(e) {
-    this.form.iWant = e.detail.value;
-  }
-  binduWx(e) {
-    this.form.uWx = e.detail.value;
-  }
-  eventHandle() {
-    for (let i = 0; i < 6; i++) {
-      this.form.findNum += Math.floor(Math.random() * 10);
-=======
+    config = {
+        navigationBarBackgroundColor: "#fff",
+        navigationBarTitleText: "我要找人"
+    };
     data = {
         version: config.version,
         type: 1,
@@ -175,7 +147,6 @@ export default class extends wx.page {
     }
     addPoster() {
         this.type = 3
->>>>>>> 934c24eb9a0627fc5526ff05801244fb3a5a4b1f
     }
     console.log(this.form);
     this.type = 2;
@@ -212,55 +183,8 @@ page {
           font-size: 28rpx;
           color: #0099cc;
         }
-<<<<<<< HEAD
         &:nth-child(2) {
           justify-content: center;
-=======
-        .form{
-            padding: 25rpx;
-            .row{
-                display: flex;
-                align-items: center;               
-                margin-bottom: 35rpx;
-                text{
-                    flex-grow: 1;
-                    font-size: 32rpx;
-                    text-align: left;
-                }
-                input{
-                    flex-grow: 3;
-                    font-size: 26rpx;
-                    color: #111;
-                    border: 1px solid #0099CC;
-                    display: inline-block;
-                    box-shadow: 0 0 15rpx #aaa;
-                    border-radius: 10rpx;
-                    padding: 10rpx;
-                }
-                button{
-                    font-size: 32rpx;
-                    padding: 0 50rpx;
-                }
-                .qrCode{
-                    flex-grow: 1;
-                    display: flex;
-                    justify-content: center;
-                }
-            }
-            .success {
-                display: flex;
-                justify-content: center;
-                margin-top: 55rpx;
-                margin-bottom: 40rpx;
-            }
-        }         
-        .desc {
-            width: 100%;
-            text-align: center;
-            font-size: 26rpx;
-            color: #ccc;
-            margin-bottom: 20rpx;
->>>>>>> 934c24eb9a0627fc5526ff05801244fb3a5a4b1f
         }
         &:nth-child(3) {
           justify-content: space-between;
@@ -275,7 +199,6 @@ page {
         display: flex;
       }
     }
-<<<<<<< HEAD
     .top {
       .topImg {
       }
@@ -300,8 +223,32 @@ page {
           box-shadow: 0 0 15rpx #aaa;
           border-radius: 10rpx;
           padding: 10rpx;
-=======
-    .modal{
+        }
+        button {
+          padding: 0 66rpx;
+        }
+        .qrCode {
+          flex-grow: 1;
+          display: flex;
+          justify-content: center;
+        }
+      }
+      .success {
+            display: flex;
+            justify-content: center;
+            margin-top: 55rpx;
+            margin-bottom: 40rpx;
+        }
+    }
+    .desc {
+      width: 100%;
+      text-align: center;
+      font-size: 26rpx;
+      color: #ccc;
+      margin-bottom: 20rpx;
+    }
+  }
+  .modal{
         width: 100%;
         height: 100%;
         position: fixed;
@@ -331,45 +278,7 @@ page {
                 text-align: center;
                 margin-top: 75rpx;
             }
->>>>>>> 934c24eb9a0627fc5526ff05801244fb3a5a4b1f
         }
-        button {
-          padding: 0 66rpx;
-        }
-        .qrCode {
-          flex-grow: 1;
-          display: flex;
-          justify-content: center;
-        }
-      }
     }
-    .desc {
-      width: 100%;
-      text-align: center;
-      font-size: 26rpx;
-      color: #ccc;
-      margin-bottom: 20rpx;
-    }
-  }
-  .modal {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    background: #000;
-    opacity: 0.5;
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .rule {
-      width: 66%;
-      height: 80%;
-      background: #fff;
-      opacity: 1;
-      z-index: 21;
-    }
-  }
 }
 </style>
