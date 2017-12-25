@@ -19,7 +19,7 @@ let config = {
         'X-Avoscloud-Application-Id': 'eDhlsYU0IWkyIFM8kMGDfw8s-gzGzoHsz',
         'X-Avoscloud-Application-Key': 'FCtKbKv13fbK8fDWdkIA6xEQ'
     },
-    AppID: 'wxa0331ef4db311fdb',//AppID
+    AppID: 'wxd035cd5461feb811',//AppID
     title: '找人',
     version: 'v1.0.0'
 };
