@@ -9,7 +9,7 @@ export default class extends wepy.app {
             'pages/index',
             'pages/my',
             'pages/find',
-	    'pages/referrer',
+	        'pages/referrer',
             'pages/referee',
             'pages/about',     //关于页面
             'pages/history'     //找人记录
@@ -21,15 +21,15 @@ export default class extends wepy.app {
             navigationBarTextStyle: 'black'
         },
         tabBar: {
-            color: '#999999',
-            selectedColor: '#E7552F',
-            borderStyle: 'white',
+            color: '#8D8D8D',
+            selectedColor: '#228DFF',
+            borderStyle: '#EBEBEB',
             backgroundColor: '#ffffff',
             list: [{
                 pagePath: 'pages/index',
-                iconPath: 'assets/images/home.png',
-                selectedIconPath: 'assets/images/home-on.png',
-                text: '首页'
+                iconPath: 'assets/images/find.png',
+                selectedIconPath: 'assets/images/find-on.png',
+                text: '找人'
             },
             {
                 pagePath: 'pages/my',

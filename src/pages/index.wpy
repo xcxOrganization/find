@@ -5,21 +5,29 @@
         </view>
         <view class="box" @tap="toFind">
             <view class="left">
-                <image class="leftImg" src="../assets/images/home-on.png"/>
+                <image class="leftImg" src="../assets/images/index_01.jpg"/>
             </view>
             <view class="right">
                 <view class="rightA">我要找人</view>
                 <view class="rightB">一支穿云箭</view>
+                <view class="rightIcon">
+                    <image src="../assets/images/index_rightIcon.jpg"/>
+                </view>
             </view>
+            
         </view>
         <view class="box" @tap="toReferrer">
             <view class="left">
-                <image class="leftImg" src="../assets/images/home-on.png"/>
+                <image class="leftImg" src="../assets/images/index_02.jpg"/>
             </view>
             <view class="right">
                 <view class="rightA">给TA引荐</view>
                 <view class="rightB">千军万马来相见</view>
+                <view class="rightIcon">
+                    <image src="../assets/images/index_rightIcon.jpg"/>
+                </view>
             </view>
+            
         </view>
         <view class="desc">
             当前版本：{{version}}
@@ -33,8 +41,9 @@ import wx from "wepy";
 import config from "../config";
 export default class extends wx.page {
   config = {
-    navigationBarBackgroundColor: "#fff",
-    navigationBarTitleText: "帮忙找人"
+    navigationBarBackgroundColor: "#238CFF",
+    navigationBarTitleText: "帮忙找人",
+    navigationBarTextStyle: "#FFF"
   };
   data = {
     version: config.version
@@ -56,9 +65,10 @@ export default class extends wx.page {
 
 <style lang="less">
 page {
-  background: #fff;
+  background: #F3F3F7;
   .container {
     position: relative;
+    color: #3D516C;
     .top {
       width: 100%;
       text-align: center;
@@ -71,12 +81,7 @@ page {
           width: 100%;
           height: 100%;
         }
-        width: 40%;
-        display: flex;
-        //  垂直居中
-        //  align-items:center;
-        //  水平居中
-        // justify-content:center;
+        width: 45%;
       }
       .right {
         .rightA {
@@ -84,18 +89,29 @@ page {
         }
         .rightB {
           font-size: 32rpx;
-          color: #aaa;
+          color: #8D8D8D;
         }
-        width: 60%;
-        padding-top: 50rpx;
+        .rightIcon{
+          image{
+            width: 50rpx;
+            height: 50rpx;
+            position: absolute;
+            left: 606rpx;
+            top: 124rpx;
+          }       
+        }
+        width: 55%;
+        padding-top: 60rpx;
         padding-left: 35rpx;
       }
       display: flex;
-      width: 80%;
-      background: #eee;
+      position: relative;
+      width: 86%;
+      height: 272rpx;
+      background: #FFF;
       margin: 20rpx auto;
       border-radius: 20rpx;
-      padding: 75rpx 35rpx;
+      padding: 15rpx;
     }
     .desc {
       width: 100%;
