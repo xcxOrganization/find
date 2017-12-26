@@ -1,14 +1,12 @@
 // 各环境接口地址
 let ENV_API = {
-    dev: "",
-    uat: "",
-    prod: "",
+    dev: "https://www.helpzhaoren.com/",
+    prod: "https://www.helpzhaoren.com/",
 };
 
 //图片地址
 let img_API = {
     dev: "",
-    uat: "",
     prod: ""
 };
 

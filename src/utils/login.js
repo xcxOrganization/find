@@ -15,9 +15,10 @@ function Login() {
 var pt = Login.prototype;
 
 pt.wechatapplogin = function (parm, fn) {
+	console.log('wechatapplogin');
 	let that = this;
 	wx.request({
-		url: `${config.apiBase}` + 'user/login',
+		url: `${config.apiBase}` + '?service=App.Find_User.AddUser&openid=11',
 		data: parm,
 		method: 'POST',
 		header: {
@@ -68,6 +69,7 @@ pt.wechatapplogin = function (parm, fn) {
 }
 
 pt.toLogin = function (fn, type) {
+	console.log('toLogin');
 	let that = this, fromUserId = wx.getStorageSync(config.env + 'fromUserId');
 	wx.login({
 		success: (res) => {
