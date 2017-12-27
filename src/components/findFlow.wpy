@@ -1,0 +1,96 @@
+<template>
+    <view class="box">
+        <view class="rule">
+            <text @tap="toRule">找人规则</text>
+        </view>
+        <view class="row">
+            <image class="find-banner" src="../assets/images/find_banner.png"/>
+        </view>
+    </view>
+    <view class="modal" wx:if="{{ruleModal}}">
+        <view class="rule" >
+            <view class="ruleItem">找人规则</view>
+            <view class="ruleItem">1、找人有效期是24小时，引荐不成功红包退回钱包；</view>
+            <view class="ruleItem">2、引荐成功后1小时，引荐人和被引荐人平分红包；</view>
+            <view class="ruleItem">3、加不了微信、引荐的人不匹配可申述退回红包；</view>
+            <view class="ruleItem">4、领取的红包在钱包里面提现。</view>
+            <view class="ruleClose">
+                <icon type="cancel" size="50" @tap="toClose"/>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+import wx from 'wepy'
+import request from '../utils/request.js'
+import mixin from '../mixins/redux'
+import util from '../utils/util.js'
+export default class findFlow extends wx.component {
+    mixins = [mixin]
+    data = {
+        ruleModal: !1
+    }
+    methods = {
+        toRule() {
+            this.ruleModal = !0
+        },
+        toClose() {
+            this.ruleModal = !1
+        }
+    }
+}
+</script>
+
+<style lang="less">
+page {
+    .box {
+      .rule {
+        font-size: 28rpx;
+        position: absolute;
+        top: 25rpx;
+        right: 10rpx;
+      }
+      .row {
+          width: 100%;
+          height: 300rpx;
+          .find-banner{
+              width: 100%;
+              height: 100%;
+          }
+      }
+    }
+    .modal{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background-color: rgba(0,0,0,0.6);
+        z-index: 20;
+        display: flex;
+        align-items:center; 
+        justify-content:center;
+        .rule{
+            width: 75%;
+            height: 50%;
+            background: #fff;
+            font-size: 28rpx;
+            border-radius: 20rpx;
+            padding: 55rpx;
+            .ruleItem{
+                margin-bottom: 20rpx;
+                &:nth-child(1){
+                    text-align: center;
+                    font-size: 32rpx;
+                    font-weight: bold;
+                }
+            }
+            .ruleClose{
+                text-align: center;
+                margin-top: 75rpx;
+            }
+        }
+    }
+}
+</style>

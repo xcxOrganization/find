@@ -1,14 +1,7 @@
 <template>
     <view class="container">
-        <view class="box">
-            <view class="rule">
-                <text @tap="toRule">找人规则</text>
-            </view>
-            <view class="row">
-                <image class="find-banner" src="../assets/images/find_banner.png"/>
-            </view>
-        </view>
-        <view class="input">
+        <findFlow></findFlow>
+        <view class="input" wx:if="{{type==1}}">
             <view class="li">
                 <view class="desc">红包</view>
                 <view class="li-item">
@@ -33,27 +26,57 @@
             <view class="li">
                 <button type="primary" disabled="{{disableBind}}" @tap='eventHandle' style="opacity: {{opacity}}; background-color: #238CFF;">发起找人</button>
             </view>
+        </view>
+        <view class="input" wx:if="{{type==2}}">
+            <view class="li2">
+                <view class="desc">红包</view>
+                <view class="li-item2">{{redPacket}}元</view>
+            </view>
+            <view class="li2">
+                <view class="desc">我想找</view>
+                <view class="li-item2">{{find}}</view>
+            </view>
+            <view class="li2">
+                <view class="desc">找人码</view>
+                <view class="li-item2">{{findNum}}</view>
+            </view>
+            <view class="li2">
+                <view class="tipIcon">
+                    <image class="tipIcon-img" src="../assets/images/successTip.png" style="width:150rpx; height: 150rpx;"/>
+                </view>
+                <view class="tipCont">发起成功！</view>
+            </view>
+            <view class="li2">
+                <button type="primary">邀请好友帮忙</button>
+                <button type="primary">生成找人海报</button>
+            </view>
         </view>   
     </view>
 </template>
 
 <script>
 import wx from 'wepy'
-import request from '../utils/request.js'
+// import request from '../utils/request.js'
+// import config from "../config"
 import mixin from '../mixins/redux'
 import util from '../utils/util.js'
-import config from "../config"
-export default class ActivateAsiaTravel extends wx.page {
-    config = {     
+import findFlow from '../components/findFlow';
+export default class find extends wx.page {
+    config = {
         navigationBarBackgroundColor: "#238CFF",
         navigationBarTitleText: '我要找人',
         navigationBarTextStyle: "#FFF"
     }
+    components = {
+        findFlow: findFlow
+    }
     mixins = [mixin]
     data = {
+        type: 1,
         redPacket: '',
         find: '',
         wechat: '',
+        findNum: '',
         disableBind: !0,
         opacity: 0.4,
         errorRedPacket: !1,
@@ -64,13 +87,16 @@ export default class ActivateAsiaTravel extends wx.page {
         wechat_status: !1
     }
     bindRedPacket(e) {
-        let that = this        
-        let cRedPacket = util.trim(e.detail.value)    
-        if (util.testRedPacket(cRedPacket)) {
+        let that = this
+        let cRedPacket = util.trim(e.detail.value)
+        let tRedPacket = util.testRedPacket(cRedPacket)
+        if (tRedPacket) {
             this.redPacket_status = !0
-            this.errorRedPacket = !0
+            this.errorRedPacket = !1   
+            this.redPacket = cRedPacket       
         } else {
             this.redPacket_status = !1
+            this.errorRedPacket = !0
         }
         let redPacketStatus = this.redPacket_status
         let findStatus = this.find_status
@@ -87,7 +113,8 @@ export default class ActivateAsiaTravel extends wx.page {
         var that = this
         let cFind = util.trim(e.detail.value)
         if (cFind!=='') {
-            this.find_status = !0 
+            this.find_status = !0
+            this.find = cFind
         } else {
             this.find_status = !1
         }
@@ -100,13 +127,14 @@ export default class ActivateAsiaTravel extends wx.page {
         } else {
             that.disableBind = !0
             that.opacity = 0.4
-        }       
+        }   
     }
     bindWechat(e) {
         var that = this
         let cWechat = util.trim(e.detail.value)
         if (cWechat!=='') {
             this.wechat_status = !0
+            this.wechat = cWechat
         } else {
             this.wechat_status = !1
         }
@@ -121,13 +149,19 @@ export default class ActivateAsiaTravel extends wx.page {
             that.opacity = 0.4
         }
     }
+    eventHandle() {
+        for (let i = 0;i<6;i++) {
+            this.findNum+= Math.floor( Math.random()*10 )
+        }
+        this.type = 2
+    }
 }
 </script>
 
 <style lang="less">
 page {
   font-size: 28rpx;
-  background-color: #F7F7F7;
+  background-color: #FFF;
   .container {
     position: relative;
     .box {
@@ -150,9 +184,9 @@ page {
       font-size: 28rpx;
       .li{ 
         display: flex;
-        padding-top: 25rpx;
-        padding-left: 25rpx;
-        padding-right: 25rpx;
+        margin-top: 25rpx;
+        margin-left: 25rpx;
+        margin-right: 25rpx;
         &:nth-child(4) {
           button{
               width: 80%;
@@ -171,6 +205,7 @@ page {
             width: 75%;
             background: #F2F2F2;
             padding: 20rpx;
+            border: 1rpx solid #DDDDDD;
             position: relative;
             input {
                 width: 100%;
@@ -192,6 +227,53 @@ page {
                 top: 20rpx;
                 right: 10rpx;
             }
+        }
+        .li-item2 {
+            width: 75%;
+            padding: 20rpx;
+        }
+      }
+      .li2{ 
+        display: flex;
+        margin-top: 25rpx;
+        margin-left: 25rpx;
+        margin-right: 25rpx;
+        border-bottom: 1rpx solid #EBEBEB;
+        &:nth-child(3) {
+          border-bottom: none;
+        }
+        &:nth-child(4) {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #F7B602;
+          font-size: 36rpx;
+          margin-top: 50rpx;
+          padding-top: 40rpx;
+          padding-bottom: 40rpx;
+          border-bottom: none;
+          background: #FEF8E5;
+        }
+        &:nth-child(5) {
+          display: flex;
+          justify-content: center;
+          border-bottom: none;
+          margin-top: 50rpx;
+          button{
+              color: #fff;
+              background: #238CFF;        
+              border-radius: 50rpx;
+          }
+        }
+        .desc {
+            width: 25%;
+            color: #343434;
+            line-height: 2.2rem;
+        }
+        .li-item2 {
+            width: 75%;
+            color: #000;
+            padding: 20rpx;
         }
       }
     }
