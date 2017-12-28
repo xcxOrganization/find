@@ -22,7 +22,7 @@
         </view> 
         <view wx:if="{{type == 2}}">  
             <findFlow></findFlow>        
-            <view class="input" wx:if="{{typeChild==1}}">
+            <view class="input">
                 <view class="li2">
                     <view class="desc">红包</view>
                     <view class="li-item2">{{redPacket}}元</view>
@@ -31,105 +31,84 @@
                     <view class="desc">我想找</view>
                     <view class="li-item2">{{find}}</view>
                 </view>
-                <view class="li2 li2-no-bot">
-                    <view class="desc">找人码</view>
-                    <view class="li-item2">{{findNum}}</view>
-                </view>
-                <view class="li2 li2-input">
-                    <view class="desc">引荐人</view>
-                    <view class="li-item2">
-                        <input class="li-item-input" name="input" type="number" placeholder="请留下你的微信，方便联系" bindinput="bindReferrer" placeholder-class="info_input" bindblur="redferrerOut" value="{{referrer}}" />
+                <view wx:if="{{typeOne==1}}">
+                    <view class="li2 li2-no-bot">
+                        <view class="desc">找人码</view>
+                        <view class="li-item2">{{findNum}}</view>
+                    </view>
+                    <view class="li2 li2-input">
+                        <view class="desc">引荐人</view>
+                        <view class="li-item2">
+                            <input class="li-item-input" name="input" type="number" placeholder="请留下你的微信，方便联系" bindinput="bindReferrer" placeholder-class="info_input" bindblur="redferrerOut" value="{{referrer}}" />
+                        </view>
+                    </view>
+                    <view class="li2 li2-btn">
+                        <button type="primary" @tap='toTypeOne2'>给TA引荐朋友，领红包</button>
                     </view>
                 </view>
-                <view class="li2 li2-btn">
-                    <button type="primary" @tap='toTypeChild2'>给TA引荐朋友，领红包</button>
-                </view>
-            </view>    
-            <view class="input" wx:if="{{typeChild==2}}">
-                <view class="li2">
-                    <view class="desc">红包</view>
-                    <view class="li-item2">{{redPacket}}元</view>
-                </view>
-                <view class="li2">
-                    <view class="desc">我想找</view>
-                    <view class="li-item2">{{find}}</view>
-                </view>
-                <view class="li2">
-                    <view class="desc">找人码</view>
-                    <view class="li-item2">{{findNum}}</view>
-                </view>
-                <view class="li2 li2-no-bot li2-copy">
-                    <view class="desc">引荐人</view>
-                    <view class="li-item2">{{referrer}}</view>
-                    <view class="copy">复制</view>
-                </view>
-                <view class="li2 li2-btn">
-                    <button type="primary" @tap='toTypeChild3'>分享给引荐的朋友</button>
-                </view>
+                <view wx:if="{{typeOne==2}}">
+                    <view class="li2">
+                        <view class="desc">找人码</view>
+                        <view class="li-item2">{{findNum}}</view>
+                    </view>
+                    <view class="li2 li2-no-bot li2-copy">
+                        <view class="desc">引荐人</view>
+                        <view class="li-item2">
+                            <text>{{referrer}}</text>
+                            <text class="copy">复制</text>
+                        </view>
+                    </view>
+                    <view wx:if="{{typeTwo==1}}">
+                        <view class="li2 li2-btn">
+                            <button type="primary" @tap='toTypeTwo2'>分享给引荐的朋友</button>
+                        </view>
+                    </view>
+                    <view wx:if="{{typeTwo==2}}">
+                        <view class="li2 li2-input">
+                            <view class="desc">被引荐人</view>
+                            <view class="li-item2">
+                                <input class="li-item-input" name="input" type="number" placeholder="请留下你的微信，方便联系" bindinput="bindReferee" placeholder-class="info_input" bindblur="redfereeOut" value="{{referee}}" />
+                            </view>
+                        </view>
+                        <view class="li2 li2-btn">
+                            <button type="primary" @tap='toTypeTwo3'>给TA引荐朋友，领红包</button>
+                        </view>
+                    </view>
+                    <view wx:if="{{typeTwo==3}}">
+                        <view class="li2 li2-no-bot li2-copy">
+                            <view class="desc">被引荐人</view>
+                            <view class="li-item2">
+                                <text>{{referee}}</text>
+                                <text class="copy">复制</text>
+                            </view>                 
+                        </view>
+                        <view wx:if="{{typeThree==1}}">
+                            <view class="li2 li2-success-tip">
+                                <view class="tipIcon">
+                                    <image class="tipIcon-img" src="../assets/images/successTip.png" style="width:150rpx; height: 150rpx;"/>
+                                </view>
+                                <view class="tipCont">
+                                    <view class="tipContA">提交成功！</view>
+                                    <view class="tipContB">请等待发起人联系</view>
+                                </view>
+                            </view>
+                        </view>
+                        <view wx:if="{{typeThree==2}}">
+                            <view class="li2 li2-warn-tip">
+                                <view class="tipIcon">
+                                    <image class="tipIcon-img" src="../assets/images/warnTip.png" style="width:150rpx; height: 150rpx;"/>
+                                </view>
+                                <view class="tipCont">
+                                    <view class="tipContA">你来晚了</view>
+                                    <view class="tipContB">已经有人给TA引荐成功</view>
+                                </view>
+                            </view>
+                        </view>
+                        
+                    </view>
+                </view>               
             </view>
-            <view class="input" wx:if="{{typeChild==3}}">
-                <view class="li2">
-                    <view class="desc">红包</view>
-                    <view class="li-item2">{{redPacket}}元</view>
-                </view>
-                <view class="li2">
-                    <view class="desc">我想找</view>
-                    <view class="li-item2">{{find}}</view>
-                </view>
-                <view class="li2">
-                    <view class="desc">找人码</view>
-                    <view class="li-item2">{{findNum}}</view>
-                </view>
-                <view class="li2 li2-no-bot li2-copy">
-                    <view class="desc">引荐人</view>
-                    <view class="li-item2">{{referrer}}</view>
-                    <view class="copy">复制</view>
-                </view>
-                <view class="li2 li2-input">
-                    <view class="desc">被引荐人</view>
-                    <view class="li-item2">
-                        <input class="li-item-input" name="input" type="number" placeholder="请留下你的微信，方便联系" bindinput="bindReferee" placeholder-class="info_input" bindblur="redfereeOut" value="{{referee}}" />
-                    </view>
-                </view>
-                <view class="li2 li2-btn">
-                    <button type="primary" @tap='toTypeChild4'>给TA引荐朋友，领红包</button>
-                </view>
-            </view>
-            <view class="input" wx:if="{{typeChild==4}}">
-                <view class="li2">
-                    <view class="desc">红包</view>
-                    <view class="li-item2">{{redPacket}}元</view>
-                </view>
-                <view class="li2">
-                    <view class="desc">我想找</view>
-                    <view class="li-item2">{{find}}</view>
-                </view>
-                <view class="li2">
-                    <view class="desc">找人码</view>
-                    <view class="li-item2">{{findNum}}</view>
-                </view>
-                <view class="li2 li2-copy">
-                    <view class="desc">引荐人</view>
-                    <view class="li-item2">{{referrer}}</view>
-                    <view class="copy">复制</view>
-                </view>
-                <view class="li2 li2-no-bot li2-copy">
-                    <view class="desc">被引荐人</view>
-                    <view class="li-item2">{{referee}}</view>
-                    <view class="copy">复制</view>
-                </view>
-                <view class="li2 li2-tip">
-                    <view class="tipIcon">
-                        <image class="tipIcon-img" src="../assets/images/successTip.png" style="width:150rpx; height: 150rpx;"/>
-                    </view>
-                    <view class="tipCont">
-                        <view class="tipContA">提交成功！</view>
-                        <view class="tipContB">请等待发起人联系</view>
-                    </view>
-                </view>
-            </view> 
-        </view>
-        
+        </view>       
         <view class="v">
             当前版本：{{version}}
         </view>
@@ -152,8 +131,10 @@ export default class referrer extends wx.page {
     }
     data = {
         version: config.version,
-        type: 2,
-        typeChild: 1,
+        type: 1,
+        typeOne: 1,
+        typeTwo: 1,
+        typeThree: 2,
         redPacket: '100',
         find: 'XXX',
         findNum: '123456',
@@ -166,14 +147,14 @@ export default class referrer extends wx.page {
     bindReferee(e) {
         this.referee = e.detail.value
     }
-    toTypeChild2() {
-        this.typeChild = 2 
+    toTypeOne2() {
+        this.typeOne = 2 
     }
-    toTypeChild3() {
-        this.typeChild = 3
+    toTypeTwo2() {
+        this.typeTwo = 2
     }
-    toTypeChild4() {
-        this.typeChild = 4
+    toTypeTwo3() {
+        this.typeTwo = 3
     }
     submit() {
         if(this.form.referrer==''){
@@ -181,7 +162,7 @@ export default class referrer extends wx.page {
                 content: '你输入的找人码错误'
             })
         }else{
-            this.typeChild = 2
+            this.type = 2
         }       
     }
     share() {
@@ -309,15 +290,12 @@ page {
                 }
             }
             .li2-copy{
-                position: relative;
                 .copy{
-                    position: absolute;
-                    top: 18rpx;
-                    right: 18rpx;
                     color: #6A7FA6;
+                    float: right;
                 }
             }
-            .li2-tip{
+            .li2-success-tip{
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -327,6 +305,27 @@ page {
                 padding-bottom: 40rpx;
                 border-bottom: none;
                 background: #FEF8E5;
+                .tipCont{
+                    margin-top: -15rpx;
+                    margin-left: 20rpx;
+                    .tipContA{
+                        font-size: 36rpx;
+                    }
+                    .tipContB{
+                        font-size: 28rpx;
+                    }
+                }
+            }
+            .li2-warn-tip{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #1E93FF;
+                margin-top: 50rpx;
+                padding-top: 40rpx;
+                padding-bottom: 40rpx;
+                border-bottom: none;
+                background: #E8F4FF;
                 .tipCont{
                     margin-top: -15rpx;
                     margin-left: 20rpx;
