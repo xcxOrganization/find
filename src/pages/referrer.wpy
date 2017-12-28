@@ -1,21 +1,38 @@
 <template>
     <view class="container">
         <view wx:if="{{type == 1}}">
-            <view id="mask" onclick="returnOld()"></view>
+            <view id="mask"  @tap="returnOld"></view>
             <view id="maskBox">
                 <view class="content">
                     <view class="mask_title">请输入找人码</view>
                     <view class="error">输入的密码有误</view>
-                    <view id="pwtxt">
-                        <view class="block"></view>
-                        <view class="block"></view>
-                        <view class="block"></view>
-                        <view class="block"></view>
-                        <view class="block"></view>
-                        <view class="block"></view>
+                    <view class="pwtxt">
+                        <input focus='{{true}}' id="text1" bindinput="bindInputVal" type="tel" maxlength='6' auto-focus/>
+                        <view class="block">
+                            <view wx:if="{{inputVal.length>0}}" class="circle">
+                            
+                            </view>
+                        </view>
+                        <view class="block"><view wx:if="{{inputVal.length>1}}" class="circle">
+                            
+                            </view></view>
+                        <view class="block">
+                            <view wx:if="{{inputVal.length>2}}" class="circle">
+                            
+                            </view>
+                        </view>
+                        <view class="block"><view wx:if="{{inputVal.length>3}}" class="circle">
+                            
+                            </view></view>
+                        <view class="block"><view wx:if="{{inputVal.length>4}}" class="circle">
+                            
+                            </view></view>
+                        <view class="block"><view wx:if="{{inputVal.length>5}}" class="circle">
+                            
+                            </view></view>
                         <view class="clear"></view>
                     </view>
-                    <input id="text1" type="tel"/>
+                    
                     <view class="warning">输入找人码，给TA引荐朋友</view>
                 </view>
             </view>
@@ -137,219 +154,235 @@
 </template>
 
 <script>
-import wx from 'wepy'
+import wx from "wepy";
 // import request from '../utils/request.js'
-import config from '../config'
-import findFlow from '../components/findFlow';
+import config from "../config";
+import findFlow from "../components/findFlow";
 export default class referrer extends wx.page {
-    config = {
-        navigationBarBackgroundColor: "#238CFF",
-        navigationBarTitleText: '给TA引荐',
-        navigationBarTextStyle: "#FFF"
+  config = {
+    navigationBarBackgroundColor: "#238CFF",
+    navigationBarTitleText: "给TA引荐",
+    navigationBarTextStyle: "#FFF"
+  };
+  components = {
+    findFlow: findFlow
+  };
+  data = {
+    version: config.version,
+    inputVal: "",
+    type: 1,
+    typeChild: 1,
+    redPacket: "100",
+    find: "XXX",
+    findNum: "123456",
+    referrer: "",
+    referee: ""
+  };
+  bindInputVal(e) {
+    console.log(12312);
+    this.inputVal = e.detail.value;
+    console.log(this.inputVal);
+  }
+  bindReferrer(e) {
+    this.referrer = e.detail.value;
+  }
+  bindReferee(e) {
+    this.referee = e.detail.value;
+  }
+  toTypeChild2() {
+    this.typeChild = 2;
+  }
+  toTypeChild3() {
+    this.typeChild = 3;
+  }
+  toTypeChild4() {
+    this.typeChild = 4;
+  }
+  submit() {
+    if (this.form.referrer == "") {
+      wx.showModal({
+        content: "你输入的找人码错误"
+      });
+    } else {
+      this.typeChild = 2;
     }
-    components = {
-        findFlow: findFlow
-    }
-    data = {
-        version: config.version,
-        type: 2,
-        typeChild: 1,
-        redPacket: '100',
-        find: 'XXX',
-        findNum: '123456',
-        referrer: '',
-        referee: ''
-    }
-    bindReferrer(e) {
-        this.referrer = e.detail.value
-    }
-    bindReferee(e) {
-        this.referee = e.detail.value
-    }
-    toTypeChild2() {
-        this.typeChild = 2 
-    }
-    toTypeChild3() {
-        this.typeChild = 3
-    }
-    toTypeChild4() {
-        this.typeChild = 4
-    }
-    submit() {
-        if(this.form.referrer==''){
-            wx.showModal({
-                content: '你输入的找人码错误'
-            })
-        }else{
-            this.typeChild = 2
-        }       
-    }
-    share() {
-        wx.navigateTo({
-            url: '/pages/referee'
-        })
-    }
+  }
+  share() {
+    wx.navigateTo({
+      url: "/pages/referee"
+    });
+  }
 }
 </script>
 
 <style lang="less">
 page {
-    background: #fff;
-    .container {
-        position: relative;
-        #mask {
-            // display: none;
-            position: fixed;
-            background-color: #777;
-            z-index: 1000;
-            opacity: 0.5;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            overflow: hidden;
-            width: 100%;
-        }       
-        #maskBox {
-            // display: none;
-            position: fixed;
-            width: 100%;
-            top: 30%;
-            z-index: 1001;
-            .content {
-                background: rgba(255, 255, 255, 0.95);
-                width: 80%;
-                margin: 0rpx auto;
-                padding: 24rpx 12rpx;
-                border-radius: 12rpx;
-                text-align: center;
-                font-size: 32rpx;
-                .mask_title {
-                    padding-bottom: 24rpx;
-                }
-                .error {
-                    display: none;
-                    color: red;
-                    font-size: 24rpx;
-                    padding-bottom: 20rpx;
-                }
-                .block {
-                    position: relative;
-                    background: #E7E7E7;
-                    border-radius: 8rpx;
-                    width: 15%;
-                    height: 72rpx;
-                    margin-right: 1.66%;
-                    float: left;
-                    .circle {
-                        position: relative;
-                        background: #000;
-                        border-radius: 50%;
-                        width: 20rpx;
-                        margin: 0 auto;
-                        top: 24rpx;
-                        height: 20rpx;
-                    }
-                }
-                .clear {
-                    clear: both;
-                }
-                .warning {
-                    color: red;
-                    font-size: 24rpx;
-                    padding-top: 12rpx;
-                }          
-            }
-        } 
-        .input {
-            background: #fff;
-            font-size: 28rpx;
-            .li2{ 
-                display: flex;
-                margin-top: 25rpx;
-                margin-left: 25rpx;
-                margin-right: 25rpx;
-                border-bottom: 1rpx solid #EBEBEB;
-                .desc {
-                    width: 25%;
-                    color: #343434;
-                    line-height: 2.2rem;
-                }
-                .li-item2 {                
-                    width: 75%;
-                    color: #000;
-                    padding: 20rpx;
-                }
-            }
-            .li2-btn{
-                border-bottom: none;
-                margin-top: 200rpx;
-                button{
-                    width: 80%;
-                    color: #fff;
-                    background: #238CFF;        
-                    border-radius: 50rpx;
-                }
-            }
-            .li2-input{
-                border-bottom: none;
-                .li-item2 {
-                    background: #F2F2F2;
-                    border: 1rpx solid #DDDDDD;
-                    position: relative;
-                    input {
-                        width: 100%;
-                        height: 1.2rem;
-                        line-height: 1.2rem;
-                        min-height: 1.2rem;
-                    }
-                    .info_input{
-                        color: #AEAEAE;
-                    }
-                }
-            }
-            .li2-copy{
-                position: relative;
-                .copy{
-                    position: absolute;
-                    top: 18rpx;
-                    right: 18rpx;
-                    color: #6A7FA6;
-                }
-            }
-            .li2-tip{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #F7B602;
-                margin-top: 50rpx;
-                padding-top: 40rpx;
-                padding-bottom: 40rpx;
-                border-bottom: none;
-                background: #FEF8E5;
-                .tipCont{
-                    margin-top: -15rpx;
-                    margin-left: 20rpx;
-                    .tipContA{
-                        font-size: 36rpx;
-                    }
-                    .tipContB{
-                        font-size: 28rpx;
-                    }
-                }
-            }
-            .li2-no-bot{
-                border-bottom: none;
-            }
-        } 
-        .v {
-            width: 100%;
-            text-align: center;
-            font-size: 26rpx;
-            color: #ccc;
-            margin-top: 50rpx;
-            margin-bottom: 20rpx;
-        }
+  background: #fff;
+  .container {
+    position: relative;
+    #mask {
+      // display: none;
+      position: fixed;
+      background-color: #777;
+      z-index: 1000;
+      opacity: 0.5;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+      width: 100%;
     }
+    #maskBox {
+      // display: none;
+      position: fixed;
+      width: 100%;
+      top: 30%;
+      z-index: 1001;
+      .content {
+        background: rgba(255, 255, 255, 0.95);
+        width: 80%;
+        margin: 0rpx auto;
+        padding: 24rpx 12rpx;
+        border-radius: 12rpx;
+        text-align: center;
+        font-size: 32rpx;
+        #text1 {
+          position: absolute;
+          top: 0;
+          left: -900%;
+          width: 1000%;
+          height: 100%;
+        }
+        .mask_title {
+          padding-bottom: 24rpx;
+        }
+        .pwtxt {
+          position: relative;
+        }
+        .error {
+          display: none;
+          color: red;
+          font-size: 24rpx;
+          padding-bottom: 20rpx;
+        }
+        .block {
+          position: relative;
+          background: #e7e7e7;
+          border-radius: 8rpx;
+          width: 15%;
+          height: 72rpx;
+          margin-right: 1.66%;
+          float: left;
+          .circle {
+            position: relative;
+            background: #000;
+            border-radius: 50%;
+            width: 20rpx;
+            margin: 0 auto;
+            top: 24rpx;
+            height: 20rpx;
+          }
+        }
+        .clear {
+          clear: both;
+        }
+        .warning {
+          color: red;
+          font-size: 24rpx;
+          padding-top: 12rpx;
+        }
+      }
+    }
+    .input {
+      background: #fff;
+      font-size: 28rpx;
+      .li2 {
+        display: flex;
+        margin-top: 25rpx;
+        margin-left: 25rpx;
+        margin-right: 25rpx;
+        border-bottom: 1rpx solid #ebebeb;
+        .desc {
+          width: 25%;
+          color: #343434;
+          line-height: 2.2rem;
+        }
+        .li-item2 {
+          width: 75%;
+          color: #000;
+          padding: 20rpx;
+        }
+      }
+      .li2-btn {
+        border-bottom: none;
+        margin-top: 200rpx;
+        button {
+          width: 80%;
+          color: #fff;
+          background: #238cff;
+          border-radius: 50rpx;
+        }
+      }
+      .li2-input {
+        border-bottom: none;
+        .li-item2 {
+          background: #f2f2f2;
+          border: 1rpx solid #dddddd;
+          position: relative;
+          input {
+            width: 100%;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            min-height: 1.2rem;
+          }
+          .info_input {
+            color: #aeaeae;
+          }
+        }
+      }
+      .li2-copy {
+        position: relative;
+        .copy {
+          position: absolute;
+          top: 18rpx;
+          right: 18rpx;
+          color: #6a7fa6;
+        }
+      }
+      .li2-tip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f7b602;
+        margin-top: 50rpx;
+        padding-top: 40rpx;
+        padding-bottom: 40rpx;
+        border-bottom: none;
+        background: #fef8e5;
+        .tipCont {
+          margin-top: -15rpx;
+          margin-left: 20rpx;
+          .tipContA {
+            font-size: 36rpx;
+          }
+          .tipContB {
+            font-size: 28rpx;
+          }
+        }
+      }
+      .li2-no-bot {
+        border-bottom: none;
+      }
+    }
+    .v {
+      width: 100%;
+      text-align: center;
+      font-size: 26rpx;
+      color: #ccc;
+      margin-top: 50rpx;
+      margin-bottom: 20rpx;
+    }
+  }
 }
 </style>
