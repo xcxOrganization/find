@@ -115,9 +115,14 @@ pt.init = function (fn) {//wechatapplogin 登录后回调函数
 }
 
 pt.addUser = function (parm) {
+	let newParm = {
+		iv:parm.iv,
+		thirdSessionKey:parm.thirdSessionKey,
+		encryptedData:parm.encryptedData
+	}
 	wx.request({
 		url: `${config.apiBase}` + 'App.Find_User.InsertUserInfo',
-		data: parm,
+		data: newParm,
 		method: 'POST',
 		header: {
 			'content-type': 'application/x-www-form-urlencoded',
