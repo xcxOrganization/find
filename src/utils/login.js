@@ -16,6 +16,12 @@ var pt = Login.prototype;
 
 pt.wechatapplogin = function (parm, fn) {
 	let that = this;
+	console.log(parm);
+	if(parm.iv && parm.encryptedData){
+		parm.thirdSessionKey = wx.getStorageSync(server + 'token');
+		that.addUser(parm);
+		return;
+	}
 	wx.request({
 		url: `${config.apiBase}` + 'App.Find_User.UserLogin',
 		data: parm,
@@ -37,10 +43,6 @@ pt.wechatapplogin = function (parm, fn) {
 					fn.call(that, resRes.data.data.thirdSessionKey);
 				}
 				wx.setStorageSync(server + 'token', resRes.data.data.thirdSessionKey);
-				if(parm.iv && parm.encryptedData){
-					parm.thirdSessionKey = resRes.data.data.thirdSessionKey;
-					that.addUser(parm);
-				}
 			} else {
 				wx.showToast({
 					title: '获取Token异常'

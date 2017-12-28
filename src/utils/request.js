@@ -15,14 +15,14 @@ function getImgServerApi() {
 
 //配置环境：本地、开发、生产 (区分活动、 common请求)
 function getServerUrl(route) {
-	return `${config.apiBase}${route}`;
+	return `${config.apiBase}${route}&thirdSessionKey=`+accessToken;
 }
 
 function request(route, method, data, success, fail, other) {
 	accessToken = wx.getStorageSync(server + 'token');
+	console.log(accessToken,'accessToken');
 	let args = arguments;
 	if (accessToken == '') {
-		return;
 		new Login().init();//登录
 		observer.list.push(function () {
 			request.apply(null, args);
@@ -49,9 +49,6 @@ function common_req() {
 	let header = {
 		'content-type': 'application/json'
 	};
-	if (accessToken) {
-		args[2]['thirdSessionKey'] = accessToken;
-	}
 
 	wepy.request({
 		url: getServerUrl(args[0]),
@@ -61,13 +58,13 @@ function common_req() {
 		success: (res) => {
 			console.log('请求链接 >>>> ' +  getServerUrl(args[0]) + '>>>> 返回 >>>>', res);
 			wx.hideToast();
-			if (args[5] && args[5].getCodeSts && res.data.errorCode != 100) {//需要拿到返回码数据的情况
+			if (args[5] && args[5].getCodeSts && res.data.ret != 200) {//需要拿到返回码数据的情况
 				args[3].call(this, res.data);
 				return;
 			}
-			if (res.data.errorCode == 0 && typeof args[3] == 'function') {
+			if (res.data.ret == 200 && typeof args[3] == 'function') {
 				args[3].call(this, res.data.data);
-			} else if (res.data.errorCode == 100) {
+			} else if (res.data.ret == -10000) {
 				wx.setStorageSync(server + 'token', '');
 				//token已过期的约定，重新发起登录
 				new Login().init();//登录
@@ -76,16 +73,8 @@ function common_req() {
 				}); //保存请求队列
 				return;
 			} else {//返回错误的情况
-				if (res.data.message && !noModal) {
+				if (res.data.msg && !noModal) {
 					args[4] && args[4].call(this, res);
-					if (res.data.errorCode != 30013) {//获取设备信息失败错误码，不弹错，而是重新请求
-						wx.showModal({
-							showCancel: false,
-							content: res.data.message
-						})
-					} else {
-						return;
-					}
 				} else if (res.statusCode && res.statusCode == 500) {
 					args[4].call(this, res);
 					wx.showModal({
