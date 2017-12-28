@@ -1,7 +1,7 @@
 // 各环境接口地址
 let ENV_API = {
-    dev: "https://www.helpzhaoren.com/",
-    prod: "https://www.helpzhaoren.com/",
+    dev: "https://www.helpzhaoren.com/?service=",
+    prod: "https://www.helpzhaoren.com/?service="
 };
 
 //图片地址

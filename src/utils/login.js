@@ -15,10 +15,9 @@ function Login() {
 var pt = Login.prototype;
 
 pt.wechatapplogin = function (parm, fn) {
-	console.log('wechatapplogin');
 	let that = this;
 	wx.request({
-		url: `${config.apiBase}` + '?service=App.Find_User.AddUser&openid=11',
+		url: `${config.apiBase}` + 'App.Find_User.UserLogin',
 		data: parm,
 		method: 'POST',
 		header: {
@@ -27,29 +26,21 @@ pt.wechatapplogin = function (parm, fn) {
 		},
 		success: function (resRes) {
 			console.log('登陆成功', resRes);
-			if (fn) {
-				fn(parm, resRes)
-			}
 			loginSts = !1;//取消登录状态
 			if (!resRes || !resRes.data || !resRes.data.data) {//屏蔽错误报警
 				log.saveInfo('登录失败', resRes, parm);
 				return;
 			}
-			if (resRes.data.data.nickname) {
-				wx.setStorageSync(server + '_nickname', resRes.data.data.nickname);
-			}
-			if (resRes.data.data.headimgurl) {
-				wx.setStorageSync(server + '_headimgurl', resRes.data.data.headimgurl);
-			}
 			resRes.data = parseData(resRes.data);
-			if (resRes.data.data.token) {
-				if (resRes.data.data.openid) {//这里拿到全局openid
-					let app = getApp();
-					wx.setStorageSync(server + 'zast_openid', app.zast_openid = resRes.data.data.openid);
-
+			if (resRes.data.data.thirdSessionKey) {
+				if (fn) {
+					fn.call(that, resRes.data.data.thirdSessionKey);
 				}
-				wx.setStorageSync(server + 'user_id', resRes.data.data.user_id);
-				wx.setStorageSync(server + 'token', resRes.data.data.token);
+				wx.setStorageSync(server + 'token', resRes.data.data.thirdSessionKey);
+				if(parm.iv && parm.encryptedData){
+					parm.thirdSessionKey = resRes.data.data.thirdSessionKey;
+					that.addUser(parm);
+				}
 			} else {
 				wx.showToast({
 					title: '获取Token异常'
@@ -68,9 +59,9 @@ pt.wechatapplogin = function (parm, fn) {
 	})
 }
 
-pt.toLogin = function (fn, type) {
+pt.toLogin = function (fn) {
 	console.log('toLogin');
-	let that = this, fromUserId = wx.getStorageSync(config.env + 'fromUserId');
+	let that = this;
 	wx.login({
 		success: (res) => {
 			if (!res || !res.code) {
@@ -78,32 +69,16 @@ pt.toLogin = function (fn, type) {
 			}
 			let code = res.code,
 				parm = {
-					gzh: "weSceneMiniapp",
 					code: code
 				}
-			if (fromUserId) {
-				parm.fromUserId = fromUserId;//提交邀请人id
-			}
 
-			if (fn && type == 'getUserInfo') {
-				fn.call(that, code);
-				return;
-			}
-			let accessToken = wx.getStorageSync(config.env + 'token'),
-				zast_openid = wx.getStorageSync(config.env + 'zast_openid');
-			if (!accessToken || !zast_openid) {//过期的情况会去去除token缓存，没有token或者过期才去调数据
+			let accessToken = wx.getStorageSync(config.env + 'token');
+			if (!accessToken) {//过期的情况会去去除token缓存，没有token或者过期才去调数据
 				that.wechatapplogin(parm, fn);//获取数据权限
 			} else {
-				let app = getApp();
-				if (!app.zast_openid) {
-					app.zast_openid = zast_openid;
-				}
 				loginSts = !1;//取消登录状态
-				if (fn) {
-					fn();
-				}
+				fn.call(that,code);
 			}
-
 		},
 		error: () => {
 			wx.showToast({
@@ -119,16 +94,14 @@ pt.getUserInfo = function (fn) {
 		wx.getUserInfo({
 			success: (resInfo) => {
 				let parm = {
-					gzh: "weSceneMiniapp",
 					code: code,
 					encryptedData: resInfo.encryptedData,
 					iv: resInfo.iv
 				}
-
 				that.wechatapplogin(parm, fn);//获取数据权限
 			}
 		})
-	}, 'getUserInfo');
+	});
 }
 
 
@@ -139,6 +112,28 @@ pt.init = function (fn) {//wechatapplogin 登录后回调函数
 	}
 	loginSts = !0;
 	that.toLogin(fn);
+}
+
+pt.addUser = function (parm) {
+	wx.request({
+		url: `${config.apiBase}` + 'App.Find_User.InsertUserInfo',
+		data: parm,
+		method: 'POST',
+		header: {
+			'content-type': 'application/x-www-form-urlencoded',
+			'Accept': 'application/json'
+		},
+		success: function (resRes) {
+			console.log('addUser成功', resRes);
+			wx.setStorageSync('addUser');
+		},
+		fail: (err) => {
+			log.saveInfo('addUser失败', err, parm);
+			wx.showToast({
+				title: 'addUser'
+			})
+		}
+	})
 }
 
 function parseData(data) {

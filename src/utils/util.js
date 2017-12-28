@@ -57,7 +57,7 @@ function mixin(target, source) {//数据对象拓展
 // 匹配表单输入信息
 
 function testRedPacket(redPacket) {//匹配大于0的整数
-  var reg = /^[1-9]+[0-9]*]*$/; //匹配大于0的整数
+  var reg = /^[1-9]+[0-9]*$/; //匹配大于0的整数
   return reg.test(redPacket);
 }
 

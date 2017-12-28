@@ -46,7 +46,7 @@ export default class extends wepy.app {
         userInfo: null
     }
     onShow(options) {
-        new Login().init();//登录
+        new Login().getUserInfo();//登录
     }
     onLaunch(options) {
 

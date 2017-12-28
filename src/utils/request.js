@@ -4,10 +4,9 @@ import Log from './log.js'
 import Login from './login.js'
 import Observer from './observer.js'
 let observer = Observer('fn');
-let MAX_REQUEST = 5;
 let log = Log(),
 	server = config.env,
-	user_id = -1, accessToken = '';
+	accessToken = '';
 
 //图片地址：开发、生产
 function getImgServerApi() {
@@ -51,7 +50,7 @@ function common_req() {
 		'content-type': 'application/json'
 	};
 	if (accessToken) {
-		header['Access-Token'] = accessToken;
+		args[2]['thirdSessionKey'] = accessToken;
 	}
 
 	wepy.request({
