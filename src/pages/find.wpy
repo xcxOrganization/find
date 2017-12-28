@@ -161,7 +161,7 @@ export default class find extends wx.page {
 <style lang="less">
 page {
   font-size: 28rpx;
-  background-color: #FFF;
+  background-color: #fff;
   .container {
     position: relative;
     .box {

@@ -154,13 +154,18 @@ export default class My extends wepy.page {
       let type = options.type;
       that.getCard(id, type);
     }
-
-    http.preLogin();
   }
 
   // 获取用户信息
   getUserInfo() {
-    http.request("user/userinfo", "get", {}, (res) => {}, (err) => {}, {
+    let that = this;
+    http.request("App.Find_User.GetUserProfile", "POST", {}, (res) => {
+      console.log('res',res);
+      that.userInfo.headimgurl = res.avatarUrl;
+      that.userInfo.nickname = res.nickName;
+      that.userInfo.balance = res.wallet;
+      that.$apply();
+    }, (err) => {}, {
       noToast: true
     });
   }
