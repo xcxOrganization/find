@@ -138,7 +138,6 @@ import wx from "wepy";
 import config from "../config";
 import findFlow from "../components/findFlow";
 export default class referrer extends wx.page {
-<<<<<<< HEAD
   config = {
     navigationBarBackgroundColor: "#238CFF",
     navigationBarTitleText: "给TA引荐",
@@ -185,56 +184,6 @@ export default class referrer extends wx.page {
       });
     } else {
       this.typeChild = 2;
-=======
-    config = {
-        navigationBarBackgroundColor: "#238CFF",
-        navigationBarTitleText: '给TA引荐',
-        navigationBarTextStyle: "#FFF"
-    }
-    components = {
-        findFlow: findFlow
-    }
-    data = {
-        version: config.version,
-        type: 1,
-        typeOne: 1,
-        typeTwo: 1,
-        typeThree: 2,
-        redPacket: '100',
-        find: 'XXX',
-        findNum: '123456',
-        referrer: '',
-        referee: ''
-    }
-    bindReferrer(e) {
-        this.referrer = e.detail.value
-    }
-    bindReferee(e) {
-        this.referee = e.detail.value
-    }
-    toTypeOne2() {
-        this.typeOne = 2 
-    }
-    toTypeTwo2() {
-        this.typeTwo = 2
-    }
-    toTypeTwo3() {
-        this.typeTwo = 3
-    }
-    submit() {
-        if(this.form.referrer==''){
-            wx.showModal({
-                content: '你输入的找人码错误'
-            })
-        }else{
-            this.type = 2
-        }       
-    }
-    share() {
-        wx.navigateTo({
-            url: '/pages/referee'
-        })
->>>>>>> 284fd21bbc568dfebca8a7905d48f303b0b356a8
     }
   }
   share() {
@@ -398,113 +347,7 @@ page {
           }
           .tipContB {
             font-size: 28rpx;
-<<<<<<< HEAD
           }
-=======
-            .li2{ 
-                display: flex;
-                margin-top: 25rpx;
-                margin-left: 25rpx;
-                margin-right: 25rpx;
-                border-bottom: 1rpx solid #EBEBEB;
-                .desc {
-                    width: 25%;
-                    color: #343434;
-                    line-height: 2.2rem;
-                }
-                .li-item2 {                
-                    width: 75%;
-                    color: #000;
-                    padding: 20rpx;
-                }
-            }
-            .li2-btn{
-                border-bottom: none;
-                margin-top: 200rpx;
-                button{
-                    width: 80%;
-                    color: #fff;
-                    background: #238CFF;        
-                    border-radius: 50rpx;
-                }
-            }
-            .li2-input{
-                border-bottom: none;
-                .li-item2 {
-                    background: #F2F2F2;
-                    border: 1rpx solid #DDDDDD;
-                    position: relative;
-                    input {
-                        width: 100%;
-                        height: 1.2rem;
-                        line-height: 1.2rem;
-                        min-height: 1.2rem;
-                    }
-                    .info_input{
-                        color: #AEAEAE;
-                    }
-                }
-            }
-            .li2-copy{
-                .copy{
-                    color: #6A7FA6;
-                    float: right;
-                }
-            }
-            .li2-success-tip{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #F7B602;
-                margin-top: 50rpx;
-                padding-top: 40rpx;
-                padding-bottom: 40rpx;
-                border-bottom: none;
-                background: #FEF8E5;
-                .tipCont{
-                    margin-top: -15rpx;
-                    margin-left: 20rpx;
-                    .tipContA{
-                        font-size: 36rpx;
-                    }
-                    .tipContB{
-                        font-size: 28rpx;
-                    }
-                }
-            }
-            .li2-warn-tip{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #1E93FF;
-                margin-top: 50rpx;
-                padding-top: 40rpx;
-                padding-bottom: 40rpx;
-                border-bottom: none;
-                background: #E8F4FF;
-                .tipCont{
-                    margin-top: -15rpx;
-                    margin-left: 20rpx;
-                    .tipContA{
-                        font-size: 36rpx;
-                    }
-                    .tipContB{
-                        font-size: 28rpx;
-                    }
-                }
-            }
-            .li2-no-bot{
-                border-bottom: none;
-            }
-        } 
-        .v {
-            width: 100%;
-            text-align: center;
-            font-size: 26rpx;
-            color: #ccc;
-            margin-top: 50rpx;
-            margin-bottom: 20rpx;
->>>>>>> 284fd21bbc568dfebca8a7905d48f303b0b356a8
         }
       }
       .li2-no-bot {
