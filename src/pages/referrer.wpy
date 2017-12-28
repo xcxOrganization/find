@@ -55,7 +55,7 @@
                         <view class="desc">引荐人</view>
                         <view class="li-item2">
                             <text>{{referrer}}</text>
-                            <text class="copy">复制</text>
+                            <text class="copy" @tap='copyReferrer'>复制</text>
                         </view>
                     </view>
                     <view wx:if="{{typeTwo==1}}">
@@ -79,7 +79,7 @@
                             <view class="desc">被引荐人</view>
                             <view class="li-item2">
                                 <text>{{referee}}</text>
-                                <text class="copy">复制</text>
+                                <text class="copy" @tap='copyReferee'>复制</text>
                             </view>                 
                         </view>
                         <view wx:if="{{typeThree==1}}">
@@ -155,6 +155,32 @@ export default class referrer extends wx.page {
     }
     toTypeTwo3() {
         this.typeTwo = 3
+    }
+    copyReferrer() {
+        let that=this
+        wx.setClipboardData({
+            data: that.referrer,
+            success: function(res) {
+                wx.getClipboardData({
+                    success: function(res) {
+                        console.log(res.data) 
+                    }
+                })
+            }
+        })
+    }
+    copyReferee() {
+        let that=this
+        wx.setClipboardData({
+            data: that.referee,
+            success: function(res) {
+                wx.getClipboardData({
+                    success: function(res) {
+                        console.log(res.data) 
+                    }
+                })
+            }
+        })
     }
     submit() {
         if(this.form.referrer==''){
