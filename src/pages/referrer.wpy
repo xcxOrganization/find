@@ -1,10 +1,10 @@
 <template>
     <view class="container">
         <view wx:if="{{type == 1}}">
-            <view id="mask"  @tap="returnOld"></view>
+            <!-- <view id="mask"  @tap="returnOld"></view> -->
             <view id="maskBox">
                 <view class="content">
-                    <view class="mask_title">请输入找人码</view>
+                    <view class="mask_title">输入找人码，给TA引荐朋友</view>
                     <view class="error">输入的密码有误</view>
                     <view class="pwtxt">
                         <input focus='{{true}}' id="text1" bindinput="bindInputVal" type="tel" maxlength='6' auto-focus/>
@@ -33,7 +33,9 @@
                         <view class="clear"></view>
                     </view>
                     
-                    <view class="warning">输入找人码，给TA引荐朋友</view>
+                    <view class="findNum-btn">
+                        <button type="primary" @tap='toType2'>提交</button>
+                    </view>
                 </view>
             </view>
         </view> 
@@ -72,7 +74,7 @@
                         <view class="desc">引荐人</view>
                         <view class="li-item2">
                             <text>{{referrer}}</text>
-                            <text class="copy">复制</text>
+                            <text class="copy" @tap='copyReferrer'>复制</text>
                         </view>
                     </view>
                     <view wx:if="{{typeTwo==1}}">
@@ -96,7 +98,7 @@
                             <view class="desc">被引荐人</view>
                             <view class="li-item2">
                                 <text>{{referee}}</text>
-                                <text class="copy">复制</text>
+                                <text class="copy" @tap='copyReferee'>复制</text>
                             </view>                 
                         </view>
                         <view wx:if="{{typeThree==1}}">
@@ -126,9 +128,9 @@
                 </view>               
             </view>
         </view>       
-        <view class="v">
+        <!-- <view class="v">
             当前版本：{{version}}
-        </view>
+        </view> -->
     </view>
 </template>
 
@@ -138,60 +140,91 @@ import wx from "wepy";
 import config from "../config";
 import findFlow from "../components/findFlow";
 export default class referrer extends wx.page {
-  config = {
-    navigationBarBackgroundColor: "#238CFF",
-    navigationBarTitleText: "给TA引荐",
-    navigationBarTextStyle: "#FFF"
-  };
-  components = {
-    findFlow: findFlow
-  };
-  data = {
-    version: config.version,
-    inputVal: "",
-    type: 1,
-    typeChild: 1,
-    redPacket: "100",
-    find: "XXX",
-    findNum: "123456",
-    referrer: "",
-    referee: ""
-  };
-  bindInputVal(e) {
-    console.log(12312);
-    this.inputVal = e.detail.value;
-    console.log(this.inputVal);
-  }
-  bindReferrer(e) {
-    this.referrer = e.detail.value;
-  }
-  bindReferee(e) {
-    this.referee = e.detail.value;
-  }
-  toTypeChild2() {
-    this.typeChild = 2;
-  }
-  toTypeChild3() {
-    this.typeChild = 3;
-  }
-  toTypeChild4() {
-    this.typeChild = 4;
-  }
-  submit() {
-    if (this.form.referrer == "") {
-      wx.showModal({
-        content: "你输入的找人码错误"
-      });
-    } else {
-      this.typeChild = 2;
+    config = {
+        navigationBarBackgroundColor: "#238CFF",
+        navigationBarTitleText: "给TA引荐",
+        navigationBarTextStyle: "#FFF"
+    };
+    components = {
+        findFlow: findFlow
+    };
+    data = {
+        version: config.version,
+        inputVal: "",
+        type: 1,
+        typeOne: 1,
+        typeTwo: 1,
+        typeThree: 1,
+        redPacket: "100",
+        find: "XXX",
+        findNum: "123456",
+        referrer: "",
+        referee: ""
+    };
+    bindInputVal(e) {
+        console.log(12312);
+        this.inputVal = e.detail.value;
+        console.log(this.inputVal);
     }
-  }
-  share() {
-    wx.navigateTo({
-      url: "/pages/referee"
-    });
-  }
-}
+    bindReferrer(e) {
+        this.referrer = e.detail.value;
+    }
+    bindReferee(e) {
+        this.referee = e.detail.value;
+    }
+    toType2() {
+        this.type = 2;
+    }
+    toTypeOne2() {
+        this.typeOne = 2 
+    }
+    toTypeTwo2() {
+        this.typeTwo = 2
+    }
+    toTypeTwo3() {
+        this.typeTwo = 3
+    }
+    copyReferrer() {
+        let that=this
+        wx.setClipboardData({
+            data: that.referrer,
+            success: function(res) {
+                wx.getClipboardData({
+                    success: function(res) {
+                        console.log(res.data) 
+                    }
+                })
+            }
+        })
+    }
+    copyReferee() {
+        let that=this
+        wx.setClipboardData({
+            data: that.referee,
+            success: function(res) {
+                wx.getClipboardData({
+                    success: function(res) {
+                        console.log(res.data) 
+                    }
+                })
+            }
+        })
+    }
+    submit() {
+        if (this.form.referrer == "") {
+        wx.showModal({
+            content: "你输入的找人码错误"
+        });
+        } else {
+        this.typeChild = 2;
+        }
+    }
+    share() {
+        wx.navigateTo({
+        url: "/pages/referee"
+        });
+    }
+    }
 </script>
 
 <style lang="less">
@@ -216,13 +249,13 @@ page {
       // display: none;
       position: fixed;
       width: 100%;
-      top: 30%;
+      top: 1%;
       z-index: 1001;
       .content {
         background: rgba(255, 255, 255, 0.95);
-        width: 80%;
+        width: 100%;
         margin: 0rpx auto;
-        padding: 24rpx 12rpx;
+        padding: 48rpx 8rpx;
         border-radius: 12rpx;
         text-align: center;
         font-size: 32rpx;
@@ -234,10 +267,12 @@ page {
           height: 100%;
         }
         .mask_title {
-          padding-bottom: 24rpx;
+          padding-bottom: 48rpx;
         }
         .pwtxt {
           position: relative;
+          display: flex;
+          justify-content: center;
         }
         .error {
           display: none;
@@ -247,11 +282,11 @@ page {
         }
         .block {
           position: relative;
-          background: #e7e7e7;
-          border-radius: 8rpx;
-          width: 15%;
-          height: 72rpx;
-          margin-right: 1.66%;
+          background: #F2F2F2;
+          width: 12%;
+          height: 90rpx;
+          margin-right: 1.88%;
+          border: 1rpx solid #DDDDDD;
           float: left;
           .circle {
             position: relative;
@@ -259,17 +294,21 @@ page {
             border-radius: 50%;
             width: 20rpx;
             margin: 0 auto;
-            top: 24rpx;
+            top: 32rpx;
             height: 20rpx;
           }
         }
         .clear {
           clear: both;
         }
-        .warning {
-          color: red;
-          font-size: 24rpx;
-          padding-top: 12rpx;
+        .findNum-btn {
+          margin-top: 66rpx;
+          button {
+            width: 80%;
+            color: #fff;
+            background: #238cff;
+            border-radius: 50rpx;
+            }
         }
       }
     }
@@ -320,36 +359,54 @@ page {
           }
         }
       }
-      .li2-copy {
-        position: relative;
-        .copy {
-          position: absolute;
-          top: 18rpx;
-          right: 18rpx;
-          color: #6a7fa6;
+        .li2-copy{
+            .copy{
+                color: #6A7FA6;
+                float: right;
+            }
         }
-      }
-      .li2-tip {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #f7b602;
-        margin-top: 50rpx;
-        padding-top: 40rpx;
-        padding-bottom: 40rpx;
-        border-bottom: none;
-        background: #fef8e5;
-        .tipCont {
-          margin-top: -15rpx;
-          margin-left: 20rpx;
-          .tipContA {
-            font-size: 36rpx;
-          }
-          .tipContB {
-            font-size: 28rpx;
-          }
-        }
-      }
+        .li2-success-tip{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #F7B602;
+                margin-top: 50rpx;
+                padding-top: 40rpx;
+                padding-bottom: 40rpx;
+                border-bottom: none;
+                background: #FEF8E5;
+                .tipCont{
+                    margin-top: -15rpx;
+                    margin-left: 20rpx;
+                    .tipContA{
+                        font-size: 36rpx;
+                    }
+                    .tipContB{
+                        font-size: 28rpx;
+                    }
+                }
+            }
+            .li2-warn-tip{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #1E93FF;
+                margin-top: 50rpx;
+                padding-top: 40rpx;
+                padding-bottom: 40rpx;
+                border-bottom: none;
+                background: #E8F4FF;
+                .tipCont{
+                    margin-top: -15rpx;
+                    margin-left: 20rpx;
+                    .tipContA{
+                        font-size: 36rpx;
+                    }
+                    .tipContB{
+                        font-size: 28rpx;
+                    }
+                }
+            }
       .li2-no-bot {
         border-bottom: none;
       }

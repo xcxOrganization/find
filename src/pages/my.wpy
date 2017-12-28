@@ -64,8 +64,10 @@ import http from "../utils/request.js";
 import mixin from "../mixins/redux";
 export default class My extends wepy.page {
   config = {
-    navigationBarTitleText: "我的"
-  };
+      navigationBarBackgroundColor: "#238CFF",
+      navigationBarTitleText: '我的',
+      navigationBarTextStyle: "#FFF"
+  }
   mixins = [mixin];
   data = {
     isAnimate: false,
