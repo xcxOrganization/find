@@ -17,8 +17,8 @@
     <view class='menu'>
         <view class='menu-item'>
             <view class='mi-left'>
-                <image src='{{img_prefixer}}/icon/account.png'/>
-                <view class='miText'>账户余额</view>
+                <image src='../assets/images/packet.png' style="width:50rpx; height: 50rpx;"/>
+                <view class='miText'>钱包</view>
             </view>
             <view class='mi-right'>
                 <view style="margin-right: 44rpx;">{{userInfo.balance}} 元</view>
@@ -26,44 +26,20 @@
         </view>
         <view class='menu-item' style="position: relative" @tap='toHistory'>
             <view class='mi-left'>
-                <image src='{{img_prefixer}}/icon/gift.png'/>
+                <image src='../assets/images/find-history.png' style="width:50rpx; height: 50rpx;"/>
                 <view class='miText'>找人记录</view>
             </view>
             <view class='mi-right'>
-                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'/>
-            </view>
-        </view>
-        <view class='menu-item' style="position: relative">
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 27px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 54px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 81px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 108px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 135px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 162px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 189px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 216px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 243px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 270px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 189px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 216px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 243px;"></contact-button>
-            <contact-button type="default-light" class="cx6" size="27" session-from="weapp" style="left: 270px;"></contact-button>
-            <view class='mi-left'>
-                <image src='{{img_prefixer}}/icon/kefuer.png'/>
-                <view class='miText'>联系客服</view>
-            </view>
-            <view class='mi-right'>
-                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'/>
+                <image class='moreIcon' src='../assets/images/more.png'/>
             </view>
         </view>
         <view class='menu-item' style="position: relative" @tap="toAbout">
             <view class='mi-left'>
-                <image src='{{img_prefixer}}/icon/about.png'/>
-                <view class='miText'>关于</view>
+                <image src='../assets/images/about.png' style="width:50rpx; height: 50rpx;"/>
+                <view class='miText'>关于帮忙找人</view>
             </view>
             <view class='mi-right'>
-                <image class='moreIcon' src='{{img_prefixer}}/icon/more.png'/>
+                <image class='moreIcon' src='../assets/images/more.png'/>
             </view>
         </view>
     </view>
