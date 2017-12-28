@@ -12,7 +12,8 @@ export default class extends wepy.app {
 	        'pages/referrer',
             'pages/referee',
             'pages/about',     //关于页面
-            'pages/history'     //找人记录
+            'pages/history',     //找人记录
+            'pages/withdrawCash' //提现
         ],
         window: {
             backgroundTextStyle: 'light',

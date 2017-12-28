@@ -6,7 +6,7 @@ let data = {
   img_prefixer: config.imgApi,
   canIShare: wepy.canIUse ? wepy.canIUse('button.open-type.share') : false
 }
-
+let click_timestamp = 0;
 let formIdRecord = {
   timestamp: 0, // 开始收集id时间
   num: 0, // 存储formId个数
@@ -87,5 +87,15 @@ export default class extends wepy.mixin {
       console.log('formId个数为：' + formIdRecord.num);
     }, function () {
     }, { 'noToast': true });
+  }
+  refuseMuchClick(duringTime) {//拒绝过度访问标识 duringTime阻止点击间隔
+    let during = duringTime ? duringTime : 1500;
+    let timestamp = new Date().getTime();
+    if (timestamp - click_timestamp > during) {
+      click_timestamp = timestamp;
+      return true;
+    } else {
+      return false;
+    }
   }
 }
