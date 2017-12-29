@@ -1,7 +1,7 @@
 <template>
     <view class="container">
         <view class="top">
-            你的朋友圈人脉，超乎想象1
+            你的朋友圈人脉，超乎你的想象1
         </view>
         <view class="box" @tap="toFind">
             <view class="left">
@@ -9,10 +9,7 @@
             </view>
             <view class="right">
                 <view class="rightA">我要找人</view>
-                <view class="rightB">一支穿云箭</view>
-                <view class="rightIcon">
-                    <image src="../assets/images/index_rightIcon.jpg"/>
-                </view>
+                <view class="rightB">包个红包</view>
             </view>
         </view>
         <view class="box" @tap="toReferrer">
@@ -20,11 +17,8 @@
                 <image class="leftImg" src="../assets/images/index_02.jpg"/>
             </view>
             <view class="right">
-                <view class="rightA">给TA引荐</view>
-                <view class="rightB">千军万马来相见</view>
-                <view class="rightIcon">
-                    <image src="../assets/images/index_rightIcon.jpg"/>
-                </view>
+                <view class="rightA">给TA推荐</view>
+                <view class="rightB">领红包</view>
             </view>
             
         </view>
@@ -40,9 +34,7 @@ import wx from "wepy";
 import config from "../config";
 export default class extends wx.page {
   config = {
-    navigationBarBackgroundColor: "#238CFF",
-    navigationBarTitleText: "帮忙找人",
-    navigationBarTextStyle: "#FFF"
+    navigationBarTitleText: "帮忙找人"
   };
   data = {
     version: config.version
@@ -89,15 +81,6 @@ page {
         .rightB {
           font-size: 32rpx;
           color: #8D8D8D;
-        }
-        .rightIcon{
-          image{
-            width: 50rpx;
-            height: 50rpx;
-            position: absolute;
-            left: 606rpx;
-            top: 124rpx;
-          }       
         }
         width: 55%;
         padding-top: 60rpx;

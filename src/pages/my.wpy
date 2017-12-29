@@ -15,7 +15,7 @@
         </view>
     </view>
     <view class='menu'>
-        <view class='menu-item'>
+        <view class='menu-item' @tap='toWithdrawCash'>
             <view class='mi-left'>
                 <image src='../assets/images/packet.png' style="width:50rpx; height: 50rpx;"/>
                 <view class='miText'>钱包</view>
@@ -98,6 +98,11 @@ export default class My extends wepy.page {
   methods = {
     showQuestion() {
       this.showQuestion = !this.showQuestion;
+    },
+    toWithdrawCash() {
+      wepy.navigateTo({
+        url: "/pages/withdrawCash"
+      });
     },
     toAbout() {
       wepy.navigateTo({

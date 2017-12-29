@@ -45,10 +45,15 @@ export default class findFlow extends wx.component {
         }
     }
 
+    onLoad(options) {
+        let that = this;
+        that.getUserInfo();
+    }
+
     // 获取用户信息
     getUserInfo() {
         let that = this;
-        http.request("App.Find_User.GetUserProfile", "GET", {}, (res) => {
+        http.request("App.Find_User.GetUserProfile", "POST", {}, (res) => {
             console.log('res',res);
             that.userInfo.headimgurl = res.avatarUrl;
             that.userInfo.nickname = res.nickName;
@@ -74,9 +79,11 @@ page {
           width: 100%;
           height: 300rpx;
           .selfAvatar{
+              width: 100rpx;
+              height: 100rpx;
               position: absolute;
-              top: 20rpx;
-              left: 20rpx;
+              top: 28.333%;
+              left: 7.333%;
               z-index: 101;
           }
           .find-banner{
