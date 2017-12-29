@@ -4,6 +4,7 @@
             <text @tap="toRule">找人规则</text>
         </view>
         <view class="row">
+            <image class="selfAvatar" src="{{userInfo.headimgurl}}" style="border-radius:50%;"/>
             <image class="find-banner" src="../assets/images/find_banner.png"/>
         </view>
     </view>
@@ -23,13 +24,17 @@
 
 <script>
 import wx from 'wepy'
-import request from '../utils/request.js'
+import http from "../utils/request.js"
 import mixin from '../mixins/redux'
 import util from '../utils/util.js'
 export default class findFlow extends wx.component {
     mixins = [mixin]
     data = {
-        ruleModal: !1
+        ruleModal: !1,
+        userInfo: {
+            headimgurl: '',
+            nickname: ''
+        }
     }
     methods = {
         toRule() {
@@ -39,12 +44,26 @@ export default class findFlow extends wx.component {
             this.ruleModal = !1
         }
     }
+
+    // 获取用户信息
+    getUserInfo() {
+        let that = this;
+        http.request("App.Find_User.GetUserProfile", "GET", {}, (res) => {
+            console.log('res',res);
+            that.userInfo.headimgurl = res.avatarUrl;
+            that.userInfo.nickname = res.nickName;
+            that.$apply();
+        }, (err) => {}, {
+            noToast: true
+        });
+    }
 }
 </script>
 
 <style lang="less">
 page {
     .box {
+      position: relative;
       .rule {
         font-size: 28rpx;
         position: absolute;
@@ -54,6 +73,12 @@ page {
       .row {
           width: 100%;
           height: 300rpx;
+          .selfAvatar{
+              position: absolute;
+              top: 20rpx;
+              left: 20rpx;
+              z-index: 101;
+          }
           .find-banner{
               width: 100%;
               height: 100%;

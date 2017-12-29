@@ -5,7 +5,7 @@
                 <image src="{{userInfo.headimgurl}}" style="border-radius:50%; float: left;"/>
                 <view style="float: left; max-width: 70%; overflow: hidden;">
                     <view class='userName'>{{userInfo.nickname}}</view>
-                    <view class='userid' wx-if="{{userInfo.id}}">福利号：{{'1000' + userInfo.id}}</view>
+                    <view class='userid' wx-if="{{userInfo.id}}">福利号1：{{'1000' + userInfo.id}}</view>
                 </view>
             </view>
 

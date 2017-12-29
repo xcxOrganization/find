@@ -1,7 +1,7 @@
 <template>
     <view class="container">
         <view class="top">
-            你的朋友圈人脉，超乎想象
+            你的朋友圈人脉，超乎想象1
         </view>
         <view class="box" @tap="toFind">
             <view class="left">
@@ -14,7 +14,6 @@
                     <image src="../assets/images/index_rightIcon.jpg"/>
                 </view>
             </view>
-            
         </view>
         <view class="box" @tap="toReferrer">
             <view class="left">
