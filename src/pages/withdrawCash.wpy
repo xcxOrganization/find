@@ -13,11 +13,11 @@
             <view class="li">
                 <view class="desc">提现金额</view>
                 <view class="li-item">
-                    <input class="li-item-input" name="input" type="number" placeholder="请输入提现金额" bindinput="bindRedPacket" placeholder-class="info_input" bindblur="redPacketOut" value="{{redPacket}}" />
+                    <input class="li-item-input" name="input" type="number" placeholder="请输入提现金额" bindinput="bindRedPacket" placeholder-class="info_input" value="{{redPacket}}" />
                 </view>
             </view>
             <view class="li">
-                <button type="primary" disabled="{{disable}}" @tap='eventHandle' style="background-color: #238CFF;">提交</button>
+                <button type="primary" @tap='eventHandle' style="background-color: #238CFF;">提交</button>
             </view>
         </view>
     </view>
@@ -43,8 +43,23 @@ export default class extends wx.page {
       cRedPacket = e.detail.value;
     },
     eventHandle() {
+      console.log(123123);
       let that = this;
-      return;
+      http.request(
+        "App.Find_Record.Create",
+        "POST",
+        {
+          money: 12,
+          intro:1,
+          wx_self_code:1
+        },
+        res => {},
+        () => {},
+        {
+          noToast: true
+        }
+      );
+      return;//下面return了，不会执行
       http.request(
         "App.Find_User.GetUserProfile",
         "POST",
@@ -83,7 +98,7 @@ page {
           top: 0;
           line-height: 2.2rem;
           padding: 0 20rpx;
-          color: #6A7FA6;
+          color: #6a7fa6;
         }
         .desc {
           width: 25%;
