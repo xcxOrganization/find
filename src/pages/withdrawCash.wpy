@@ -49,7 +49,7 @@ export default class extends wx.page {
         "App.Find_User.GetUserProfile",
         "POST",
         {
-          cRedPacket:cRedPacket
+          cRedPacket: cRedPacket
         },
         res => {},
         () => {},
@@ -83,7 +83,7 @@ page {
           top: 0;
           line-height: 2.2rem;
           padding: 0 20rpx;
-          color: blue;
+          color: #6A7FA6;
         }
         .desc {
           width: 25%;
