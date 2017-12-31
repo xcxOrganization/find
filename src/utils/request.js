@@ -3,6 +3,7 @@ import config from '../config'
 import Log from './log.js'
 import Login from './login.js'
 import Observer from './observer.js'
+import Util from './util.js'
 let observer = Observer('fn');
 let log = Log(),
 	server = config.env,
@@ -15,12 +16,12 @@ function getImgServerApi() {
 
 //配置环境：本地、开发、生产 (区分活动、 common请求)
 function getServerUrl(route) {
-	return `${config.apiBase}${route}&thirdSessionKey=`+accessToken;
+	return `${config.apiBase}${route}&thirdSessionKey=` + accessToken;
 }
 
 function request(route, method, data, success, fail, other) {
 	accessToken = wx.getStorageSync(server + 'token');
-	console.log(accessToken,'accessToken');
+	console.log(accessToken, 'accessToken');
 	let args = arguments;
 	if (accessToken == '') {
 		new Login().init();//登录
@@ -50,13 +51,14 @@ function common_req() {
 		'content-type': 'application/json'
 	};
 
+	console.log('>>>>',getServerUrl(args[0]) + '&' + Util.objSort(args[2]));
 	wepy.request({
-		url: getServerUrl(args[0]),
+		url: getServerUrl(args[0]) + '&' + Util.objSort(args[2]),
 		method: args[1],
 		data: args[2],
 		header,
 		success: (res) => {
-			console.log('请求链接 >>>> ' +  getServerUrl(args[0]) + '>>>> 返回 >>>>', res);
+			console.log('请求链接 >>>> ' + getServerUrl(args[0]) + '>>>> 返回 >>>>', res);
 			wx.hideToast();
 			if (args[5] && args[5].getCodeSts && res.data.ret != 200) {//需要拿到返回码数据的情况
 				args[3].call(this, res.data);

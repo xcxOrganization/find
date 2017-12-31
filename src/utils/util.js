@@ -146,7 +146,7 @@ function objSort(obj) {
   for (let key in obj) {
     str += key + '=' +obj[key] + '&'
   }
-  return str;
+  return str.substring(0, str.lastIndexOf('&'));
 }
 
 module.exports = {
