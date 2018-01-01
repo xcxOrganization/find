@@ -135,10 +135,11 @@
 </template>
 
 <script>
-import wx from "wepy";
-// import request from '../utils/request.js'
-import config from "../config";
-import findFlow from "../components/findFlow";
+import wx from "wepy"
+import http from '../utils/request.js'
+import request from '../utils/request.js'
+import config from "../config"
+import findFlow from "../components/findFlow"
 export default class referrer extends wx.page {
     config = {
         navigationBarBackgroundColor: "#238CFF",
@@ -226,8 +227,10 @@ export default class referrer extends wx.page {
     }
     onLoad(options) {
         let that = this;
-        // 判断是否为已存在引荐人
-        http.request("App.Find_Record.GetIntroRecord", "GET", {}, (res) => {
+        let a = {
+            id: 3
+        }
+        http.request("App.Find_Record.GetOperRecord", "POST", a, (res) => {
             console.log('res',res);
             that.introducerCode = res.wx_introducer_code;
             if(that.introducerCode!==""){
@@ -237,17 +240,7 @@ export default class referrer extends wx.page {
         }, (err) => {}, {
             noToast: true
         });
-        // 判断是否为已存在被引荐人
-        http.request("App.Find_Record.GetOperRecord", "GET", {}, (res) => {
-            console.log('res',res);
-            that.introduceredCode = res.wx_introducered_code;
-            if(that.introduceredCode!==""){
-                that.typeTwo = 3
-            }
-            that.$apply();
-        }, (err) => {}, {
-            noToast: true
-        });
+        
     }
 }
 </script>

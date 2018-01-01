@@ -5,7 +5,7 @@
         </view>
         <view class="box" @tap="toFind">
             <view class="left">
-                <image class="leftImg" src="../assets/images/index_01.jpg"/>
+                <image class="leftImg" src="../assets/images/index_01.png"/>
             </view>
             <view class="right">
                 <view class="rightA">我要找人</view>
@@ -14,7 +14,7 @@
         </view>
         <view class="box" @tap="toReferrer">
             <view class="left">
-                <image class="leftImg" src="../assets/images/index_02.jpg"/>
+                <image class="leftImg" src="../assets/images/index_02.png"/>
             </view>
             <view class="right">
                 <view class="rightA">给TA推荐</view>

@@ -163,7 +163,6 @@ export default class find extends wx.page {
             this.findNum+= Math.floor( Math.random()*10 )
         }
         let a = {
-            thirdSessionKey: "123456",
             money: that.redPacket,
             intro: that.find,
             wx_self_code: that.wechat
@@ -246,29 +245,13 @@ page {
   background-color: #fff;
   .container {
     position: relative;
-    .box {
-      .rule {
-        position: absolute;
-        top: 25rpx;
-        right: 10rpx;
-      }
-      .row {
-        width: 100%;
-        height: 300rpx;
-        .find-banner {
-          width: 100%;
-          height: 100%;
-        }
-      }
-    }
     .input {
       background: #fff;
       font-size: 28rpx;
       .li {
+        width: 92%;
         display: flex;
-        margin-top: 25rpx;
-        margin-left: 35rpx;
-        margin-right: 25rpx;
+        margin: 25rpx auto;
         &:nth-child(4) {
           button {
             width: 80%;

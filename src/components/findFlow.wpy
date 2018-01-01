@@ -1,7 +1,7 @@
 <template>
     <view class="box">
-        <view class="rule">
-            <text @tap="toRule">找人规则</text>
+        <view class="rule" @tap="toRule">
+            <image class="find-rule" src="../assets/images/rule.png" style="width:230rpx; height: 90rpx;"/>
         </view>
         <view class="row">
             <image class="selfAvatar" src="{{userInfo.headimgurl}}" style="border-radius:50%;"/>
@@ -70,20 +70,20 @@ page {
     .box {
       position: relative;
       .rule {
-        font-size: 28rpx;
         position: absolute;
-        top: 25rpx;
-        right: 10rpx;
+        top: 4rpx;
+        right: -30rpx;
       }
       .row {
-          width: 100%;
+          width: 92%;
           height: 300rpx;
+          margin: 0 auto;
           .selfAvatar{
-              width: 100rpx;
+              width: 90rpx;
               height: 100rpx;
               position: absolute;
               top: 28.333%;
-              left: 7.333%;
+              left: 11.333%;
               z-index: 11;
           }
           .find-banner{
