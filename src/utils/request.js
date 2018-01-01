@@ -58,7 +58,7 @@ function common_req() {
 		data: args[2],
 		header,
 		success: (res) => {
-			console.log('请求链接 >>>> ' + getServerUrl(args[0]) + '>>>> 返回 >>>>', res);
+			console.log('请求链接 >>>> ' + getServerUrl(args[0]) + '&' + Util.objSort(args[2]) + '>>>> 返回 >>>>', res);
 			wx.hideToast();
 			if (args[5] && args[5].getCodeSts && res.data.ret != 200) {//需要拿到返回码数据的情况
 				args[3].call(this, res.data);
