@@ -1,7 +1,7 @@
 <template>
     <view class="container">
         <view class="top">
-            你的朋友圈人脉，超乎你的想象1
+            你的朋友圈人脉，超乎你的想象
         </view>
         <view class="box" @tap="toFind">
             <view class="left">
