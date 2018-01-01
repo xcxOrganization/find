@@ -155,16 +155,16 @@ export default class referrer extends wx.page {
         typeOne: 1,
         typeTwo: 1,
         typeThree: 1,
-        redPacket: "100",
-        find: "XXX",
-        findNum: "123456",
+        redPacket: "",
+        find: "",
+        findNum: "",
+        introducerCode: "",
         referrer: "",
         referee: ""
     };
     bindInputVal(e) {
-        console.log(12312);
         this.inputVal = e.detail.value;
-        console.log(this.inputVal);
+        // console.log(this.inputVal);
     }
     bindReferrer(e) {
         this.referrer = e.detail.value;
@@ -224,7 +224,32 @@ export default class referrer extends wx.page {
         url: "/pages/referee"
         });
     }
+    onLoad(options) {
+        let that = this;
+        // 判断是否为已存在引荐人
+        http.request("App.Find_Record.GetIntroRecord", "GET", {}, (res) => {
+            console.log('res',res);
+            that.introducerCode = res.wx_introducer_code;
+            if(that.introducerCode!==""){
+                that.typeOne = 2
+            }
+            that.$apply();
+        }, (err) => {}, {
+            noToast: true
+        });
+        // 判断是否为已存在被引荐人
+        http.request("App.Find_Record.GetOperRecord", "GET", {}, (res) => {
+            console.log('res',res);
+            that.introduceredCode = res.wx_introducered_code;
+            if(that.introduceredCode!==""){
+                that.typeTwo = 3
+            }
+            that.$apply();
+        }, (err) => {}, {
+            noToast: true
+        });
     }
+}
 </script>
 
 <style lang="less">

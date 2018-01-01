@@ -56,6 +56,7 @@
 
 <script>
 import wx from 'wepy'
+import http from "../utils/request.js"
 import request from '../utils/request.js'
 import config from "../config"
 import mixin from '../mixins/redux'
@@ -157,15 +158,28 @@ export default class find extends wx.page {
         }
     }
     eventHandle() {
+        let that = this;
         for (let i = 0;i<6;i++) {
             this.findNum+= Math.floor( Math.random()*10 )
         }
+        let a = {
+            thirdSessionKey: "123456",
+            money: that.redPacket,
+            intro: that.find,
+            wx_self_code: that.wechat
+        }
+        http.request("App.Find_Record.Create", "POST", a, (res) => {
+            console.log('res',res);
+            that.$apply();
+        }, (err) => {}, {
+            noToast: true
+        });
         this.type = 2
     }
     onShareAppMessage() {
         return {
             title: "送红包：Hi，给你推荐个朋友",
-            path: "pages/referrer",
+            path: "pages/referrer?type==2",
             imageUrl: "",
             success: (res) => {
                 // 分享成功
@@ -219,6 +233,9 @@ export default class find extends wx.page {
             })
             }
         });
+    }
+    onLoad(options) {
+
     }
 }
 </script>
