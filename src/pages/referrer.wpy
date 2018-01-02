@@ -53,7 +53,7 @@
                 <view wx:if="{{typeOne==1}}">
                     <view class="li2 li2-no-bot">
                         <view class="desc">找人码</view>
-                        <view class="li-item2">{{findNum}}</view>
+                        <view class="li-item2">{{inputVal}}</view>
                     </view>
                     <view class="li2 li2-input">
                         <view class="desc">引荐人</view>
@@ -68,7 +68,7 @@
                 <view wx:if="{{typeOne==2}}">
                     <view class="li2">
                         <view class="desc">找人码</view>
-                        <view class="li-item2">{{findNum}}</view>
+                        <view class="li-item2">{{inputVal}}</view>
                     </view>
                     <view class="li2 li2-no-bot li2-copy">
                         <view class="desc">引荐人</view>
@@ -161,7 +161,9 @@ export default class referrer extends wx.page {
         findNum: "",
         introducerCode: "",
         referrer: "",
-        referee: ""
+        referee: "",
+        idOne: "",
+        idTwo: ""
     };
     bindInputVal(e) {
         this.inputVal = e.detail.value;
@@ -174,10 +176,46 @@ export default class referrer extends wx.page {
         this.referee = e.detail.value;
     }
     toType2() {
-        this.type = 2;
+        let that=this;
+        let a = {
+            code: that.inputVal
+        }
+        http.request("App.Find_Record.CheckCode", "POST", a, (res) => {
+            console.log('res',res);
+            if(res==!1){
+                console.log('找人码错误！');
+            }else{
+                that.redPacket = res.money;
+                that.find = res.intro;
+                that.idOne = res.id;
+                that.type = 2;
+            }          
+            that.$apply();
+        }, (err) => {
+            console.log('找人码为空！');
+        }, {
+            noToast: true
+        });
     }
     toTypeOne2() {
-        this.typeOne = 2 
+        let that=this;
+        let a = {
+            record_id: that.idOne,
+            wx_introducer_code: that.referrer
+        }
+        http.request("App.Find_IntroRecord.Intro", "POST", a, (res) => {
+            console.log('res',res);
+            if(res!==''){
+                that.idTwo = res.intro_user_id;
+                that.typeOne = 2
+            }
+            that.$apply();
+        }, (err) => {
+            console.log('微信号错误！');
+        }, {
+            noToast: true
+        });
+         
     }
     toTypeTwo2() {
         this.typeTwo = 2
@@ -222,26 +260,25 @@ export default class referrer extends wx.page {
     }
     share() {
         wx.navigateTo({
-        url: "/pages/referee"
+            url: "/pages/referee"
         });
     }
-    onLoad(options) {
-        let that = this;
-        let a = {
-            id: 3
-        }
-        http.request("App.Find_Record.GetOperRecord", "POST", a, (res) => {
-            console.log('res',res);
-            that.introducerCode = res.wx_introducer_code;
-            if(that.introducerCode!==""){
-                that.typeOne = 2
-            }
-            that.$apply();
-        }, (err) => {}, {
-            noToast: true
-        });
-        
-    }
+    // onLoad(options) {
+    //     let that = this;
+    //     let a = {
+    //         id: 3
+    //     }    
+    //     http.request("App.Find_Record.GetIntroRecord", "POST", a, (res) => {
+    //         console.log('res',res);
+    //         that.introducerCode = res.wx_introducer_code;
+    //         if(that.introducerCode!==""){
+    //             that.typeOne = 2
+    //         }
+    //         that.$apply();
+    //     }, (err) => {}, {
+    //         noToast: true
+    //     });       
+    // }
 }
 </script>
 
