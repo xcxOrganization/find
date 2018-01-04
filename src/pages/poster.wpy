@@ -1,0 +1,421 @@
+<style lang="less">
+page {
+  width: 100%;
+  height: 100%;
+  background-color: #180b25;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.left-btn {
+  position: fixed;
+  bottom: 0;
+  left: 40rpx;
+  width: 336rpx;
+  height: 122rpx;
+  z-index: 222;
+  image {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+
+.firstIcon {
+  position: absolute;
+  width: 131rpx;
+  height: 64rpx;
+  right: 0;
+  bottom: 12%;
+}
+
+.right-btn {
+  position: fixed;
+  bottom: 0;
+  right: 40rpx;
+  width: 336rpx;
+  height: 122rpx;
+  z-index: 222;
+  image {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+
+.poster {
+  position: absolute;
+  width: 100%;
+  top: 20rpx;
+  left: 0;
+  z-index: 9;
+  .casContainer {
+    width: 554rpx;
+    height: 864rpx;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+    image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .center {
+    text-align: center;
+    margin-top: 20rpx;
+    .ad {
+      width: 609rpx;
+      height: 54rpx;
+    }
+  }
+}
+
+.shareFriendsDesc {
+  text-align: center;
+  width: 100%;
+  margin-top: 20rpx;
+  image {
+    width: 627rpx;
+    height: 102rpx;
+  }
+}
+
+.shareFriendsButton {
+  position: absolute;
+  bottom: 20rpx;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  z-index:11;
+  image {
+    width: 627rpx;
+    height: 94rpx;
+  }
+}
+</style>
+
+<template>
+  <view class="container">
+    <image src="{{containerBg}}" style="z-index:-1;width:{{containerStyle.width}}px;height:{{containerStyle.height}}px;"></image>
+    <view class="poster">
+      <view class="casContainer" style="border:0 solid #f00;width:{{casStyle.width}}px;height:{{casStyle.height}}px;">
+        <canvas @tap="preview" canvas-id="cas" wx:if="{{!posterSrc}}"></canvas>
+        <image @tap="preview" src="{{posterSrc}}" wx:if="{{posterSrc}}"></image>
+      </view>
+      <view class="center" wx:if="{{shareType==1 && _isEnable}}">
+        <image class="ad" src="{{adSrc}}"></image>
+      </view>
+      <view wx:if="{{shareType==2}}" class="shareFriendsDesc">
+        <image src="{{shareFriendsDesc}}"></image>
+      </view>
+    </view>
+    <view wx:if="{{shareType==1}}" class="left-btn">
+      <image class="left-btn-image" @tap="preview" src="{{leftBtnSrc}}"></image>
+      <button wx:if="{{canIShare}}" open-type="share" bindtap="saveShareClick" class="share_button"></button>
+      <button wx:if="{{!canIShare}}" bindtap="showShare" class="share_button"></button>
+    </view>
+    <view wx:if="{{shareType==1}}" class="right-btn">
+      <image class="right-btn-image" src="{{rightBtnSrc}}"></image>
+      <button class="btn" @tap="saveImgToAl"></button>
+    </view>
+    <image wx:if="{{shareType==1 && elifeShareKefu}}" class="firstIcon" src="{{firstIcon}}" @tap="clickReturn"></image>
+    <view wx:if="{{shareType==2}}" class="shareFriendsButton" @tap="saveImgToAl">
+      <image src="{{shareFriendsButton}}"></image>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from "wepy";
+import request from "../utils/request.js";
+import config from '../config';
+import mixin from '../mixins/redux'
+let imageSrc = '';//海报背景图地址
+let appId = config.AppID; //小程序appid  用作获取二维码
+let url = config.apiQRCode + "QRCodeNew"; //二维码接口
+let qrcodeUrl = "";
+let tempPath = ""; //导出图片的临时路径
+let ctx = null; //获取canvas组件
+let workSign = 0;//任务状态
+export default class poster extends wepy.page {
+  config = {
+    navigationBarTitleText: "分享好产品",
+    navigationBarTextStyle: "white",
+    navigationBarBackgroundColor: "#0099F7"
+  };
+  data = {
+    casStyle: {
+      width: 0,
+      height: 0
+    },
+    containerStyle: {
+      width: 0,
+      height: 0
+    },
+    shareType: 1,
+    containerBg: request.getImgServerApi() + "detail/elife/shareBg.png",
+    leftBtnSrc: request.getImgServerApi() + "detail/elife/e_share.png",
+    rightBtnSrc: request.getImgServerApi() + "detail/elife/e_save.png",
+    firstIcon: request.getImgServerApi() + "detail/elife/first.png",
+    adSrc: request.getImgServerApi() + "detail/elife/ad.png",
+    shareFriendsButton: request.getImgServerApi() + "share/shareFriendsButton.png",
+    shareFriendsDesc: request.getImgServerApi() + "share/shareFriendsDesc.png",
+    posterSrc: "" //导出图片的临时路径
+  };
+  mixins = [mixin]
+  methods = {
+    /**
+     * 预览图片
+     */
+    preview() {
+      var that = this;
+      wx.previewImage({
+        urls: [tempPath],
+        success: function() {
+
+        }
+      });
+    },
+    clickReturn() {
+      wx.switchTab({
+        url: './index'
+      });
+      wx.setStorageSync('elifeShareKefu', '')
+    },
+    saveShareClick() {
+      getApp().zast.sendEvent('18.1493.yJ1');
+    },
+    showShare() {
+      wx.showModal({
+        content: '请点击右上角转发进行分享',
+        showCancel: false,
+      });
+      this.methods.saveShareClick();
+    },
+    /**
+    * 保存图片到相册
+    */
+    saveImgToAl() {
+      let that = this;
+      getApp().zast.sendEvent('18.1493.pD4');
+      if (!wx.saveImageToPhotosAlbum) {
+        wx.showModal({
+          content: '您的微信版本过低，不能保存图片，请升级重试'
+        })
+        return;
+      }
+      wx.saveImageToPhotosAlbum({
+        filePath: tempPath,
+        success: function(res) {
+          wx.showToast({
+            title: "海报已保存至相册",
+            icon: "success",
+            mask: true,
+          });
+        },
+        fail: function() {
+          wx.showModal({
+            content: '需要授权才可保存到相册哦',
+            confirmText: '前往授权',
+            showCancel: true,
+            success(res) {
+              if (res.confirm && wx.openSetting) {
+                wx.openSetting({
+                  success: function(res) {
+                    if (!res.authSetting['scope.writePhotosAlbum']) {
+                      wx.authorize({
+                        scope: 'scope.writePhotosAlbum',
+                        success() {
+                          //that.methods.saveImgToAl();
+                        }
+                      })
+                    }
+                  }
+                })
+              } else if (res.cancel) {
+                that.methods.preview();
+              }
+            }
+          })
+        }
+      });
+    }
+  };
+  onLoad(options) {
+    let that = this, res = request.systemInfo, rw = res.windowWidth;
+    setTimeout(() => {
+      that.containerStyle = {
+        width: rw,
+        height: rw * 1228 / 750
+      };
+      that.elifeShareKefu = wx.getStorageSync('elifeShareKefu');
+      that.$apply();
+    }, 0);
+    if (options.shareType == 2) {
+      that.shareType = 2;
+      that.$apply();
+    }
+    let user_id = wx.getStorageSync(request.server + 'user_id');
+    qrcodeUrl = url + "?appId=" + appId + "&page=pages/elife&scene=fromUserId=" + user_id; //拼接得到二维码资源URL
+    wx.showToast({
+      icon: "loading",
+      title: "海报生成中",
+      duration: 10000,
+      mask: true
+    });
+    that.draw();
+    // request.request('app/config', 'GET', {}, function(res) {
+    //   let _isEnable = res.isEnableBuyZunxiangActivity;
+    //   that._isEnable = _isEnable;
+    //   that.$apply();
+    // }, function() {
+    // }, { 'noToast': true });
+  }
+  onShow() {
+    workSign = 0;
+  }
+  /**
+   * canvas进行图片合成
+   */
+  draw() {
+    let that = this;
+    let casStyle = {
+      width: request.systemInfo.windowWidth * 510 / 750
+    };
+    casStyle.height = casStyle.width / 510 * 907
+    that.casStyle = casStyle;
+    that.$apply();
+    ctx = wx.createCanvasContext("cas"); //获取canvas组件
+    that.drawQr();
+  }
+  /**
+   * 绘制二维码
+   */
+  drawQr() {
+    let that = this;
+    let scaleX = that.casStyle.width; //屏幕宽度适配比例
+    let scaleY = that.casStyle.height; //屏幕高度适配比例
+    // let zxtempFilePath = wx.getStorageSync('zxtempFilePath');
+    let zxtempFilePath = '';
+    if (zxtempFilePath) {
+      console.log('拿缓存zxtempFilePath', zxtempFilePath)
+      wx.getImageInfo({
+        src: zxtempFilePath,
+        success: (rs) => {
+          that.posterSrc = tempPath = zxtempFilePath;
+          that.$apply();
+          wx.hideToast();
+        },
+        fail: (rs) => {
+          getQrAndBg();
+          wx.setStorageSync('zxtempFilePath', '');
+        }
+      })
+    } else {
+      getQrAndBg();
+    }
+
+    function getQrAndBg() {//拿到背景和二维码
+      // getById();
+      imageSrc = "../assets/images/elifeShareBg.png";
+      workSign++;
+      that.drawBg();
+      wx.downloadFile({
+        url: qrcodeUrl,
+        success(res) {
+          wx.getImageInfo({
+            src: res.tempFilePath,
+            success: (rs) => {
+              ctx.drawImage(res.tempFilePath, scaleX * 0.675, scaleY * 0.838, scaleX * 0.273, scaleX * 0.273);
+              workSign++;
+              console.log('进行画', res.tempFilePath)
+              that.drawBg();
+            },
+            fail: (rs) => {
+              console.log('后台不给力', rs)
+            }
+          })
+        },
+        fail: () => { }
+      });
+    }
+
+  }
+  /**
+   * 绘制背景图
+   */
+  drawBg() {
+    let that = this;
+    let bgWidth = that.casStyle.width, bgHeight = that.casStyle.height;
+    if (workSign < 2) {
+      return;
+    }
+    wx.downloadFile({
+      url: imageSrc,
+      success: (res) => {
+        wx.hideToast();
+        let bgTempPath = res.tempFilePath;
+        ctx.drawImage(bgTempPath, 0, 0, bgWidth, bgHeight);
+        ctx.draw();
+        that.casToFile();
+      }
+    });
+  }
+  /**
+   * 导出canvas到图片
+   */
+  casToFile() {
+    let that = this;
+    // 导出到本地文件
+    wx.canvasToTempFilePath({
+      canvasId: "cas",
+      success: (res) => {
+        //that.posterSrc = res.tempFilePath;
+        tempPath = res.tempFilePath;
+        that.$apply();
+        wx.setStorageSync('zxtempFilePath', res.tempFilePath);
+      },
+      fail: () => {
+      }
+    });
+
+  }
+  onShareAppMessage() {
+    return {
+      title: "#国民医保#600万高端医疗险，进口药报销，100%赔付",
+      path: "pages/elife",
+      imageUrl: request.getImgServerApi() + 'detail/share/elife.png',
+      success: (res) => {
+        // 分享成功
+      },
+      fail: (res) => {
+        // 分享失败
+      }
+    }
+  }
+}
+</script>

@@ -48,7 +48,7 @@
             </view>
             <view class="li2">
                 <button type="primary" open-type="share">邀请好友帮忙</button>
-                <button type="primary" @tap="saveImgToAl">生成找人海报</button>
+                <button type="primary" @tap="toPoster">生成找人海报</button>
             </view>
         </view>   
     </view>
@@ -87,6 +87,7 @@ export default class find extends wx.page {
         findNum: '',
         disableBind: !0,
         opacity: 0.4,
+        findId: '',
         errorRedPacket: !1,
         errorFind: !1,
         errorWechat: !1,
@@ -159,9 +160,6 @@ export default class find extends wx.page {
     }
     eventHandle() {
         let that = this;
-        for (let i = 0;i<6;i++) {
-            this.findNum+= Math.floor( Math.random()*10 )
-        }
         let a = {
             money: that.redPacket,
             intro: that.find,
@@ -169,11 +167,26 @@ export default class find extends wx.page {
         }
         http.request("App.Find_Record.Create", "POST", a, (res) => {
             console.log('res',res);
+            that.findId = res;
+            let b = {
+                id: that.findId
+            }
+            http.request("App.Find_Record.GetIntroRecord", "POST", b, (res) => {
+                console.log('res',res);
+                that.findNum = res.code;
+                that.$apply();
+            }, (err) => {}, {
+                noToast: true
+            });
             that.$apply();
         }, (err) => {}, {
             noToast: true
         });
-        this.type = 2
+        this.type = 2;
+        wx.showModal({
+            content: '引荐人、被引荐人平分红包',
+            showCancel: false,
+        });
     }
     onShareAppMessage() {
         return {
@@ -188,49 +201,9 @@ export default class find extends wx.page {
             }
         }
     }
-    saveImgToAl() {
-        let that = this;
-        getApp().zast.sendEvent('18.1493.pD4');
-        if (!wx.saveImageToPhotosAlbum) {
-            wx.showModal({
-                content: '您的微信版本过低，不能保存图片，请升级重试'
-            })
-            return;
-        }
-        wx.saveImageToPhotosAlbum({
-            filePath: tempPath,
-            success: function(res) {
-            wx.showToast({
-                title: "海报已保存至相册",
-                icon: "success",
-                mask: true,
-            });
-            },
-            fail: function() {
-            wx.showModal({
-                content: '需要授权才可保存到相册哦',
-                confirmText: '前往授权',
-                showCancel: true,
-                success(res) {
-                    if (res.confirm && wx.openSetting) {
-                        wx.openSetting({
-                            success: function(res) {
-                                if (!res.authSetting['scope.writePhotosAlbum']) {
-                                    wx.authorize({
-                                        scope: 'scope.writePhotosAlbum',
-                                        success() {
-                                            //that.methods.saveImgToAl();
-                                        }
-                                    })
-                                }
-                            }
-                        })
-                    } else if (res.cancel) {
-                        that.methods.preview();
-                    }
-                }
-            })
-            }
+    toPoster() {
+        wx.navigateTo({
+            url: "/pages/poster"
         });
     }
     onLoad(options) {

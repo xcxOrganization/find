@@ -61,6 +61,11 @@ function testRedPacket(redPacket) {//匹配大于0的整数
   return reg.test(redPacket);
 }
 
+function testFind(Find) {//匹配大于6的位数
+  var reg = /^[a-zA-Z0-9]{6,}$/; //匹配大于6的位数
+  return reg.test(Find);
+}
+
 function testPhone(phone) {//匹配手机号码
   var reg = /^((1[0-9]{2})+\d{8})$/;
   return reg.test(phone);
