@@ -22,15 +22,12 @@
                 </view>-->
                 <view class='list flex-xy' wx:for='{{inviteRewardRecords}}' wx:key='index' item='item' data-item='{{item}}'>
                     <view class='list-left flex-xy'>
-                        <image src='./../assets/images/behaviorType1.png'/>
-                        <!--<image wx:if="{{item.behaviorType == 1}}" src='./../assets/images/behaviorType1.png'/>
-                        <image wx:if="{{item.behaviorType == 2}}" src='./../assets/images/behaviorType2.png'/>-->
                         <view class="listLabel">
-                            <view class="desc">{{item.showTitle}}</view>
-                            <view class="date">{{item.createdAt}}</view>
+                            <view class="desc">{{item.wx_creator_avatarUrl}}</view>
+                            <view class="date">{{item.create_time}}</view>
                         </view>
                     </view>
-                    <view class='list-right'>{{item.reward>0?'+':'-'}}{{item.reward}}</view>
+                    <view class='list-right'>{{item.money>0?'+':'-'}}{{item.money}}</view>
                 </view>
                 <view wx:if="{{!inviteRewardRecords || inviteRewardRecords.length==0}}" class="default">
                     <view>
