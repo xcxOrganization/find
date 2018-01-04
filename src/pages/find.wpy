@@ -190,12 +190,11 @@ export default class find extends wx.page {
     }
     onShareAppMessage() {
         let that = this
-        let redPacket = that.redPacket
-        let find = that.find
-        let wechat = that.wechat
+        let findId = that.findId
+        let type = 2
         return {
             title: "送红包：Hi，给你推荐个朋友",
-            path: 'pages/referrer?type=' + 2 + '&redPacket=' + redPacket + '&find=' + find + '&wechat=' + wechat,
+            path: 'pages/referrer?type=' + type + '&idOne=' + findId,
             imageUrl: "",
             success: (res) => {
                 // 分享成功
