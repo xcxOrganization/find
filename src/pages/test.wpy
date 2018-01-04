@@ -1,0 +1,86 @@
+<template>
+    <view class="container">
+            <form report-submit="true" bindsubmit="toSave">
+                <button class="weui-btn activeBtn" formType="submit" >收集formid</button>
+            </form>
+            <input class="li-item-input" name="input" type="number" bindinput="getVal" placeholder="请输入红包金额" />
+            <form report-submit="true" bindsubmit="toPay">
+                <button class="weui-btn activeBtn" formType="submit" >支付</button>
+            </form>
+    </view>
+</template>
+
+<script>
+import wx from "wepy";
+import config from "../config";
+import request from "../utils/request";
+export default class extends wx.page {
+  config = {
+    navigationBarBackgroundColor: "#fff",
+    navigationBarTitleText: "帮忙找人"
+  };
+  data = {
+    value: 0
+  };
+  methods = {
+    getVal(e){
+      this.value = e.detail.value*100;
+    },
+    toSave(e) {
+      // 收集formId
+      if (!e || !e.detail || !e.detail.formId) {
+        return;
+      }
+
+      request.request(
+        "App.Find_IntroSuccessRecord.SendModuleMsg",
+        "POST",
+        {
+          formId: e.detail.formId
+        },
+        function(res) {
+          console.log("测试收集formid接口上传>>>", e.detail.formId);
+          console.log("测试收集formid接口返回>>>", res);
+        },
+        function() {},
+        { noToast: true }
+      );
+    },
+    toPay() {
+      if(this.value<0){
+        return;
+      }
+      request.request(
+        "App.Find_Pay.PrePay",
+        "POST",
+        {
+          total_fee: this.value
+        },
+        function(res) {
+          console.log("测试预支付接口返回>>>", res);
+          let payData = res;
+          //微信支付
+          wx.requestPayment({
+            timeStamp: payData.timeStamp,
+            nonceStr: payData.nonceStr,
+            package: payData.package,
+            signType: payData.signType,
+            paySign: payData.paySign,
+            success: function(res) {},
+            fail: function(res) {},
+            complete: function(res) {}
+          });
+        },
+        function() {},
+        { noToast: true }
+      );
+    }
+  };
+}
+</script>
+
+<style lang="less">
+page {
+  background: #fff;
+}
+</style>
