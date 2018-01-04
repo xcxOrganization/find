@@ -13,7 +13,8 @@ export default class extends wepy.app {
             'pages/referee',
             'pages/about',     //关于页面
             'pages/history',     //找人记录
-            'pages/withdrawCash' //提现
+            'pages/withdrawCash', //提现
+            'pages/receiveHistory' //提现记录
         ],
         window: {
             backgroundTextStyle: 'light',
