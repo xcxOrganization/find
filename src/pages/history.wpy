@@ -76,7 +76,7 @@ export default class WithdrawHistory extends wepy.page {
     curPage2: 0,
     total2: 1,
     imgUrl: request.getImgServerApi() + "my/RMB.png",
-    defaultImg: request.getImgServerApi() + "my/record_empty@2x.png",
+    defaultImg: '',//request.getImgServerApi() + "my/record_empty@2x.png",
     warningImg: request.getImgServerApi() + "my/warning.png"
   };
   mixins = [mixin];
@@ -106,7 +106,9 @@ export default class WithdrawHistory extends wepy.page {
     that.inviteRewardRecords = [];
     that.$apply();
 
-    that.sendPackageReq();
+    setTimeout(()=>{
+      that.sendPackageReq();
+    },2000)
     that.sendRewardReq();
   }
   sendPackageReq() {

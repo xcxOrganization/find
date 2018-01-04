@@ -17,8 +17,9 @@ var pt = Login.prototype;
 pt.wechatapplogin = function (parm, fn) {
 	let that = this;
 	console.log(parm);
-	if(parm.iv && parm.encryptedData){
-		parm.thirdSessionKey = wx.getStorageSync(server + 'token');
+	if(parm.iv && parm.encryptedData && !wx.getStorageSync(server + '_addUser')){
+		let token = wx.getStorageSync(server + 'token');
+		parm.thirdSessionKey = token;
 		that.addUser(parm);
 		return;
 	}
@@ -79,6 +80,7 @@ pt.toLogin = function (fn) {
 				that.wechatapplogin(parm, fn);//获取数据权限
 			} else {
 				loginSts = !1;//取消登录状态
+				if(fn)
 				fn.call(that,code);
 			}
 		},
@@ -132,7 +134,7 @@ pt.addUser = function (parm) {
 		},
 		success: function (resRes) {
 			console.log('addUser成功', resRes);
-			wx.setStorageSync('addUser');
+			wx.setStorageSync(server + '_addUser',true);
 		},
 		fail: (err) => {
 			log.saveInfo('addUser失败', err, parm);
