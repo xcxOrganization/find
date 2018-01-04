@@ -308,22 +308,26 @@ export default class referrer extends wx.page {
             url: "/pages/referee"
         });
     }
-    // onLoad(options) {
-    //     let that = this;
-    //     let a = {
-    //         id: 3
-    //     }    
-    //     http.request("App.Find_Record.GetIntroRecord", "POST", a, (res) => {
-    //         console.log('res',res);
-    //         that.introducerCode = res.wx_introducer_code;
-    //         if(that.introducerCode!==""){
-    //             that.typeOne = 2
-    //         }
-    //         that.$apply();
-    //     }, (err) => {}, {
-    //         noToast: true
-    //     });       
-    // }
+    onLoad(options) {
+        console.log(options);
+        let that = this;
+        let type = options.type;
+        that.type = type;
+        let idOne = options.idOne;
+        that.idOne = idOne;
+        let a = {
+            id: that.idOne
+        }    
+        http.request("App.Find_Record.GetIntroRecord", "POST", a, (res) => {
+            console.log('res',res);
+            that.redPacket = res.money;
+            that.find = res.intro;
+            that.inputVal = res.code;
+            that.$apply();
+        }, (err) => {}, {
+            noToast: true
+        });       
+    }
 }
 </script>
 
