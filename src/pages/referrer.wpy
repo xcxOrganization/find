@@ -163,7 +163,10 @@ export default class referrer extends wx.page {
         referrer: "",
         referee: "",
         idOne: "",
-        idTwo: ""
+        idTwo: "",
+        idThree: "",
+        introducer_avatarUrl: "",
+        introducered_avatarUrl: ""
     };
     bindInputVal(e) {
         this.inputVal = e.detail.value;
@@ -203,25 +206,67 @@ export default class referrer extends wx.page {
             record_id: that.idOne,
             wx_introducer_code: that.referrer
         }
-        http.request("App.Find_IntroRecord.Intro", "POST", a, (res) => {
+        // 引荐人提交数据
+        http.request("App.Find_IntroRecord.Intro", "POST", a, (res) => {  
             console.log('res',res);
             if(res!==''){
-                that.idTwo = res.intro_user_id;
-                that.typeOne = 2
+                that.idTwo = res;
+                that.typeOne = 2;
+                let b = {
+                    id: that.idOne,
+                    intro_user_id: that.idTwo
+                }
+                // 引荐人提交数据页面和提交数据后页面详情
+                http.request("App.Find_Record.GetIntroRecord", "POST", b, (res) => {
+                    console.log('res2',res);
+                    that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
+                    that.$apply();
+                }, (err) => {}, {
+                    noToast: true
+                });
             }
             that.$apply();
         }, (err) => {
-            console.log('微信号错误！');
+            console.log('错误！');
         }, {
             noToast: true
-        });
-         
+        });    
     }
     toTypeTwo2() {
         this.typeTwo = 2
     }
     toTypeTwo3() {
-        this.typeTwo = 3
+        let that=this;
+        let a = {
+            record_id: that.idOne,
+            intro_user_id: that.idTwo,
+            wx_introducered_code: that.referee
+        }
+        // 被引荐人提交数据
+        http.request("App.Find_IntroSuccessRecord.Intro", "POST", a, (res) => {
+            console.log('res',res);
+            if(res!==''){
+                that.idThree = res.intro_success_id;
+                that.typeTwo = 3;
+                let b = {
+                    id: that.idThree
+                }
+                // 被推荐人提交数据后引荐成功信息页面详情
+                http.request("App.Find_Record.GetOperRecord", "POST", b, (res) => {
+                    console.log('res',res);
+                    that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
+                    that.referee = res.wx_introducer_avatarUrl; 
+                    that.$apply();
+                }, (err) => {}, {
+                    noToast: true
+                });
+            }
+            that.$apply();
+        }, (err) => {
+            console.log('错误！');
+        }, {
+            noToast: true
+        });
     }
     copyReferrer() {
         let that=this
@@ -255,7 +300,7 @@ export default class referrer extends wx.page {
             content: "你输入的找人码错误"
         });
         } else {
-        this.typeChild = 2;
+            this.typeChild = 2;
         }
     }
     share() {
