@@ -36,7 +36,7 @@ export default class WithdrawHistory extends wepy.page {
     }
     mixins = [mixin]
     config = {
-        navigationBarTitleText: '提现记录'
+        navigationBarTitleText: '提现明细'
     }
     props = {}
     methods = {

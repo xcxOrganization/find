@@ -36,7 +36,7 @@ export default class extends wx.page {
   methods = {
     toList() {
       wx.navigateTo({
-        url: "/pages/history"
+        url: "/pages/receiveHistory"
       });
     },
     bindRedPacket(e) {

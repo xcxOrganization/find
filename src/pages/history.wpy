@@ -99,7 +99,7 @@ export default class WithdrawHistory extends wepy.page {
   };
   mixins = [mixin];
   config = {
-    navigationBarTitleText: "记录"
+    navigationBarTitleText: "找人记录"
   };
   methods = {
     changeTab(e) {
