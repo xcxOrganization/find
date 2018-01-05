@@ -9,66 +9,60 @@
             </view>
         </view>
 
-        <view wx-if="{{curIndex == 0}}" style="margin-top: 140rpx;">
-            <view class='circle_bg'>
+        <view wx-if="{{curIndex == 0}}" style="margin-top: 100rpx;">
+            <!--<view class='circle_bg'>
                 <view class='circle'>
                     <view class='txt'>累计奖励</view>
                     <view class='num'>{{rewardSum}}</view>
                 </view>
-            </view>
+            </view>-->
             <view class="historyContainer">
-                <view class='list-title' @tap='showTip'>明细
+                <!--<view class='list-title' @tap='showTip'>明细
                     <image class='warning' src='{{warningImg}}'/>
-                </view>
-                <view class='list flex-xy' wx:for='{{inviteRewardRecords}}' wx:key='index' item='item' data-item='{{item}}'>
-                    <view class='list-left flex-xy'>
-                        <image src='./../assets/images/behaviorType1.png'/>
-                        <!--<image wx:if="{{item.behaviorType == 1}}" src='./../assets/images/behaviorType1.png'/>
-                        <image wx:if="{{item.behaviorType == 2}}" src='./../assets/images/behaviorType2.png'/>-->
-                        <view class="listLabel">
-                            <view class="desc">{{item.showTitle}}</view>
-                            <view class="date">{{item.createdAt}}</view>
-                        </view>
-                    </view>
-                    <view class='list-right'>{{item.reward>0?'+':'-'}}{{item.reward}}</view>
+                </view>-->
+                <view class='listContainer' wx:for='{{inviteRewardRecords}}' wx:key='index' item='item' data-item='{{item}}'>
+                  <view class='list flex-xy'>
+                      <view class='list-left flex-xy'>
+                          <view class="listLabel">
+                              <view class="desc" style="font-weight:700;font-size:38rpx;">找人码：{{item.code}}</view>
+                          </view>
+                      </view>
+                      <view class='list-right' style="color:#FEA157;font-size:34rpx;font-weight:700;">{{item.money}}元</view>
+                  </view>
+                  <view class='intro'>{{item.intro}}</view>
+                  <view class='list flex-xy'>
+                      <view class='list-left flex-xy'>
+                          <view class="listLabel">
+                              <view class="date">{{item.create_time}}</view>
+                          </view>
+                      </view>
+                      <view wx:if='{{item.oper_state==1}}' class='list-right circle' style="border-color:#5CA4FF;color:#5CA4FF">进行中</view>
+                      <view wx:if='{{item.oper_state==2}}' class='list-right circle' style="border-color:#ccc;color:#ccc">过期失效</view>
+                      <view wx:if='{{item.oper_state==3}}' class='list-right circle' style="border-color:#5CA4FF;color:#5CA4FF">引荐成功</view>
+                  </view>
                 </view>
                 <view wx:if="{{!inviteRewardRecords || inviteRewardRecords.length==0}}" class="default">
                     <view>
                         <image src='{{defaultImg}}'/>
                     </view>
-                    <view>暂无记录1</view>
+                    <view>暂无记录</view>
                 </view>
             </view>
         </view>
 
         <view wx-if="{{curIndex == 1}}" class="container">
-            <view class='list flex-xy' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
+            <view class='listContainer list flex-xy' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
                 <view class='list-left flex-xy'>
-                    <image src='{{imgUrl}}'/>
-                    <view>{{item.createdAt}}</view>
+                    <image src='{{item.wx_creator_avatarUrl}}'/>
+                    <view>{{item.create_time}}</view>
                 </view>
-                <view class='list-right'>{{item.reward}}元</view>
+                <view class='list-right'>{{item.money}}元</view>
             </view>
             <view wx:if="{{!list2 || list2.length==0}}" class="default">
                 <view>
                     <image src='{{defaultImg}}'/>
                 </view>
-                <view>暂无记录2</view>
-            </view>
-        </view>
-        <view wx-if="{{curIndex == 2}}" class="container">
-            <view class='list flex-xy' wx:for='{{list3}}' wx:key='index' item='item' data-item='{{item}}'>
-                <view class='list-left flex-xy'>
-                    <image src='{{imgUrl}}'/>
-                    <view>{{item.createdAt}}</view>
-                </view>
-                <view class='list-right'>{{item.reward}}元</view>
-            </view>
-            <view wx:if="{{!list3 || list3.length==0}}" class="default">
-                <view>
-                    <image src='{{defaultImg}}'/>
-                </view>
-                <view>暂无记录3</view>
+                <view>暂无记录</view>
             </view>
         </view>
     </view>
@@ -81,20 +75,17 @@ import mixin from "../mixins/redux";
 
 export default class WithdrawHistory extends wepy.page {
   data = {
-    inviteRewardRecords: [], //邀请记录
-    list2: [], //领取记录
-    list3: [], //领取记录
+    inviteRewardRecords: [], //找人
+    list2: [], //引荐
     rewardSum: "0.00", //累计邀请奖励金额
-    tabs: ["邀请记录", "领取记录", "领取记录"],
+    tabs: ["找人", "引荐"],
     curIndex: 0,
     curPage1: 0,
     total1: 1,
     curPage2: 0,
     total2: 1,
-    curPage3: 0,
-    total3: 1,
     imgUrl: request.getImgServerApi() + "my/RMB.png",
-    defaultImg: request.getImgServerApi() + "my/record_empty@2x.png",
+    defaultImg: "", //request.getImgServerApi() + "my/record_empty@2x.png",
     warningImg: request.getImgServerApi() + "my/warning.png"
   };
   mixins = [mixin];
@@ -120,17 +111,16 @@ export default class WithdrawHistory extends wepy.page {
     let that = this;
     that.curPage1 = 0;
     that.curPage2 = 0;
-    that.curPage3 = 0;
     that.list2 = [];
     that.inviteRewardRecords = [];
-    that.list3 = [];
     that.$apply();
 
-    that.send_PackageList_req();
-    that.send_inviteRewardRecord_req();
-    that.send_list3_req();
+    setTimeout(() => {
+      that.sendPackageReq();
+    }, 2000);
+    that.sendRewardReq();
   }
-  send_PackageList_req() {
+  sendPackageReq() {
     //发起请求
     let that = this,
       newPage = that.curPage2 - 0 + 1,
@@ -140,8 +130,8 @@ export default class WithdrawHistory extends wepy.page {
       return;
     }
     request.request(
-      "inviter/inviteRewardTask/" + newPage,
-      "GET",
+      "App.Find_Record.GetFindIntroRecord",
+      "POST",
       {},
       res => {
         if (!res) {
@@ -156,12 +146,33 @@ export default class WithdrawHistory extends wepy.page {
           that.total2 = res.total;
           that.list2 = list;
         }
+
+        that.list2 = [
+          {
+            intro: "找人描述找人描述找人描述找人描述找人描述找人描述找人描述",
+            wx_creator_avatarUrl:
+              "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTI643alLPLydhibxZWtsLWSgnXLfnBKRw8miajiaiaciclUKNBjEBfYy4oQicaFxvic08icYlHVXiblQuicibvqg/0",
+            wx_creator_nickName: "名称1",
+            money: "12",
+            oper_state: 1, //1.进行中 2.过期失效 3.引荐成功
+            create_time: "2017-09-09"
+          },
+          {
+            intro: "找人描述2",
+            wx_creator_avatarUrl:
+              "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTI643alLPLydhibxZWtsLWSgnXLfnBKRw8miajiaiaciclUKNBjEBfYy4oQicaFxvic08icYlHVXiblQuicibvqg/0",
+            wx_creator_nickName: "名称2",
+            money: "2",
+            oper_state: 2, //1.进行中 2.过期失效 3.引荐成功
+            create_time: "2017-09-01"
+          }
+        ];
         that.$apply();
       },
-      function() {}
+      () => {}
     );
   }
-  send_inviteRewardRecord_req() {
+  sendRewardReq() {
     //发起请求
     let that = this,
       newPage = that.curPage1 - 0 + 1,
@@ -171,8 +182,8 @@ export default class WithdrawHistory extends wepy.page {
       return;
     }
     request.request(
-      "inviter/inviteRewardRecord/" + newPage,
-      "GET",
+      "App.Find_Record.GetFindRecord",
+      "POST",
       {},
       res => {
         if (!res) {
@@ -190,40 +201,22 @@ export default class WithdrawHistory extends wepy.page {
           that.total1 = res.total;
           that.inviteRewardRecords = list;
         }
-        that.$apply();
-      },
-      function() {}
-    );
-  }
-  send_list3_req() {
-    //发起请求
-    let that = this,
-      newPage = that.curPage3 - 0 + 1,
-      list = [];
-    let sign = that.refuseMuchClick(); //防止多次触发
-    if (!sign) {
-      return;
-    }
-    request.request(
-      "inviter/inviteRewardRecord/" + newPage,
-      "GET",
-      {},
-      res => {
-        if (!res) {
-          return;
-        }
-        that.rewardSum = res.rewardSum
-          ? Number(res.rewardSum).toFixed(2)
-          : "0.00";
-        that.curPage3 = newPage;
-        list = that.inviteRewardRecords;
-        if (res.list && res.list.length > 0) {
-          for (var i = 0, len = res.list.length; i < len; i++) {
-            list.push(res.list[i]);
+        that.inviteRewardRecords = [
+          {
+            intro: "找人描述找人描述找人描述找人描述找人描述找人描述找人描述",
+            code: "123132",
+            money: "12",
+            oper_state: 1, //1.进行中 2.过期失效 3.引荐成功
+            create_time: "2017-09-09"
+          },
+          {
+            intro: "找人描述2",
+            code: "478976",
+            money: "21",
+            oper_state: 2, //1.进行中 2.过期失效 3.引荐成功
+            create_time: "2017-09-01"
           }
-          that.total3 = res.total;
-          that.list3 = list;
-        }
+        ];
         that.$apply();
       },
       function() {}
@@ -234,15 +227,11 @@ export default class WithdrawHistory extends wepy.page {
     if (that.curIndex == 0) {
       //邀请记录分页
       if (that.curPage1 < that.total1) {
-        that.send_inviteRewardRecord_req();
+        that.sendRewardReq();
       }
     } else if (that.curIndex == 1) {
       if (that.curPage2 < that.total2) {
-        that.send_PackageList_req();
-      }
-    } else if (that.curIndex == 2) {
-      if (that.curPage3 < that.total3) {
-        that.send_list3_req();
+        that.sendPackageReq();
       }
     }
   }
@@ -365,9 +354,16 @@ page {
     padding: 0 30rpx;
     .list-right {
       flex: none;
-      width: 100rpx;
+      width: 200rpx;
       text-align: right;
       margin-right: 20rpx;
+      &.circle{
+        border:1rpx solid #ccc;
+        padding:10rpx 20rpx;
+        text-align:center;
+        width:140rpx;
+        border-radius: 8rpx;
+      }
     }
   }
 
@@ -386,15 +382,20 @@ page {
       vertical-align: top;
     }
   }
+  .listContainer {
+    padding: 30rpx 0;
+    border-bottom: 1rpx solid #f3f3f7;
+    font-size: 30rpx;
+    .intro{
+      padding:30rpx 0;
+    }
+  }
   .list {
     width: 100%;
     height: auto;
     box-sizing: border-box;
-    padding: 50rpx 0;
     background: #fff;
     justify-content: space-between;
-    border-bottom: 1rpx solid #f3f3f7;
-    font-size: 30rpx;
     .list-left {
       .listLabel {
         flex-grow: 1;

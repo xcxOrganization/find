@@ -21,10 +21,11 @@ function getServerUrl(route) {
 
 function request(route, method, data, success, fail, other) {
 	accessToken = wx.getStorageSync(server + 'token');
-	console.log(accessToken, 'accessToken');
+	console.log('request');
 	let args = arguments;
 	if (accessToken == '') {
 		new Login().init();//登录
+		console.log('observer.list.push');
 		observer.list.push(function () {
 			request.apply(null, args);
 		});
@@ -34,6 +35,7 @@ function request(route, method, data, success, fail, other) {
 }
 
 function common_req() {
+	console.log('common_req');
 	let args = arguments;
 	let noModal = false;
 	if (!args[5] || !args[5].noToast) { //需要加载toast的情况
@@ -47,16 +49,14 @@ function common_req() {
 	if (args[5] && args[5].noModal) { //不需要加载modal的情况
 		noModal = true;
 	}
-	let header = {
-		'content-type': 'application/json'
-	};
 
-	console.log('>>>>',getServerUrl(args[0]) + '&' + Util.objSort(args[2]));
 	wepy.request({
 		url: getServerUrl(args[0]) + '&' + Util.objSort(args[2]),
 		method: args[1],
 		data: args[2],
-		header,
+		header: {
+			'content-type': 'application/json'
+		},
 		success: (res) => {
 			console.log('请求链接 >>>> ' + getServerUrl(args[0]) + '&' + Util.objSort(args[2]) + '>>>> 返回 >>>>', res);
 			wx.hideToast();
