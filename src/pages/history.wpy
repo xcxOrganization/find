@@ -9,7 +9,7 @@
             </view>
         </view>
 
-        <view wx-if="{{curIndex == 0}}" style="margin-top: 140rpx;">
+        <view wx-if="{{curIndex == 0}}" style="margin-top: 100rpx;">
             <!--<view class='circle_bg'>
                 <view class='circle'>
                     <view class='txt'>累计奖励</view>
@@ -20,14 +20,26 @@
                 <!--<view class='list-title' @tap='showTip'>明细
                     <image class='warning' src='{{warningImg}}'/>
                 </view>-->
-                <view class='list flex-xy' wx:for='{{inviteRewardRecords}}' wx:key='index' item='item' data-item='{{item}}'>
-                    <view class='list-left flex-xy'>
-                        <view class="listLabel">
-                            <view class="desc">{{item.wx_creator_avatarUrl}}</view>
-                            <view class="date">{{item.create_time}}</view>
-                        </view>
-                    </view>
-                    <view class='list-right'>{{item.money>0?'+':'-'}}{{item.money}}</view>
+                <view class='listContainer' wx:for='{{inviteRewardRecords}}' wx:key='index' item='item' data-item='{{item}}'>
+                  <view class='list flex-xy'>
+                      <view class='list-left flex-xy'>
+                          <view class="listLabel">
+                              <view class="desc" style="font-weight:700;font-size:38rpx;">找人码：{{item.code}}</view>
+                          </view>
+                      </view>
+                      <view class='list-right' style="color:#FEA157;font-size:34rpx;font-weight:700;">{{item.money}}元</view>
+                  </view>
+                  <view class='intro'>{{item.intro}}</view>
+                  <view class='list flex-xy'>
+                      <view class='list-left flex-xy'>
+                          <view class="listLabel">
+                              <view class="date">{{item.create_time}}</view>
+                          </view>
+                      </view>
+                      <view wx:if='{{item.oper_state==1}}' class='list-right circle' style="border-color:#5CA4FF;color:#5CA4FF">进行中</view>
+                      <view wx:if='{{item.oper_state==2}}' class='list-right circle' style="border-color:#ccc;color:#ccc">过期失效</view>
+                      <view wx:if='{{item.oper_state==3}}' class='list-right circle' style="border-color:#5CA4FF;color:#5CA4FF">引荐成功</view>
+                  </view>
                 </view>
                 <view wx:if="{{!inviteRewardRecords || inviteRewardRecords.length==0}}" class="default">
                     <view>
@@ -39,7 +51,7 @@
         </view>
 
         <view wx-if="{{curIndex == 1}}" class="container">
-            <view class='list flex-xy' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
+            <view class='listContainer list flex-xy' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
                 <view class='list-left flex-xy'>
                     <image src='{{item.wx_creator_avatarUrl}}'/>
                     <view>{{item.create_time}}</view>
@@ -73,7 +85,7 @@ export default class WithdrawHistory extends wepy.page {
     curPage2: 0,
     total2: 1,
     imgUrl: request.getImgServerApi() + "my/RMB.png",
-    defaultImg: '',//request.getImgServerApi() + "my/record_empty@2x.png",
+    defaultImg: "", //request.getImgServerApi() + "my/record_empty@2x.png",
     warningImg: request.getImgServerApi() + "my/warning.png"
   };
   mixins = [mixin];
@@ -103,9 +115,9 @@ export default class WithdrawHistory extends wepy.page {
     that.inviteRewardRecords = [];
     that.$apply();
 
-    setTimeout(()=>{
+    setTimeout(() => {
       that.sendPackageReq();
-    },2000)
+    }, 2000);
     that.sendRewardReq();
   }
   sendPackageReq() {
@@ -342,9 +354,16 @@ page {
     padding: 0 30rpx;
     .list-right {
       flex: none;
-      width: 100rpx;
+      width: 200rpx;
       text-align: right;
       margin-right: 20rpx;
+      &.circle{
+        border:1rpx solid #ccc;
+        padding:10rpx 20rpx;
+        text-align:center;
+        width:140rpx;
+        border-radius: 8rpx;
+      }
     }
   }
 
@@ -363,15 +382,20 @@ page {
       vertical-align: top;
     }
   }
+  .listContainer {
+    padding: 30rpx 0;
+    border-bottom: 1rpx solid #f3f3f7;
+    font-size: 30rpx;
+    .intro{
+      padding:30rpx 0;
+    }
+  }
   .list {
     width: 100%;
     height: auto;
     box-sizing: border-box;
-    padding: 50rpx 0;
     background: #fff;
     justify-content: space-between;
-    border-bottom: 1rpx solid #f3f3f7;
-    font-size: 30rpx;
     .list-left {
       .listLabel {
         flex-grow: 1;
