@@ -40,7 +40,7 @@
             </view>
         </view> 
         <view wx:if="{{type == 2}}">  
-            <findFlow :introAvatar.sync="introducer_avatarUrl"></findFlow>        
+            <findFlow :introAvatar.sync="introducer_avatarUrl" :introedAvatar.sync="introducered_avatarUrl"></findFlow>        
             <view class="input">
                 <view class="li2">
                     <view class="desc">红包</view>
@@ -245,18 +245,18 @@ export default class referrer extends wx.page {
         }
         // 被引荐人提交数据
         http.request("App.Find_IntroSuccessRecord.Intro", "POST", a, (res) => {
-            console.log('res-1',res);
+            console.log('res_1',res);
             if(res!==''){
                 that.idThree = res.intro_success_id;
                 that.typeTwo = 3;
                 let b = {
-                    id: that.idThree
+                    id: that.idOne
                 }
                 // 被推荐人提交数据后引荐成功信息页面详情
                 http.request("App.Find_Record.GetOperRecord", "POST", b, (res) => {
-                    console.log('res-2',res);
+                    console.log('res_2',res);
                     that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
-                    that.referee = res.wx_introducer_avatarUrl; 
+                    that.referee = res.wx_introducered_code; 
                     that.$apply();
                 }, (err) => {}, {
                     noToast: true

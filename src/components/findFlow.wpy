@@ -6,6 +6,7 @@
         <view class="row">
             <image class="selfAvatar" src="{{userInfo.headimgurl}}" style="border-radius:50%;"/>
             <image class="introducerAvatar" src="{{introAvatar}}" style="border-radius:50%;"/>
+            <image class="introduceredAvatar" src="{{introedAvatar}}" style="border-radius:50%;"/>
             <image class="find-banner" src="../assets/images/find_banner.png"/>
         </view>
     </view>
@@ -40,6 +41,12 @@ export default class findFlow extends wx.component {
     props = {
         // 组件双向数据绑定
         introAvatar: {
+            type: String,
+            twoWay: true,
+            default: 'null'
+        },
+
+        introedAvatar: {
             type: String,
             twoWay: true,
             default: 'null'
@@ -101,6 +108,14 @@ page {
               position: absolute;
               top: 28.333%;
               left: 44.333%;
+              z-index: 11;
+          }
+          .introduceredAvatar{
+              width: 90rpx;
+              height: 100rpx;
+              position: absolute;
+              top: 28.333%;
+              left: 77.333%;
               z-index: 11;
           }
           .find-banner{
