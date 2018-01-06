@@ -57,8 +57,8 @@ export default class extends wepy.mixin {
       })
     }
   }
-  saveFormId() { // 收集formId
-    let e = this;
+  saveFormId(e) { // 收集formId
+    //let e = this;
     if (!e || !e.detail || !e.detail.formId) {
       return;
     }
@@ -81,8 +81,8 @@ export default class extends wepy.mixin {
       }
     }
     formIdRecord.num++;
-    request.request('public/sendform', 'POST', {
-      formId: formId
+    request.request("App.Find_IntroSuccessRecord.SendModuleMsg", 'POST', {
+      formId
     }, function () {
       console.log('formId个数为：' + formIdRecord.num);
     }, function () {

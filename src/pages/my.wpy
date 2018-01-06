@@ -176,15 +176,15 @@ export default class My extends wepy.page {
   }
 
   // 分享
-  onShareAppMessage() {
+  /*onShareAppMessage() {
     return {
-      title: "[微信红包] 恭喜你被抽中了！一键开启惊喜，有红包噢～",
+      title: "Hi，给你引荐个朋友",
       path: "pages/index",
       imageUrl: http.getImgServerApi() + "imgs/share.jpg",
       success: res => {},
       fail: () => {}
     };
-  }
+  }*/
 }
 </script>
 
