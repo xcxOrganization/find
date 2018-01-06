@@ -82,7 +82,7 @@
                     </view>
                     <view wx:if="{{typeTwo==1}}">
                         <view class="li2 li2-btn">
-                            <button type="primary" @tap='toTypeTwo2'>分享给引荐的朋友</button>
+                            <button type="primary" open-type="share">分享给引荐的朋友</button>
                         </view>
                     </view>
                     <view wx:if="{{typeTwo==2}}">
@@ -240,9 +240,6 @@ export default class referrer extends wx.page {
         }, {
             noToast: true
         });    
-    }
-    toTypeTwo2() {
-        this.typeTwo = 2
     }
     toTypeTwo3() {
         let that=this;
