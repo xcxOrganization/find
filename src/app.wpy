@@ -1,105 +1,102 @@
 <script>
-import wepy from 'wepy'
-import config from './config'
-import Login from './utils/login.js'
-import Log from './utils/log.js'
+import wepy from "wepy";
+import config from "./config";
+import Login from "./utils/login.js";
+import Log from "./utils/log.js";
 export default class extends wepy.app {
-    config = {
-        pages: [
-            'pages/index',
-            'pages/my',
-            'pages/find',
-            'pages/poster',
-	        'pages/referrer',
-            'pages/about',     //关于页面
-            'pages/history',     //找人记录
-            'pages/withdrawCash', //提现
-            'pages/test', //测试支付
-            'pages/receiveHistory' //提现记录
-        ],
-        window: {
-            backgroundTextStyle: 'light',
-            navigationBarBackgroundColor: '#FFF',
-            navigationBarTitleText: '找人',
-            navigationBarTextStyle: 'black'
+  config = {
+    pages: [
+      "pages/index",
+      "pages/my",
+      "pages/find",
+      "pages/poster",
+      "pages/referrer",
+      "pages/about", //关于页面
+      "pages/history", //找人记录
+      "pages/withdrawCash", //提现
+      "pages/test", //测试支付
+      "pages/receiveHistory" //提现记录
+    ],
+    window: {
+      backgroundTextStyle: "light",
+      navigationBarBackgroundColor: "#FFF",
+      navigationBarTitleText: "找人",
+      navigationBarTextStyle: "black"
+    },
+    tabBar: {
+      color: "#8D8D8D",
+      selectedColor: "#F86136",
+      borderStyle: "#EBEBEB",
+      backgroundColor: "#ffffff",
+      list: [
+        {
+          pagePath: "pages/index",
+          iconPath: "assets/images/find.png",
+          selectedIconPath: "assets/images/find-on.png",
+          text: "找人"
         },
-        tabBar: {
-            color: '#8D8D8D',
-            selectedColor: '#F86136',
-            borderStyle: '#EBEBEB',
-            backgroundColor: '#ffffff',
-            list: [{
-                pagePath: 'pages/index',
-                iconPath: 'assets/images/find.png',
-                selectedIconPath: 'assets/images/find-on.png',
-                text: '找人'
-            },
-            {
-                pagePath: 'pages/my',
-                iconPath: 'assets/images/my.png',
-                selectedIconPath: 'assets/images/my-on.png',
-                text: '我的'
-            }]
+        {
+          pagePath: "pages/my",
+          iconPath: "assets/images/my.png",
+          selectedIconPath: "assets/images/my-on.png",
+          text: "我的"
         }
+      ]
     }
-    data = {
-
+  };
+  data = {};
+  globalData = {
+    userInfo: null
+  };
+  onShow(options) {}
+  onLaunch(options) {
+    if (!wx.getStorageSync(config.env + "token")) {
+      new Login().getUserInfo(); //登录
     }
-    globalData = {
-        userInfo: null
-    }
-    onShow(options) {
-        new Login().getUserInfo();//登录
-    }
-    onLaunch(options) {
-
-    }
-    onError(msg) {
-
-    }
+  }
+  onError(msg) {}
 }
 </script>
 
 <style lang="less">
 @import "./assets/less/weui.less";
 view {
-    font-family: Helvetica, Tahoma, "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-family: Helvetica, Tahoma, "Microsoft YaHei", "PingFang SC", sans-serif;
 }
 
 .weui-cell {
-    padding: 30rpx;
+  padding: 30rpx;
 }
 
 .flex {
+  display: flex;
+  .a {
     display: flex;
-    .a {
-        display: flex;
-    }
+  }
 }
 
 .flex-x {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .flex-y {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .flex-xy {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .flex-column {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .flex-grow {
-    flex-grow: 1;
+  flex-grow: 1;
 }
-
 </style>

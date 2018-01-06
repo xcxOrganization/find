@@ -25,7 +25,7 @@
             </view>
             
             <view class="li">
-              <form report-submit="true" style="width:100%;" bindsubmit="eventHandle">
+              <form report-submit="true" style="width:100%;" bindsubmit="toPay">
                 <button type="primary" formType="submit" disabled="{{disableBind}}" style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
               </form>
             </view>
@@ -170,7 +170,7 @@ export default class find extends wx.page {
       that.opacity = 0.4;
     }
   }
-  eventHandle(e) {
+  eventHandle() {
     let that = this;
     let a = {
       money: that.redPacket,
@@ -220,6 +220,40 @@ export default class find extends wx.page {
       confirmText: "知道了",
       confirmColor: "#F86136"
     });
+  }
+  toPay(e) {
+    let that = this;
+    // 收集formId
+    that.saveFormId.call(e);
+    if (!that.redPacket || that.redPacket < 0) {
+      return;
+    }
+    request.request(
+      "App.Find_Pay.PrePay",
+      "POST",
+      {
+        total_fee: that.redPacket //*100
+      },
+      function(res) {
+        console.log("测试预支付接口返回>>>", res);
+        let payData = res;
+        //微信支付
+        wx.requestPayment({
+          timeStamp: payData.timeStamp,
+          nonceStr: payData.nonceStr,
+          package: payData.package,
+          signType: payData.signType,
+          paySign: payData.paySign,
+          success: function(res) {
+            that.eventHandle();
+          },
+          fail: function(res) {},
+          complete: function(res) {}
+        });
+      },
+      function() {},
+      { noToast: true }
+    );
   }
   onShareAppMessage() {
     let that = this;

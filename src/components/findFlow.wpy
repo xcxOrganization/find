@@ -27,7 +27,6 @@
 
 <script>
 import wx from 'wepy'
-import http from "../utils/request.js"
 import mixin from '../mixins/redux'
 // import util from '../utils/util.js'
 export default class findFlow extends wx.component {

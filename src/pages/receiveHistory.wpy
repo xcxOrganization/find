@@ -17,7 +17,7 @@
             <view>
                 <image src='{{defaultImg}}'></image>
             </view>
-            <view>暂无领取记录</view>
+            <view>暂无提现记录</view>
         </view>
     </view>
 </template>
@@ -27,9 +27,9 @@ import wepy from 'wepy'
 import request from '../utils/request.js'
 import mixin from '../mixins/redux'
 
-export default class WithdrawHistory extends wepy.page {
+export default class extends wepy.page {
     data = {
-        inviteRewardTaskList: [],//领取记录
+        inviteRewardTaskList: [],//提现记录
         curPage: 0,
         defaultImg: '',//request.getImgServerApi() + 'my/record_empty@2x.png',
         warningImg: request.getImgServerApi() + 'my/warning.png'
