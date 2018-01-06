@@ -51,9 +51,18 @@ export default class extends wepy.app {
   };
   onShow(options) {}
   onLaunch(options) {
-    if (!wx.getStorageSync(config.env + "token")) {
-      new Login().getUserInfo(); //登录
-    }
+    wx.getUserInfo({
+      success: () => {
+        if (!wx.getStorageSync(config.env + "token")) {
+          new Login().getUserInfo(); //登录
+        }
+      },
+      fail: () => {
+        if (!wx.getStorageSync(config.env + "token")) {
+            new Login().init(); //静默登录
+        }
+      }
+    });
   }
   onError(msg) {}
 }
