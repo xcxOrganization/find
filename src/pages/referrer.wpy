@@ -39,7 +39,7 @@
             </view>
         </view> 
         <view wx:if="{{type == 2}}">  
-            <findFlow :introAvatar.sync="introducer_avatarUrl" :introedAvatar.sync="introducered_avatarUrl"></findFlow>        
+            <findFlow :creatorAvatar.sync="creator_avatarUrl" :introAvatar.sync="introducer_avatarUrl" :introedAvatar.sync="introducered_avatarUrl"></findFlow>        
             <view class="input">
                 <view class="li2">
                     <view class="desc">红包</view>
@@ -166,6 +166,7 @@ export default class referrer extends wx.page {
         idOne: "",
         idTwo: "",
         idThree: "",
+        creator_avatarUrl: "",
         introducer_avatarUrl: "",
         introducered_avatarUrl: ""
     };
@@ -226,6 +227,7 @@ export default class referrer extends wx.page {
                 // 引荐人提交数据页面和提交数据后页面详情
                 http.request("App.Find_Record.GetIntroRecord", "POST", b, (res) => {
                     console.log('res2',res);
+                    that.creator_avatarUrl = res.wx_creator_avatarUrl;
                     that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
                     console.log('res2详细',that.introducer_avatarUrl);
                     that.$apply();
