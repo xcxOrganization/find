@@ -147,7 +147,7 @@ export default class WithdrawHistory extends wepy.page {
           that.list2 = list;
         }
 
-        that.list2 = [
+        /*that.list2 = [
           {
             intro: "找人描述找人描述找人描述找人描述找人描述找人描述找人描述",
             wx_creator_avatarUrl:
@@ -166,7 +166,7 @@ export default class WithdrawHistory extends wepy.page {
             oper_state: 2, //1.进行中 2.过期失效 3.引荐成功
             create_time: "2017-09-01"
           }
-        ];
+        ];*/
         that.$apply();
       },
       () => {}
@@ -201,7 +201,7 @@ export default class WithdrawHistory extends wepy.page {
           that.total1 = res.total;
           that.inviteRewardRecords = list;
         }
-        that.inviteRewardRecords = [
+        /*that.inviteRewardRecords = [
           {
             intro: "找人描述找人描述找人描述找人描述找人描述找人描述找人描述",
             code: "123132",
@@ -216,7 +216,7 @@ export default class WithdrawHistory extends wepy.page {
             oper_state: 2, //1.进行中 2.过期失效 3.引荐成功
             create_time: "2017-09-01"
           }
-        ];
+        ];*/
         that.$apply();
       },
       function() {}
