@@ -21,7 +21,6 @@ function getServerUrl(route) {
 
 function request(route, method, data, success, fail, other) {
 	accessToken = wx.getStorageSync(server + 'token');
-	console.log('request');
 	let args = arguments;
 	if (accessToken == '') {
 		new Login().init();//登录
@@ -51,14 +50,14 @@ function common_req() {
 	}
 
 	wepy.request({
-		url: getServerUrl(args[0]) + '&' + Util.objSort(args[2]),
+		url: getServerUrl(args[0]),
 		method: args[1],
 		data: args[2],
 		header: {
-			'content-type': 'application/json'
+			'content-type': 'application/x-www-form-urlencoded'
 		},
 		success: (res) => {
-			console.log('请求链接 >>>> ' + getServerUrl(args[0]) + '&' + Util.objSort(args[2]) + '>>>> 返回 >>>>', res);
+			console.log('请求链接 >>>> ' + getServerUrl(args[0], res);
 			wx.hideToast();
 			if (args[5] && args[5].getCodeSts && res.data.ret != 200) {//需要拿到返回码数据的情况
 				args[3].call(this, res.data);

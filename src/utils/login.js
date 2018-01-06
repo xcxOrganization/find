@@ -16,7 +16,6 @@ var pt = Login.prototype;
 
 pt.wechatapplogin = function (parm, fn) {
 	let that = this;
-	console.log(parm);
 	if(parm.iv && parm.encryptedData && !wx.getStorageSync(server + '_addUser')){
 		let token = wx.getStorageSync(server + 'token');
 		parm.thirdSessionKey = token;
@@ -63,7 +62,6 @@ pt.wechatapplogin = function (parm, fn) {
 }
 
 pt.toLogin = function (fn) {
-	console.log('toLogin');
 	let that = this;
 	wx.login({
 		success: (res) => {
@@ -97,10 +95,13 @@ pt.getUserInfo = function (fn) {
 	that.toLogin((code) => {
 		wx.getUserInfo({
 			success: (resInfo) => {
+				console.log('resInfo',resInfo);
 				let parm = {
 					code: code,
 					encryptedData: resInfo.encryptedData,
-					iv: resInfo.iv
+					iv: resInfo.iv,
+					rawData: resInfo.rawData,
+					signature: resInfo.signature
 				}
 				that.wechatapplogin(parm, fn);//获取数据权限
 			}
@@ -122,7 +123,9 @@ pt.addUser = function (parm) {
 	let newParm = {
 		iv:parm.iv,
 		thirdSessionKey:parm.thirdSessionKey,
-		encryptedData:parm.encryptedData
+		encryptedData:parm.encryptedData,
+		rawData: parm.rawData,
+		signature: parm.signature
 	}
 	wx.request({
 		url: `${config.apiBase}` + 'App.Find_User.InsertUserInfo',
@@ -133,8 +136,10 @@ pt.addUser = function (parm) {
 			'Accept': 'application/json'
 		},
 		success: function (resRes) {
-			console.log('addUser成功', resRes);
-			wx.setStorageSync(server + '_addUser',true);
+			if(resRes && resRes.data && resRes.data.ret==200){
+				console.log('addUser成功', resRes);
+				wx.setStorageSync(server + '_addUser',true);
+			}
 		},
 		fail: (err) => {
 			log.saveInfo('addUser失败', err, parm);
