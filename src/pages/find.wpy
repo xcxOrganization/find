@@ -313,13 +313,8 @@ page {
           margin-top: 50rpx;
           position: relative;
           button{
-<<<<<<< HEAD
-              color: #fff;
-              background: #1AAD19;        
-=======
               opacity:0;
               z-index: 11;
->>>>>>> a8bf8857129a468ab0d4c563f31e46b645c1b547
               border-radius: 50rpx;
               padding-left: 36rpx;
               padding-right: 36rpx;
