@@ -311,7 +311,7 @@ page {
           margin-top: 50rpx;
           button{
               color: #fff;
-              background: #238CFF;        
+              background: #1AAD19;        
               border-radius: 50rpx;
               padding-left: 36rpx;
               padding-right: 36rpx;

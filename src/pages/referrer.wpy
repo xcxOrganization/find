@@ -91,9 +91,11 @@
                                 <input class="li-item-input" name="input" placeholder="请留下你的微信，方便联系" bindinput="bindReferee" placeholder-class="info_input" bindblur="redfereeOut" value="{{referee}}" />
                             </view>
                         </view>
+                        <form report-submit="true" bindsubmit="toTypeTwo3">
                         <view class="li2 li2-btn">
-                            <button type="primary" @tap='toTypeTwo3'>给TA引荐朋友，领红包</button>
+                            <button type="primary" @tap='toTypeTwo3' formType="submit">给TA引荐朋友，领红包</button>
                         </view>
+                        </form>
                     </view>
                     <view wx:if="{{typeTwo==3}}">
                         <view class="li2 li2-no-bot li2-copy">
@@ -137,250 +139,322 @@
 </template>
 
 <script>
-import wx from "wepy"
-import http from '../utils/request.js'
-import request from '../utils/request.js'
-import config from "../config"
-import findFlow from "../components/findFlow"
+import wx from "wepy";
+import http from "../utils/request.js";
+import request from "../utils/request.js";
+import config from "../config";
+import findFlow from "../components/findFlow";
 export default class referrer extends wx.page {
-    config = {
-        navigationBarBackgroundColor: "#fff",
-        navigationBarTitleText: "给TA引荐"
+  config = {
+    navigationBarBackgroundColor: "#fff",
+    navigationBarTitleText: "给TA引荐"
+  };
+  components = {
+    findFlow: findFlow
+  };
+  data = {
+    version: config.version,
+    inputVal: "",
+    type: 1,
+    typeOne: 1,
+    typeTwo: 1,
+    typeThree: 1,
+    redPacket: "",
+    find: "",
+    findNum: "",
+    introducerCode: "",
+    referrer: "",
+    referee: "",
+    idOne: "",
+    idTwo: "",
+    idThree: "",
+    introducer_avatarUrl: "",
+    introducered_avatarUrl: ""
+  };
+  bindInputVal(e) {
+    this.inputVal = e.detail.value;
+    // console.log(this.inputVal);
+  }
+  bindReferrer(e) {
+    this.referrer = e.detail.value;
+  }
+  bindReferee(e) {
+    this.referee = e.detail.value;
+  }
+  toType2() {
+    let that = this;
+    let a = {
+      code: that.inputVal
     };
-    components = {
-        findFlow: findFlow
-    };
-    data = {
-        version: config.version,
-        inputVal: "",
-        type: 1,
-        typeOne: 1,
-        typeTwo: 1,
-        typeThree: 1,
-        redPacket: "",
-        find: "",
-        findNum: "",
-        introducerCode: "",
-        referrer: "",
-        referee: "",
-        idOne: "",
-        idTwo: "",
-        idThree: "",
-        introducer_avatarUrl: "",
-        introducered_avatarUrl: ""
-    };
-    bindInputVal(e) {
-        this.inputVal = e.detail.value;
-        // console.log(this.inputVal);
-    }
-    bindReferrer(e) {
-        this.referrer = e.detail.value;
-    }
-    bindReferee(e) {
-        this.referee = e.detail.value;
-    }
-    toType2() {
-        let that=this;
-        let a = {
-            code: that.inputVal
-        }
-        http.request("App.Find_Record.CheckCode", "POST", a, (res) => {
-            console.log('res',res);
-            if(res==!1){
-                wx.showModal({
-                    content: '找人码不存在 或 已引荐成功！',
-                    showCancel: false,
-                    confirmText: '知道了',
-                    confirmColor: '#F86136'
-                });
-                console.log('找人码不存在 或 已引荐成功！');
-            }else{
-                that.redPacket = res.money;
-                that.find = res.intro;
-                that.idOne = res.id;
-                that.type = 2;
-            }          
-            that.$apply();
-        }, (err) => {
-            console.log('找人码为空！');
-        }, {
-            noToast: true
-        });
-    }
-    toTypeOne2() {
-        let that=this;
-        let a = {
-            record_id: that.idOne,
-            wx_introducer_code: that.referrer
-        }
-        // 引荐人提交数据
-        http.request("App.Find_IntroRecord.Intro", "POST", a, (res) => {  
-            console.log('res',res);
-            if(res!==''){
-                that.idTwo = res;
-                that.typeOne = 2;
-                let b = {
-                    id: that.idOne,
-                    intro_user_id: that.idTwo
-                }
-                // 引荐人提交数据页面和提交数据后页面详情
-                http.request("App.Find_Record.GetIntroRecord", "POST", b, (res) => {
-                    console.log('res2',res);
-                    that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
-                    console.log('res2详细',that.introducer_avatarUrl);
-                    that.$apply();
-                }, (err) => {}, {
-                    noToast: true
-                });
-            }
-            that.$apply();
-        }, (err) => {
-            console.log('错误！');
-        }, {
-            noToast: true
-        });    
-    }
-    toTypeTwo2() {
-        this.typeTwo = 2
-    }
-    toTypeTwo3() {
-        let that=this;
-        let a = {
-            record_id: that.idOne,
-            intro_user_id: that.idTwo,
-            wx_introducered_code: that.referee
-        }
-        // 被引荐人提交数据
-        http.request("App.Find_IntroSuccessRecord.Intro", "POST", a, (res) => {
-            console.log('res_1',res);
-            if(res!==''){
-                that.idThree = res.intro_success_id;
-                that.typeTwo = 3;
-                let b = {
-                    id: that.idOne
-                }
-                // 被推荐人提交数据后引荐成功信息页面详情
-                http.request("App.Find_Record.GetOperRecord", "POST", b, (res) => {
-                    console.log('res_2',res);
-                    that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
-                    that.referee = res.wx_introducered_code; 
-                    that.$apply();
-                }, (err) => {}, {
-                    noToast: true
-                });
-            }
-            that.$apply();
-        }, (err) => {
-            console.log('已存在引荐人和被引荐人！');
-        }, {
-            noToast: true
-        });
-    }
-    copyReferrer() {
-        let that=this
-        wx.setClipboardData({
-            data: that.referrer,
-            success: function(res) {
-                wx.getClipboardData({
-                    success: function(res) {
-                        console.log(res.data);
-                        wx.showToast({
-                            title: '复制成功',
-                            icon: 'success',
-                            duration: 1000
-                        })
-                    }
-                })
-            }
-        })
-    }
-    copyReferee() {
-        let that=this
-        wx.setClipboardData({
-            data: that.referee,
-            success: function(res) {
-                wx.getClipboardData({
-                    success: function(res) {
-                        console.log(res.data);
-                        wx.showToast({
-                            title: '复制成功',
-                            icon: 'success',
-                            duration: 1000
-                        })
-                    }
-                })
-            }
-        })
-    }
-    submit() {
-        if (this.form.referrer == "") {
-        wx.showModal({
-            content: "你输入的找人码错误"
-        });
-        } else {
-            this.typeChild = 2;
-        }
-    }
-    share() {
-        wx.navigateTo({
-            url: "/pages/referee"
-        });
-    }
-    onShareAppMessage() {
-        let that = this
-        let idOne = that.idOne
-        let idTwo = that.idTwo
-        let type = 2
-        let typeOne = 2
-        let typeTwo = 2
-        return {
-            title: "送红包：Hi，给你推荐个朋友",
-            path: 'pages/referrer?type=' + type + '&typeOne=' + typeOne  + '&typeTwo=' + typeTwo + '&idOne=' + idOne + '&idTwo=' + idTwo,
-            imageUrl: "",
-            success: (res) => {
-                // 分享成功
-            },
-            fail: (res) => {
-                // 分享失败
-            }
-        }
-    }
-    onMoneyTip() {
-        wx.showModal({
-            content: '引荐人、被引荐人平分红包',
+    http.request(
+      "App.Find_Record.CheckCode",
+      "POST",
+      a,
+      res => {
+        console.log("res", res);
+        if (res == !1) {
+          wx.showModal({
+            content: "找人码不存在 或 已引荐成功！",
             showCancel: false,
-            confirmText: '知道了',
-            confirmColor: '#F86136'
-        });
-    }
-    onLoad(options) {
-        console.log(options);
-        let that = this;
-        let type = options.type;
-        that.type = type;
-        let typeOne = options.typeOne;
-        that.typeOne = typeOne;
-        let typeTwo = options.typeTwo;
-        that.typeTwo = typeTwo;
-        let idOne = options.idOne;
-        that.idOne = idOne;
-        let idTwo = options.idTwo;
-        that.idTwo = idTwo;
-        let a = {
+            confirmText: "知道了",
+            confirmColor: "#F86136"
+          });
+          console.log("找人码不存在 或 已引荐成功！");
+        } else {
+          that.redPacket = res.money;
+          that.find = res.intro;
+          that.idOne = res.id;
+          that.type = 2;
+        }
+        that.$apply();
+      },
+      err => {
+        console.log("找人码为空！");
+      },
+      {
+        noToast: true
+      }
+    );
+  }
+  toTypeOne2() {
+    let that = this;
+    let a = {
+      record_id: that.idOne,
+      wx_introducer_code: that.referrer
+    };
+    // 引荐人提交数据
+    http.request(
+      "App.Find_IntroRecord.Intro",
+      "POST",
+      a,
+      res => {
+        console.log("res", res);
+        if (res !== "") {
+          that.idTwo = res;
+          that.typeOne = 2;
+          let b = {
             id: that.idOne,
             intro_user_id: that.idTwo
-        }    
-        http.request("App.Find_Record.GetIntroRecord", "POST", a, (res) => {
-            console.log('res',res);
-            that.redPacket = res.money;
-            that.find = res.intro;
-            that.inputVal = res.code;
-            that.referrer = res.wx_introducer_code;
-            that.$apply();
-        }, (err) => {}, {
-            noToast: true
-        });       
+          };
+          // 引荐人提交数据页面和提交数据后页面详情
+          http.request(
+            "App.Find_Record.GetIntroRecord",
+            "POST",
+            b,
+            res => {
+              console.log("res2", res);
+              that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
+              console.log("res2详细", that.introducer_avatarUrl);
+              that.$apply();
+            },
+            err => {},
+            {
+              noToast: true
+            }
+          );
+        }
+        that.$apply();
+      },
+      err => {
+        console.log("错误！");
+      },
+      {
+        noToast: true
+      }
+    );
+  }
+  toTypeTwo2() {
+    this.typeTwo = 2;
+  }
+  toTypeTwo3(e) {
+    let that = this;
+    let a = {
+      record_id: that.idOne,
+      intro_user_id: that.idTwo,
+      wx_introducered_code: that.referee
+    };
+
+    // 被引荐人提交数据
+    http.request(
+      "App.Find_IntroSuccessRecord.Intro",
+      "POST",
+      a,
+      res => {
+        console.log("res_1", res);
+        if (res !== "") {
+          that.idThree = res.intro_success_id;
+          that.typeTwo = 3;
+          let b = {
+            id: that.idOne
+          };
+          // 被推荐人提交数据后引荐成功信息页面详情
+          http.request(
+            "App.Find_Record.GetOperRecord",
+            "POST",
+            b,
+            res => {
+              console.log("res_2", res);
+              that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
+              that.referee = res.wx_introducered_code;
+              that.$apply();
+            },
+            err => {},
+            {
+              noToast: true
+            }
+          );
+        }
+        that.$apply();
+      },
+      err => {
+        console.log("已存在引荐人和被引荐人！");
+      },
+      {
+        noToast: true
+      }
+    );
+
+    // 收集formId
+    if (!e || !e.detail || !e.detail.formId) {
+      return;
     }
+
+    request.request(
+      "App.Find_IntroSuccessRecord.SendModuleMsg",
+      "POST",
+      {
+        formId: e.detail.formId
+      },
+      function(res) {
+        console.log("测试收集formid接口上传>>>", e.detail.formId);
+        console.log("测试收集formid接口返回>>>", res);
+      },
+      function() {},
+      { noToast: true }
+    );
+  }
+  copyReferrer() {
+    let that = this;
+    wx.setClipboardData({
+      data: that.referrer,
+      success: function(res) {
+        wx.getClipboardData({
+          success: function(res) {
+            console.log(res.data);
+            wx.showToast({
+              title: "复制成功",
+              icon: "success",
+              duration: 1000
+            });
+          }
+        });
+      }
+    });
+  }
+  copyReferee() {
+    let that = this;
+    wx.setClipboardData({
+      data: that.referee,
+      success: function(res) {
+        wx.getClipboardData({
+          success: function(res) {
+            console.log(res.data);
+            wx.showToast({
+              title: "复制成功",
+              icon: "success",
+              duration: 1000
+            });
+          }
+        });
+      }
+    });
+  }
+  submit() {
+    if (this.form.referrer == "") {
+      wx.showModal({
+        content: "你输入的找人码错误"
+      });
+    } else {
+      this.typeChild = 2;
+    }
+  }
+  share() {
+    wx.navigateTo({
+      url: "/pages/referee"
+    });
+  }
+  onShareAppMessage() {
+    let that = this;
+    let idOne = that.idOne;
+    let idTwo = that.idTwo;
+    let type = 2;
+    let typeOne = 2;
+    let typeTwo = 2;
+    return {
+      title: "送红包：Hi，给你推荐个朋友",
+      path:
+        "pages/referrer?type=" +
+        type +
+        "&typeOne=" +
+        typeOne +
+        "&typeTwo=" +
+        typeTwo +
+        "&idOne=" +
+        idOne +
+        "&idTwo=" +
+        idTwo,
+      imageUrl: "",
+      success: res => {
+        // 分享成功
+      },
+      fail: res => {
+        // 分享失败
+      }
+    };
+  }
+  onMoneyTip() {
+    wx.showModal({
+      content: "引荐人、被引荐人平分红包",
+      showCancel: false,
+      confirmText: "知道了",
+      confirmColor: "#F86136"
+    });
+  }
+  onLoad(options) {
+    console.log(options);
+    let that = this;
+    let type = options.type;
+    that.type = type;
+    let typeOne = options.typeOne;
+    that.typeOne = typeOne;
+    let typeTwo = options.typeTwo;
+    that.typeTwo = typeTwo;
+    let idOne = options.idOne;
+    that.idOne = idOne;
+    let idTwo = options.idTwo;
+    that.idTwo = idTwo;
+    let a = {
+      id: that.idOne,
+      intro_user_id: that.idTwo
+    };
+    http.request(
+      "App.Find_Record.GetIntroRecord",
+      "POST",
+      a,
+      res => {
+        console.log("res", res);
+        that.redPacket = res.money;
+        that.find = res.intro;
+        that.inputVal = res.code;
+        that.referrer = res.wx_introducer_code;
+        that.$apply();
+      },
+      err => {},
+      {
+        noToast: true
+      }
+    );
+  }
 }
 </script>
 
@@ -439,11 +513,11 @@ page {
         }
         .block {
           position: relative;
-          background: #F2F2F2;
+          background: #f2f2f2;
           width: 12%;
           height: 90rpx;
           margin-right: 1.88%;
-          border: 1rpx solid #DDDDDD;
+          border: 1rpx solid #dddddd;
           float: left;
           .circle {
             position: relative;
@@ -463,7 +537,7 @@ page {
           button {
             width: 80%;
             color: #fff;
-            background: linear-gradient(to right, #ED5226 , #F86136);
+            background: linear-gradient(to right, #ed5226, #f86136);
             border-radius: 50rpx;
           }
         }
@@ -489,12 +563,12 @@ page {
           color: #000;
           padding: 20rpx;
         }
-        .li-item2-center{
-            .moneyTip{
-                margin-left: 20rpx;
-            }
-            display: flex;
-            align-items: center;
+        .li-item2-center {
+          .moneyTip {
+            margin-left: 20rpx;
+          }
+          display: flex;
+          align-items: center;
         }
       }
       .li2-btn {
@@ -503,7 +577,7 @@ page {
         button {
           width: 80%;
           color: #fff;
-          background: linear-gradient(to right, #ED5226 , #F86136);
+          background: linear-gradient(to right, #ed5226, #f86136);
           border-radius: 50rpx;
         }
       }
@@ -524,54 +598,54 @@ page {
           }
         }
       }
-        .li2-copy{
-            .copy{
-                color: #6A7FA6;
-                float: right;
-            }
+      .li2-copy {
+        .copy {
+          color: #6a7fa6;
+          float: right;
         }
-        .li2-success-tip{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #F7B602;
-                margin-top: 50rpx;
-                padding-top: 40rpx;
-                padding-bottom: 40rpx;
-                border-bottom: none;
-                background: #FEF8E5;
-                .tipCont{
-                    margin-top: -15rpx;
-                    margin-left: 20rpx;
-                    .tipContA{
-                        font-size: 36rpx;
-                    }
-                    .tipContB{
-                        font-size: 28rpx;
-                    }
-                }
-            }
-            .li2-warn-tip{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #1E93FF;
-                margin-top: 50rpx;
-                padding-top: 40rpx;
-                padding-bottom: 40rpx;
-                border-bottom: none;
-                background: #E8F4FF;
-                .tipCont{
-                    margin-top: -15rpx;
-                    margin-left: 20rpx;
-                    .tipContA{
-                        font-size: 36rpx;
-                    }
-                    .tipContB{
-                        font-size: 28rpx;
-                    }
-                }
-            }
+      }
+      .li2-success-tip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f7b602;
+        margin-top: 50rpx;
+        padding-top: 40rpx;
+        padding-bottom: 40rpx;
+        border-bottom: none;
+        background: #fef8e5;
+        .tipCont {
+          margin-top: -15rpx;
+          margin-left: 20rpx;
+          .tipContA {
+            font-size: 36rpx;
+          }
+          .tipContB {
+            font-size: 28rpx;
+          }
+        }
+      }
+      .li2-warn-tip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1e93ff;
+        margin-top: 50rpx;
+        padding-top: 40rpx;
+        padding-bottom: 40rpx;
+        border-bottom: none;
+        background: #e8f4ff;
+        .tipCont {
+          margin-top: -15rpx;
+          margin-left: 20rpx;
+          .tipContA {
+            font-size: 36rpx;
+          }
+          .tipContB {
+            font-size: 28rpx;
+          }
+        }
+      }
       .li2-no-bot {
         border-bottom: none;
       }
