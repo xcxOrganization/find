@@ -288,40 +288,58 @@ export default class referrer extends wx.page {
     // 收集formId
     that.saveFormId.call(e);
   }
-  toTypeTwo3() {
+  toTypeTwo3(e) {
     let that = this;
     let a = {
       record_id: that.idOne,
       intro_user_id: that.idTwo,
       wx_introducered_code: that.referee
     };
-    // 被引荐人提交数据
-    http.request("App.Find_IntroSuccessRecord.Intro", "POST", a, res => {
-      console.log("res", res);
-      if (res !== "") {
-        that.idThree = res.intro_success_id;
-        that.typeTwo = 3;
-        let b = {
-          id: that.idOne
-        };
-        // 被推荐人提交数据后引荐成功信息页面详情
-        http.request(
-          "App.Find_Record.GetOperRecord",
-          "POST",
-          b,
-          res => {
-            console.log("res", res);
-            that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
-            that.referee = res.wx_introducered_code;
-            that.$apply();
-          },
-          err => {},
-          {
-            noToast: true
-          }
-        );
+    let b = {
+      id: that.idOne
+    };
+    // 被推荐人提交数据后引荐成功信息页面详情
+    http.request("App.Find_Record.GetOperRecord","POST",b, res => {
+        console.log("res3-0", res);
+        let state = res.oper_state;
+        if(state==1){
+          // 被引荐人提交数据
+            http.request("App.Find_IntroSuccessRecord.Intro", "POST", a, res => {
+              console.log("res3-1", res);
+              if (res !== "") {
+                that.idThree = res.intro_success_id;
+                that.typeTwo = 3;
+                let b = {
+                  id: that.idOne
+                };
+                // 被推荐人提交数据后引荐成功信息页面详情
+                http.request("App.Find_Record.GetOperRecord","POST",b, res => {
+                    console.log("res3-2", res);
+                    that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
+                    that.referee = res.wx_introducered_code;
+                    that.$apply();
+                  },
+                  err => {},
+                  {
+                    noToast: true
+                  }
+                );
+              }
+            });
+        }else{
+          wx.showModal({
+            content: "过期失效 或 引荐成功",
+            showCancel: false,
+            confirmText: "知道了",
+            confirmColor: "#F86136"
+          });
+        }
+            
+        that.$apply();
+      },err => {},{
+        noToast: true
       }
-    });
+    );
 
     // 收集formId
     that.saveFormId.call(e);
@@ -431,10 +449,7 @@ export default class referrer extends wx.page {
       intro_user_id: that.idTwo
     };
     http.request(
-      "App.Find_Record.GetIntroRecord",
-      "POST",
-      a,
-      res => {
+      "App.Find_Record.GetIntroRecord","POST",a,(res) => {
         console.log("res", res);
         that.redPacket = res.money;
         that.find = res.intro;

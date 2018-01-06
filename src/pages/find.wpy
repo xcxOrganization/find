@@ -12,7 +12,7 @@
             <view class="li">
                 <view class="desc">我想找</view>
                 <view class="li-item">
-                    <textarea class="li-item-input" type="text" placeholder="一句话描述你想找的人，限25字" bindinput="bindFind" placeholder-class="info_input" bindblur="findOut" value="{{find}}" />
+                    <textarea class="li-item-input" type="text" maxlength="160" placeholder="一句话描述你想找的人，限25字" bindinput="bindFind" placeholder-class="info_input" bindblur="findOut" value="{{find}}" />
                     <!--<icon wx:if="{{errorFind}}" type="warn"></icon>-->
                 </view>
             </view>
