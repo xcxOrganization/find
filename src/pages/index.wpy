@@ -96,9 +96,9 @@ page {
       width: 86%;
       height: 272rpx;
       background: #FFF;
-      margin: 20rpx auto;
+      margin: 30rpx auto;
       border-radius: 20rpx;
-      padding: 15rpx;
+      padding: 0 15rpx;
     }
     .desc {
       width: 100%;
