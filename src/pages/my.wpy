@@ -1,5 +1,5 @@
 <template>
-    <view>
+    <view style="background:#F86136;">
         <view class='head'>
             <view class='userImg' @tap="tapHeadImg">
                 <image src="{{userInfo.headimgurl}}" style="border-radius:50%; float: left;"/>
@@ -44,11 +44,11 @@
         </view>
     </view>
 
-    <view class="bottomText">
+    <!--<view class="bottomText">
         <image src="{{stitle}}" style="display:inline-block;height:69rpx;width:265rpx;"/>
         <view>XXXXXX成立，</view>
         <view>XXXXXX</view>
-    </view>
+    </view>-->
 
     <!--兼容无法分享问题-->
     <view wx-if="{{shareSign}}" class="little_modal_bg" bindtap="closeShare"></view>
@@ -64,8 +64,9 @@ import http from "../utils/request.js";
 import mixin from "../mixins/redux";
 export default class My extends wepy.page {
   config = {
-      navigationBarBackgroundColor: "#fff",
-      navigationBarTitleText: '我的'
+      navigationBarBackgroundColor: "#F86136",
+      navigationBarTitleText: '我的',
+      navigationBarTextStyle: '#fff'
   }
   mixins = [mixin];
   data = {
@@ -217,16 +218,17 @@ contact-button.cx6 {
 }
 
 page {
-  background: #f3f3f7;
+  background: #fff;
   position: relative;
   height: 100%;
 }
 
 .head {
   height: 200rpx;
-  background: #fff;
+  background: #F86136;
   justify-content: space-between;
   padding: 0 30rpx;
+  color:#fff;
   .flex();
   .userName {
     font-weight: 600;
@@ -272,7 +274,7 @@ page {
 }
 
 .menu {
-  margin-top: 30rpx;
+  //margin-top: 30rpx;
   background: #fff;
   .flex(@dir: column);
   .menu-item {
