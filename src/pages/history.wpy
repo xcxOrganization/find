@@ -153,7 +153,6 @@ export default class WithdrawHistory extends wepy.page {
           that.total2 = res.total;
           that.list2 = list;
         }
-        console.log(123213);
         /*that.list2 = [
           {
             intro: "找人描述找人描述找人描述找人描述找人描述找人描述找人描述",
