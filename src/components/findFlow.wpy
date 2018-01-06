@@ -1,5 +1,5 @@
 <template>
-    <view class="box">
+    <view class="box" style="background:#f1f1f1;">
         <view class="rule" @tap="toRule">找人规则</view>
         <view class="row">
             <image class="selfAvatar" src="{{userInfo.headimgurl}}" style="border-radius:50%; z-index:12;"/>
@@ -19,7 +19,7 @@
             <view class="ruleItem">3、加不了微信、引荐的人不匹配可申述退回红包；</view>
             <view class="ruleItem">4、领取的红包在钱包里面提现。</view>
             <view class="ruleClose">
-                <icon type="cancel" size="50" @tap="toClose"/>
+                <icon type="cancel" size="40" @tap="toClose"/>
             </view>
         </view>
     </view>
