@@ -5,7 +5,7 @@
             <view class="li">
                 <view class="desc">红包</view>
                 <view class="li-item">
-                    <input class="li-item-input" name="input" type="number" placeholder="请输入红包金额" bindinput="bindRedPacket" placeholder-class="info_input" bindblur="redPacketOut" value="{{redPacket}}" />
+                    <input class="li-item-input" name="input" type="number" placeholder="请输入红包金额" bindinput="bindRedPacket" placeholder-class="info_input" value="{{redPacket}}" />
                     <!--<icon wx:if="{{errorRedPacket}}" type="warn"></icon>-->
                 </view>
             </view>
@@ -23,9 +23,13 @@
                     <!--<icon wx:if="{{errorWechat}}" type="warn"></icon>-->
                 </view>
             </view>
+            
             <view class="li">
-                <button type="primary" disabled="{{disableBind}}" @tap='eventHandle' style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
+              <form report-submit="true" style="width:100%;" bindsubmit="eventHandle">
+                <button type="primary" formType="submit" disabled="{{disableBind}}" style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
+              </form>
             </view>
+            
         </view>
         <view class="input" wx:if="{{type==2}}">
             <view class="li2">
@@ -166,7 +170,7 @@ export default class find extends wx.page {
       that.opacity = 0.4;
     }
   }
-  eventHandle() {
+  eventHandle(e) {
     let that = this;
     let a = {
       money: that.redPacket,
@@ -204,7 +208,10 @@ export default class find extends wx.page {
         noToast: true
       }
     );
-    this.type = 2;
+    that.type = 2;
+
+    // 收集formId
+    that.saveFormId.call(e);
   }
   onMoneyTip() {
     wx.showModal({

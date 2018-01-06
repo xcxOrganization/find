@@ -10,7 +10,6 @@ let click_timestamp = 0;
 let formIdRecord = {
   timestamp: 0, // 开始收集id时间
   num: 0, // 存储formId个数
-  saveSign: wepy.getStorageSync(request.server + "_enableFormId"), // 是否存储formId标识
   formIdList: [] // formId列表
 }
 
@@ -57,17 +56,12 @@ export default class extends wepy.mixin {
       })
     }
   }
-  saveFormId(e) { // 收集formId
-    //let e = this;
+  saveFormId() { // 收集formId
+    let e = this;
     if (!e || !e.detail || !e.detail.formId) {
       return;
     }
     let formId = e.detail.formId;
-    formIdRecord.saveSign = wepy.getStorageSync(request.server + "_enableFormId") ? true : false;
-    if (!formIdRecord.saveSign) { // 不允许存储标识
-      console.log('不允许存储标识');
-      return;
-    }
     if (formIdRecord.num === 0) {
       formIdRecord.timestamp = new Date().getTime();
     } else if (formIdRecord.num > 10) { // 一天最多收集10个formId
