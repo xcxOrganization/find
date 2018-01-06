@@ -139,14 +139,15 @@ export default class WithdrawHistory extends wepy.page {
         }
         that.curPage2 = newPage;
         list = that.list2;
-        if (res.list && res.list.length > 0) {
-          for (var i = 0, len = res.list.length; i < len; i++) {
-            list.push(res.list[i]);
+        let newList = res;//res.list;
+        if (newList && newList.length > 0) {
+          for (var i = 0, len = newList.length; i < len; i++) {
+            list.push(newList[i]);
           }
           that.total2 = res.total;
           that.list2 = list;
         }
-
+        console.log(123213);
         /*that.list2 = [
           {
             intro: "找人描述找人描述找人描述找人描述找人描述找人描述找人描述",
@@ -194,9 +195,10 @@ export default class WithdrawHistory extends wepy.page {
           : "0.00";
         that.curPage1 = newPage;
         list = that.inviteRewardRecords;
-        if (res.list && res.list.length > 0) {
-          for (var i = 0, len = res.list.length; i < len; i++) {
-            list.push(res.list[i]);
+        let newList = res;//res.list;
+        if (newList && newList.length > 0) {
+          for (var i = 0, len = newList.length; i < len; i++) {
+            list.push(newList[i]);
           }
           that.total1 = res.total;
           that.inviteRewardRecords = list;
