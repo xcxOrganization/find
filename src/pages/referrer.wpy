@@ -143,12 +143,14 @@ import wx from "wepy";
 import http from "../utils/request.js";
 import request from "../utils/request.js";
 import config from "../config";
+import mixin from '../mixins/redux'
 import findFlow from "../components/findFlow";
 export default class referrer extends wx.page {
     config = {
         navigationBarBackgroundColor: "#fff",
         navigationBarTitleText: "给TA引荐"
     };
+    mixins = [mixin]
     components = {
         findFlow: findFlow
     };
@@ -279,13 +281,21 @@ export default class referrer extends wx.page {
                     noToast: true
                 });
             }
-            that.$apply();
-        }, (err) => {
-            console.log('错误！');
-        }, {
-            noToast: true
-        });
-    }
+          );
+        }
+        that.$apply();
+      },
+      (err) => {
+        console.log("已存在引荐人和被引荐人！");
+      },
+      {
+        noToast: true
+      }
+    );
+
+    // 收集formId
+    that.saveFormId.call(e);
+  }
   copyReferrer() {
     let that = this;
     wx.setClipboardData({

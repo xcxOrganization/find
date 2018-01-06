@@ -404,11 +404,10 @@ export default class poster extends wepy.page {
     });
 
   }
-  onShareAppMessage() {
+  /*onShareAppMessage() {
     return {
-      title: "#国民医保#600万高端医疗险，进口药报销，100%赔付",
-      path: "pages/elife",
-      imageUrl: request.getImgServerApi() + 'detail/share/elife.png',
+      title: "Hi，给你引荐个朋友",
+      path: "pages/index",
       success: (res) => {
         // 分享成功
       },
@@ -416,6 +415,6 @@ export default class poster extends wepy.page {
         // 分享失败
       }
     }
-  }
+  }*/
 }
 </script>
