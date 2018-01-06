@@ -166,7 +166,7 @@ export default class find extends wx.page {
         let that = this;
         let a = {
             money: that.redPacket,
-            intro: that.find,
+            intro: '我想找'+that.find,
             wx_self_code: that.wechat
         }
         http.request("App.Find_Record.Create", "POST", a, (res) => {
@@ -203,7 +203,6 @@ export default class find extends wx.page {
         return {
             title: "送红包：Hi，给你推荐个朋友",
             path: 'pages/referrer?type=' + type + '&idOne=' + findId,
-            imageUrl: "",
             success: (res) => {
                 // 分享成功
             },
