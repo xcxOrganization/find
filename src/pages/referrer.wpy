@@ -1,7 +1,6 @@
 <template>
     <view class="container">
         <view wx:if="{{type == 1}}">
-            <!-- <view id="mask"  @tap="returnOld"></view> -->
             <view id="maskBox">
                 <view class="content">
                     <view class="mask_title">输入找人码，给TA引荐朋友</view>

@@ -22,9 +22,9 @@
             </view>
             
         </view>
-        <view class="desc">
+        <!--<view class="desc">
             当前版本：{{version}}
-        </view>
+        </view>-->
     </view>
 </template>
 
