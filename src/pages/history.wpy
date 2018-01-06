@@ -46,7 +46,7 @@
                 <view class='listContainer' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
                   <view class='list flex-xy'>
                       <view class='list-left flex-xy'>
-                        <image src='{{item.wx_creator_avatarUrl}}'/>
+                        <image style="border-radius:50%" src='{{item.wx_creator_avatarUrl}}'/>
                         {{item.wx_creator_nickName}}
                       </view>
                       <view class='list-right' style="color:#FEA157;font-size:34rpx;font-weight:700;">{{item.money}}元</view>
