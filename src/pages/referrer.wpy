@@ -143,12 +143,14 @@ import wx from "wepy";
 import http from "../utils/request.js";
 import request from "../utils/request.js";
 import config from "../config";
+import mixin from '../mixins/redux'
 import findFlow from "../components/findFlow";
 export default class referrer extends wx.page {
     config = {
         navigationBarBackgroundColor: "#fff",
         navigationBarTitleText: "给TA引荐"
     };
+    mixins = [mixin]
     components = {
         findFlow: findFlow
     };
@@ -360,23 +362,7 @@ export default class referrer extends wx.page {
     );
 
     // 收集formId
-    if (!e || !e.detail || !e.detail.formId) {
-      return;
-    }
-
-    request.request(
-      "App.Find_IntroSuccessRecord.SendModuleMsg",
-      "POST",
-      {
-        formId: e.detail.formId
-      },
-      function(res) {
-        console.log("测试收集formid接口上传>>>", e.detail.formId);
-        console.log("测试收集formid接口返回>>>", res);
-      },
-      function() {},
-      { noToast: true }
-    );
+    that.saveFormId.call(e);
   }
   copyReferrer() {
     let that = this;

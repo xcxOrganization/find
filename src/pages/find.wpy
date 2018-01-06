@@ -6,21 +6,21 @@
                 <view class="desc">红包</view>
                 <view class="li-item">
                     <input class="li-item-input" name="input" type="number" placeholder="请输入红包金额" bindinput="bindRedPacket" placeholder-class="info_input" bindblur="redPacketOut" value="{{redPacket}}" />
-                    <icon wx:if="{{errorRedPacket}}" type="warn"></icon>
+                    <!--<icon wx:if="{{errorRedPacket}}" type="warn"></icon>-->
                 </view>
             </view>
             <view class="li">
                 <view class="desc">我想找</view>
                 <view class="li-item">
                     <textarea class="li-item-input" type="text" placeholder="一句话描述你想找的人，限25字" bindinput="bindFind" placeholder-class="info_input" bindblur="findOut" value="{{find}}" />
-                    <icon wx:if="{{errorFind}}" type="warn"></icon>
+                    <!--<icon wx:if="{{errorFind}}" type="warn"></icon>-->
                 </view>
             </view>
             <view class="li">
                 <view class="desc">你的微信</view>
                 <view class="li-item">
                     <input class="li-item-input" type="text" name="input" placeholder="请留下你的微信，方便联系" placeholder-class="info_input" bindinput="bindWechat" bindblur="wechatOut" value="{{wechat}}" />
-                    <icon wx:if="{{errorWechat}}" type="warn"></icon>
+                    <!--<icon wx:if="{{errorWechat}}" type="warn"></icon>-->
                 </view>
             </view>
             <view class="li">
