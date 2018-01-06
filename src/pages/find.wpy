@@ -50,7 +50,9 @@
                 <view class="tipCont">发起成功！</view>
             </view>
             <view class="li2">
-                <image class="findShare" src="../assets/images/findShare.png" style="width:45%; height: 120rpx;" @tap="onShareAppMessage"/>
+                <button type="primary" open-type="share">邀请好友帮忙</button>
+                <button type="primary" @tap="toPoster">生成找人海报</button>
+                <image class="findShare" src="../assets/images/findShare.png" style="width:45%; height: 120rpx;"/>
                 <image class="findPoster" src="../assets/images/findPoster.png" style="width:45%; height: 120rpx;" @tap="toPoster"/>
             </view>
         </view>   
@@ -309,15 +311,30 @@ page {
           justify-content: center;
           border-bottom: none;
           margin-top: 50rpx;
+          position: relative;
           button{
+<<<<<<< HEAD
               color: #fff;
               background: #1AAD19;        
+=======
+              opacity:0;
+              z-index: 11;
+>>>>>>> a8bf8857129a468ab0d4c563f31e46b645c1b547
               border-radius: 50rpx;
               padding-left: 36rpx;
               padding-right: 36rpx;
               padding-top: 6rpx;
               padding-bottom: 6rpx;
-              font-size: 28rpx;
+          }
+          .findShare{
+              position: absolute;
+              top: 0rpx;
+              left: 5rpx;
+          }
+          .findPoster{
+              position: absolute;
+              top: 0rpx;
+              left: 350rpx;
           }
         }
         .desc {
