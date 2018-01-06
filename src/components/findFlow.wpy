@@ -1,12 +1,13 @@
 <template>
     <view class="box">
-        <view class="rule" @tap="toRule">
-            <image class="find-rule" src="../assets/images/rule.png" style="width:230rpx; height: 90rpx;"/>
-        </view>
+        <view class="rule" @tap="toRule">找人规则</view>
         <view class="row">
-            <image class="selfAvatar" src="{{userInfo.headimgurl}}" style="border-radius:50%;"/>
-            <image class="introducerAvatar" src="{{introAvatar}}" style="border-radius:50%;"/>
-            <image class="introduceredAvatar" src="{{introedAvatar}}" style="border-radius:50%;"/>
+            <image class="selfAvatar" src="{{userInfo.headimgurl}}" style="border-radius:50%; z-index:12;"/>
+            <image class="selfAvatar" src="{{avatar}}" style="border-radius:50%;"/>
+            <image class="introducerAvatar" src="{{introAvatar}}" style="border-radius:50%; z-index:12;"/>
+            <image class="introducerAvatar" src="{{avatar}}" style="border-radius:50%;"/>
+            <image class="introduceredAvatar" src="{{introedAvatar}}" style="border-radius:50%; z-index:12;"/>
+            <image class="introduceredAvatar" src="{{avatar}}" style="border-radius:50%;"/>
             <image class="find-banner" src="../assets/images/find_banner.png"/>
         </view>
     </view>
@@ -33,6 +34,7 @@ export default class findFlow extends wx.component {
     mixins = [mixin]
     data = {
         ruleModal: !1,
+        avatar: '../assets/images/avatar.png',
         userInfo: {
             headimgurl: '',
             nickname: ''
@@ -86,36 +88,45 @@ page {
     .box {
       position: relative;
       .rule {
+        width: 150rpx;
+        height: 50rpx;
+        line-height: 50rpx;
+        text-align: center;
+        font-size: 28rpx;
         position: absolute;
-        top: 4rpx;
-        right: -30rpx;
+        top: 18rpx;
+        right: 0;
+        color: #fff;
+        background: #FFAF15;
+        border-radius: 50rpx 0 0 50rpx;
+        padding-left: 10rpx;
       }
       .row {
-          width: 92%;
+          width: 95%;
           height: 300rpx;
           margin: 0 auto;
           .selfAvatar{
               width: 90rpx;
-              height: 100rpx;
+              height: 90rpx;
               position: absolute;
-              top: 28.333%;
-              left: 11.333%;
+              top: 26.000%;
+              left: 8.000%;
               z-index: 11;
           }
           .introducerAvatar{
               width: 90rpx;
-              height: 100rpx;
+              height: 90rpx;
               position: absolute;
-              top: 28.333%;
-              left: 44.333%;
+              top: 26.000%;
+              left: 44.000%;
               z-index: 11;
           }
           .introduceredAvatar{
               width: 90rpx;
-              height: 100rpx;
+              height: 90rpx;
               position: absolute;
-              top: 28.333%;
-              left: 77.333%;
+              top: 26.000%;
+              left: 80.000%;
               z-index: 11;
           }
           .find-banner{
@@ -131,7 +142,7 @@ page {
         left: 0;
         top: 0;
         background-color: rgba(0,0,0,0.6);
-        z-index: 20;
+        z-index: 100;
         display: flex;
         align-items:center; 
         justify-content:center;
