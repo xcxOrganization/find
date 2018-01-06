@@ -2,7 +2,7 @@
     <view class="box" style="background:#f1f1f1;">
         <view class="rule" @tap="toRule">找人规则</view>
         <view class="row">
-            <image class="selfAvatar" src="{{userInfo.headimgurl}}" style="border-radius:50%; z-index:12;"/>
+            <image class="selfAvatar" src="{{creatorAvatar}}" style="border-radius:50%; z-index:12;"/>
             <image class="selfAvatar" src="{{avatar}}" style="border-radius:50%;"/>
             <image class="introducerAvatar" src="{{introAvatar}}" style="border-radius:50%; z-index:12;"/>
             <image class="introducerAvatar" src="{{avatar}}" style="border-radius:50%;"/>
@@ -42,12 +42,16 @@ export default class findFlow extends wx.component {
     }
     props = {
         // 组件双向数据绑定
+        creatorAvatar: {
+            type: String,
+            twoWay: true,
+            default: 'null'
+        },
         introAvatar: {
             type: String,
             twoWay: true,
             default: 'null'
         },
-
         introedAvatar: {
             type: String,
             twoWay: true,
@@ -69,17 +73,7 @@ export default class findFlow extends wx.component {
     }
 
     // 获取用户信息
-    getUserInfo() {
-        let that = this;
-        http.request("App.Find_User.GetUserProfile", "POST", {}, (res) => {
-            console.log('res',res);
-            that.userInfo.headimgurl = res.avatarUrl;
-            that.userInfo.nickname = res.nickName;
-            that.$apply();
-        }, (err) => {}, {
-            noToast: true
-        });
-    }
+    getUserInfo() {}
 }
 </script>
 

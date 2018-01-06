@@ -39,7 +39,7 @@
             </view>
         </view> 
         <view wx:if="{{type == 2}}">  
-            <findFlow :introAvatar.sync="introducer_avatarUrl" :introedAvatar.sync="introducered_avatarUrl"></findFlow>        
+            <findFlow :creatorAvatar.sync="creator_avatarUrl" :introAvatar.sync="introducer_avatarUrl" :introedAvatar.sync="introducered_avatarUrl"></findFlow>        
             <view class="input">
                 <view class="li2">
                     <view class="desc">红包</view>
@@ -145,46 +145,32 @@ import request from "../utils/request.js";
 import config from "../config";
 import findFlow from "../components/findFlow";
 export default class referrer extends wx.page {
-  config = {
-    navigationBarBackgroundColor: "#fff",
-    navigationBarTitleText: "给TA引荐"
-  };
-  components = {
-    findFlow: findFlow
-  };
-  data = {
-    version: config.version,
-    inputVal: "",
-    type: 1,
-    typeOne: 1,
-    typeTwo: 1,
-    typeThree: 1,
-    redPacket: "",
-    find: "",
-    findNum: "",
-    introducerCode: "",
-    referrer: "",
-    referee: "",
-    idOne: "",
-    idTwo: "",
-    idThree: "",
-    introducer_avatarUrl: "",
-    introducered_avatarUrl: ""
-  };
-  bindInputVal(e) {
-    this.inputVal = e.detail.value;
-    // console.log(this.inputVal);
-  }
-  bindReferrer(e) {
-    this.referrer = e.detail.value;
-  }
-  bindReferee(e) {
-    this.referee = e.detail.value;
-  }
-  toType2() {
-    let that = this;
-    let a = {
-      code: that.inputVal
+    config = {
+        navigationBarBackgroundColor: "#fff",
+        navigationBarTitleText: "给TA引荐"
+    };
+    components = {
+        findFlow: findFlow
+    };
+    data = {
+        version: config.version,
+        inputVal: "",
+        type: 1,
+        typeOne: 1,
+        typeTwo: 1,
+        typeThree: 1,
+        redPacket: "",
+        find: "",
+        findNum: "",
+        introducerCode: "",
+        referrer: "",
+        referee: "",
+        idOne: "",
+        idTwo: "",
+        idThree: "",
+        creator_avatarUrl: "",
+        introducer_avatarUrl: "",
+        introducered_avatarUrl: ""
     };
     bindInputVal(e) {
         this.inputVal = e.detail.value;
@@ -243,6 +229,7 @@ export default class referrer extends wx.page {
                 // 引荐人提交数据页面和提交数据后页面详情
                 http.request("App.Find_Record.GetIntroRecord", "POST", b, (res) => {
                     console.log('res2',res);
+                    that.creator_avatarUrl = res.wx_creator_avatarUrl;
                     that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
                     console.log('res2详细',that.introducer_avatarUrl);
                     that.$apply();
