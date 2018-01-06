@@ -60,14 +60,16 @@
                     <view class="li2 li2-input">
                         <view class="desc">引荐人</view>
                         <view class="li-item2">
-                            <input class="li-item-input" name="input" placeholder="请留下你的微信，方便联系" bindinput="bindReferrer" placeholder-class="info_input" bindblur="redferrerOut" value="{{referrer}}" />
+                            <input class="li-item-input" name="input" placeholder="请留下你的微信，方便联系" bindinput="bindReferrer" placeholder-class="info_input" value="{{referrer}}" />
                         </view>
                     </view>
-                    <form report-submit="true" bindsubmit="toTypeOne2">
+                    
                     <view class="li2 li2-btn">
-                        <button type="primary" formType="submit">给TA引荐朋友，领红包</button>
+                        <form report-submit="true" style="width:100%;" bindsubmit="toTypeOne2">
+                            <button type="primary" formType="submit">给TA引荐朋友，领红包</button>
+                        </form>
                     </view>
-                    </form>
+                    
                 </view>
                 <view wx:if="{{typeOne==2}}">
                     <view class="li2">
@@ -93,11 +95,12 @@
                                 <input class="li-item-input" name="input" placeholder="请留下你的微信，方便联系" bindinput="bindReferee" placeholder-class="info_input" bindblur="redfereeOut" value="{{referee}}" />
                             </view>
                         </view>
-                        <form report-submit="true" bindsubmit="toTypeTwo3">
+                        
                         <view class="li2 li2-btn">
-                            <button type="primary" formType="submit">给TA引荐朋友，领红包</button>
+                            <form report-submit="true" style="width:100%;" bindsubmit="toTypeTwo3">
+                                <button type="primary" formType="submit">给TA引荐朋友，领红包</button>
+                            </form>
                         </view>
-                        </form>
                     </view>
                     <view wx:if="{{typeTwo==3}}">
                         <view class="li2 li2-no-bot li2-copy">
@@ -288,7 +291,7 @@ export default class referrer extends wx.page {
     // 收集formId
     that.saveFormId.call(e);
   }
-  toTypeTwo3() {
+  toTypeTwo3(e) {
     let that = this;
     let a = {
       record_id: that.idOne,
