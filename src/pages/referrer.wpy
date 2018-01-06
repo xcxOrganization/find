@@ -198,10 +198,20 @@ export default class referrer extends wx.page {
                 });
                 console.log('找人码不存在 或 已引荐成功！');
             }else{
-                that.redPacket = res.money;
-                that.find = res.intro;
-                that.idOne = res.id;
-                that.type = 2;
+                let a = {
+                    id: res.id
+                }
+                http.request("App.Find_Record.GetIntroRecord","POST",a, (res) => {
+                    console.log("res", res);
+                    that.redPacket = res.money;
+                    that.find = res.intro;
+                    that.idOne = res.id;
+                    that.creator_avatarUrl = res.wx_creator_avatarUrl;
+                    that.type = 2;
+                    that.$apply();
+                },(err) => {}, {
+                    noToast: true
+                });              
             }          
             that.$apply();
         }, (err) => {
@@ -229,7 +239,6 @@ export default class referrer extends wx.page {
                 // 引荐人提交数据页面和提交数据后页面详情
                 http.request("App.Find_Record.GetIntroRecord", "POST", b, (res) => {
                     console.log('res2',res);
-                    that.creator_avatarUrl = res.wx_creator_avatarUrl;
                     that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
                     console.log('res2详细',that.introducer_avatarUrl);
                     that.$apply();
@@ -244,140 +253,39 @@ export default class referrer extends wx.page {
             noToast: true
         });    
     }
-    toTypeTwo3() {
+  toTypeTwo3() {
         let that=this;
         let a = {
             record_id: that.idOne,
             intro_user_id: that.idTwo,
             wx_introducered_code: that.referee
         }
-        that.$apply();
-      },
-      err => {
-        console.log("找人码为空！");
-      },
-      {
-        noToast: true
-      }
-    );
-  }
-  toTypeOne2() {
-    let that = this;
-    let a = {
-      record_id: that.idOne,
-      wx_introducer_code: that.referrer
-    };
-    // 引荐人提交数据
-    http.request(
-      "App.Find_IntroRecord.Intro",
-      "POST",
-      a,
-      res => {
-        console.log("res", res);
-        if (res !== "") {
-          that.idTwo = res;
-          that.typeOne = 2;
-          let b = {
-            id: that.idOne,
-            intro_user_id: that.idTwo
-          };
-          // 引荐人提交数据页面和提交数据后页面详情
-          http.request(
-            "App.Find_Record.GetIntroRecord",
-            "POST",
-            b,
-            res => {
-              console.log("res2", res);
-              that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
-              console.log("res2详细", that.introducer_avatarUrl);
-              that.$apply();
-            },
-            err => {},
-            {
-              noToast: true
+        // 被引荐人提交数据
+        http.request("App.Find_IntroSuccessRecord.Intro", "POST", a, (res) => {
+            console.log('res',res);
+            if(res!==''){
+                that.idThree = res.intro_success_id;
+                that.typeTwo = 3;
+                let b = {
+                    id: that.idOne
+                }
+                // 被推荐人提交数据后引荐成功信息页面详情
+                http.request("App.Find_Record.GetOperRecord", "POST", b, (res) => {
+                    console.log('res',res);
+                    that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
+                    that.referee = res.wx_introducered_code; 
+                    that.$apply();
+                }, (err) => {}, {
+                    noToast: true
+                });
             }
-          );
-        }
-        that.$apply();
-      },
-      err => {
-        console.log("错误！");
-      },
-      {
-        noToast: true
-      }
-    );
-  }
-  toTypeTwo2() {
-    this.typeTwo = 2;
-  }
-  toTypeTwo3(e) {
-    let that = this;
-    let a = {
-      record_id: that.idOne,
-      intro_user_id: that.idTwo,
-      wx_introducered_code: that.referee
-    };
-
-    // 被引荐人提交数据
-    http.request(
-      "App.Find_IntroSuccessRecord.Intro",
-      "POST",
-      a,
-      res => {
-        console.log("res_1", res);
-        if (res !== "") {
-          that.idThree = res.intro_success_id;
-          that.typeTwo = 3;
-          let b = {
-            id: that.idOne
-          };
-          // 被推荐人提交数据后引荐成功信息页面详情
-          http.request(
-            "App.Find_Record.GetOperRecord",
-            "POST",
-            b,
-            res => {
-              console.log("res_2", res);
-              that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
-              that.referee = res.wx_introducered_code;
-              that.$apply();
-            },
-            err => {},
-            {
-              noToast: true
-            }
-          );
-        }
-        that.$apply();
-      },
-      err => {
-        console.log("已存在引荐人和被引荐人！");
-      },
-      {
-        noToast: true
-      }
-    );
-
-    // 收集formId
-    if (!e || !e.detail || !e.detail.formId) {
-      return;
+            that.$apply();
+        }, (err) => {
+            console.log('错误！');
+        }, {
+            noToast: true
+        });
     }
-
-    request.request(
-      "App.Find_IntroSuccessRecord.SendModuleMsg",
-      "POST",
-      {
-        formId: e.detail.formId
-      },
-      function(res) {
-        console.log("测试收集formid接口上传>>>", e.detail.formId);
-        console.log("测试收集formid接口返回>>>", res);
-      },
-      function() {},
-      { noToast: true }
-    );
-  }
   copyReferrer() {
     let that = this;
     wx.setClipboardData({
@@ -437,17 +345,7 @@ export default class referrer extends wx.page {
     let typeTwo = 2;
     return {
       title: "送红包：Hi，给你推荐个朋友",
-      path:
-        "pages/referrer?type=" +
-        type +
-        "&typeOne=" +
-        typeOne +
-        "&typeTwo=" +
-        typeTwo +
-        "&idOne=" +
-        idOne +
-        "&idTwo=" +
-        idTwo,
+      path: "pages/referrer?type=" + type + "&typeOne=" + typeOne + "&typeTwo=" + typeTwo + "&idOne=" + idOne + "&idTwo=" + idTwo,
       imageUrl: "",
       success: res => {
         // 分享成功
@@ -482,23 +380,18 @@ export default class referrer extends wx.page {
       id: that.idOne,
       intro_user_id: that.idTwo
     };
-    http.request(
-      "App.Find_Record.GetIntroRecord",
-      "POST",
-      a,
-      res => {
+    http.request("App.Find_Record.GetIntroRecord","POST",a, (res) => {
         console.log("res", res);
         that.redPacket = res.money;
         that.find = res.intro;
         that.inputVal = res.code;
-        that.referrer = res.wx_introducer_code;
+        that.creator_avatarUrl = res.wx_creator_avatarUrl;
+        that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
+        that.referrer = res.wx_introducer_code;      
         that.$apply();
-      },
-      err => {},
-      {
+    },(err) => {}, {
         noToast: true
-      }
-    );
+    });
   }
 }
 </script>
