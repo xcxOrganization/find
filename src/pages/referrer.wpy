@@ -33,7 +33,7 @@
                         <view class="clear"></view>
                     </view>
                     <view class="findNum-btn">
-                        <button type="primary" @tap='toType2'>提交</button>
+                        <button type="primary" hover-class="button-hover" @tap='toType2'>提交</button>
                     </view>
                 </view>
             </view>
@@ -60,16 +60,14 @@
                     <view class="li2 li2-input">
                         <view class="desc">引荐人</view>
                         <view class="li-item2">
-                            <input class="li-item-input" name="input" placeholder="请留下你的微信，方便联系" bindinput="bindReferrer" placeholder-class="info_input" value="{{referrer}}" />
+                            <input class="li-item-input" name="input" placeholder="请留下你的微信，方便联系" bindinput="bindReferrer" placeholder-class="info_input" value="{{referrer}}"/>
                         </view>
                     </view>
-                    
                     <view class="li2 li2-btn">
                         <form report-submit="true" style="width:100%;" bindsubmit="toTypeOne2">
-                            <button type="primary" formType="submit">给TA引荐朋友，领红包</button>
+                            <button type="primary" hover-class="button-hover" formType="submit">给TA引荐朋友，领红包</button>
                         </form>
                     </view>
-                    
                 </view>
                 <view wx:if="{{typeOne==2}}">
                     <view class="li2">
@@ -85,7 +83,7 @@
                     </view>
                     <view wx:if="{{typeTwo==1}}">
                         <view class="li2 li2-btn">
-                            <button type="primary" open-type="share">分享给引荐的朋友</button>
+                            <button type="primary" hover-class="button-hover" open-type="share">分享给引荐的朋友</button>
                         </view>
                     </view>
                     <view wx:if="{{typeTwo==2}}">
@@ -98,7 +96,7 @@
                         
                         <view class="li2 li2-btn">
                             <form report-submit="true" style="width:100%;" bindsubmit="toTypeTwo3">
-                                <button type="primary" formType="submit">给TA引荐朋友，领红包</button>
+                                <button type="primary" hover-class="button-hover" formType="submit">给TA引荐朋友，领红包</button>
                             </form>
                         </view>
                     </view>
@@ -131,15 +129,11 @@
                                     <view class="tipContB">已经有人给TA引荐成功</view>
                                 </view>
                             </view>
-                        </view>
-                        
+                        </view> 
                     </view>
                 </view>               
             </view>
-        </view>       
-        <!-- <view class="v">
-            当前版本：{{version}}
-        </view> -->
+        </view>
     </view>
 </template>
 
@@ -194,11 +188,7 @@ export default class referrer extends wx.page {
     let a = {
       code: that.inputVal
     };
-    http.request(
-      "App.Find_Record.CheckCode",
-      "POST",
-      a,
-      res => {
+    http.request("App.Find_Record.CheckCode","POST",a,res => {
         console.log("res", res);
         if (res == !1) {
           wx.showModal({
@@ -212,11 +202,7 @@ export default class referrer extends wx.page {
           let a = {
             id: res.id
           };
-          http.request(
-            "App.Find_Record.GetIntroRecord",
-            "POST",
-            a,
-            res => {
+          http.request("App.Find_Record.GetIntroRecord","POST",a,res => {
               console.log("res", res);
               that.redPacket = res.money;
               that.find = res.intro;
@@ -224,19 +210,15 @@ export default class referrer extends wx.page {
               that.creator_avatarUrl = res.wx_creator_avatarUrl;
               that.type = 2;
               that.$apply();
-            },
-            err => {},
-            {
+            },err => {},{
               noToast: true
             }
           );
         }
         that.$apply();
-      },
-      err => {
+      },err => {
         console.log("找人码为空！");
-      },
-      {
+      },{
         noToast: true
       }
     );
@@ -247,47 +229,45 @@ export default class referrer extends wx.page {
       record_id: that.idOne,
       wx_introducer_code: that.referrer
     };
-    // 引荐人提交数据
-    http.request(
-      "App.Find_IntroRecord.Intro",
-      "POST",
-      a,
-      res => {
-        console.log("res", res);
-        if (res !== "") {
-          that.idTwo = res;
-          that.typeOne = 2;
-          let b = {
-            id: that.idOne,
-            intro_user_id: that.idTwo
-          };
-          // 引荐人提交数据页面和提交数据后页面详情
-          http.request(
-            "App.Find_Record.GetIntroRecord",
-            "POST",
-            b,
-            res => {
-              console.log("res2", res);
-              that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
-              console.log("res2详细", that.introducer_avatarUrl);
-              that.$apply();
-            },
-            err => {},
-            {
-              noToast: true
-            }
-          );
+    let intro = that.referrer;
+    console.log("res_referrer",intro);
+    if(!intro){
+      wx.showModal({
+        content: "引荐人为空!",
+        showCancel: false,
+        confirmText: "知道了",
+        confirmColor: "#F86136"
+      });
+    }else{
+      // 引荐人提交数据
+      http.request("App.Find_IntroRecord.Intro","POST",a,res => {
+          console.log("res", res);
+          if (res !== "") {
+            that.idTwo = res;
+            that.typeOne = 2;
+            let b = {
+              id: that.idOne,
+              intro_user_id: that.idTwo
+            };
+            // 引荐人提交数据页面和提交数据后页面详情
+            http.request("App.Find_Record.GetIntroRecord","POST",b,res => {
+                console.log("res2", res);
+                that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
+                console.log("res2详细", that.introducer_avatarUrl);
+                that.$apply();
+              },err => {},{
+                noToast: true
+              }
+            );
+          }
+          that.$apply();
+        },err => {
+          console.log("错误！");
+        },{
+          noToast: true
         }
-        that.$apply();
-      },
-      err => {
-        console.log("错误！");
-      },
-      {
-        noToast: true
-      }
-    );
-
+      );
+    }
     // 收集formId
     that.saveFormId.call(e);
   }
@@ -301,49 +281,57 @@ export default class referrer extends wx.page {
     let b = {
       id: that.idOne
     };
-    // 被推荐人提交数据后引荐成功信息页面详情
-    http.request("App.Find_Record.GetOperRecord","POST",b, res => {
-        console.log("res3-0", res);
-        let state = res.oper_state;
-        if(state==1){
-          // 被引荐人提交数据
-            http.request("App.Find_IntroSuccessRecord.Intro", "POST", a, res => {
-              console.log("res3-1", res);
-              if (res !== "") {
-                that.idThree = res.intro_success_id;
-                that.typeTwo = 3;
-                let b = {
-                  id: that.idOne
-                };
-                // 被推荐人提交数据后引荐成功信息页面详情
-                http.request("App.Find_Record.GetOperRecord","POST",b, res => {
-                    console.log("res3-2", res);
-                    that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
-                    that.referee = res.wx_introducered_code;
-                    that.$apply();
-                  },
-                  err => {},
-                  {
-                    noToast: true
-                  }
-                );
-              }
+    let introed = that.referee;
+    if(introed==""){
+      wx.showModal({
+        content: "被引荐人为空!",
+        showCancel: false,
+        confirmText: "知道了",
+        confirmColor: "#F86136"
+      });
+    }else{
+      // 被推荐人提交数据后引荐成功信息页面详情
+      http.request("App.Find_Record.GetOperRecord","POST",b, res => {
+          console.log("res3-0", res);
+          let state = res.oper_state;
+          if(state==1){
+            // 被引荐人提交数据
+              http.request("App.Find_IntroSuccessRecord.Intro", "POST", a, res => {
+                console.log("res3-1", res);
+                if (res !== "") {
+                  that.idThree = res.intro_success_id;
+                  that.typeTwo = 3;
+                  let b = {
+                    id: that.idOne
+                  };
+                  // 被推荐人提交数据后引荐成功信息页面详情
+                  http.request("App.Find_Record.GetOperRecord","POST",b, res => {
+                      console.log("res3-2", res);
+                      that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
+                      that.referee = res.wx_introducered_code;
+                      that.$apply();
+                    },
+                    err => {},
+                    {
+                      noToast: true
+                    }
+                  );
+                }
+              });
+          }else{
+            wx.showModal({
+              content: "过期失效 或 引荐成功",
+              showCancel: false,
+              confirmText: "知道了",
+              confirmColor: "#F86136"
             });
-        }else{
-          wx.showModal({
-            content: "过期失效 或 引荐成功",
-            showCancel: false,
-            confirmText: "知道了",
-            confirmColor: "#F86136"
-          });
+          }   
+          that.$apply();
+        },err => {},{
+          noToast: true
         }
-            
-        that.$apply();
-      },err => {},{
-        noToast: true
-      }
-    );
-
+      );
+    }
     // 收集formId
     that.saveFormId.call(e);
   }
@@ -406,17 +394,7 @@ export default class referrer extends wx.page {
     let typeTwo = 2;
     return {
       title: "送红包：Hi，给你推荐个朋友",
-      path:
-        "pages/referrer?type=" +
-        type +
-        "&typeOne=" +
-        typeOne +
-        "&typeTwo=" +
-        typeTwo +
-        "&idOne=" +
-        idOne +
-        "&idTwo=" +
-        idTwo,
+      path:"pages/referrer?type=" +type +"&typeOne=" +typeOne +"&typeTwo=" +typeTwo +"&idOne=" +idOne +"&idTwo=" +idTwo,
       imageUrl: "",
       success: res => {
         // 分享成功
@@ -451,9 +429,8 @@ export default class referrer extends wx.page {
       id: that.idOne,
       intro_user_id: that.idTwo
     };
-    http.request(
-      "App.Find_Record.GetIntroRecord","POST",a,(res) => {
-        console.log("res", res);
+    http.request("App.Find_Record.GetIntroRecord","POST",a,(res) => {
+        console.log("res_onload", res);
         that.redPacket = res.money;
         that.find = res.intro;
         that.inputVal = res.code;
@@ -461,9 +438,7 @@ export default class referrer extends wx.page {
         that.introducer_avatarUrl = res.wx_introducer_avatarUrl;
         that.referrer = res.wx_introducer_code;
         that.$apply();
-      },
-      err => {},
-      {
+      },err => {},{
         noToast: true
       }
     );
@@ -553,6 +528,9 @@ page {
             background: linear-gradient(to right, #ed5226, #f86136);
             border-radius: 50rpx;
           }
+          .button-hover {
+            opacity: 0.8;
+          }
         }
       }
     }
@@ -592,6 +570,9 @@ page {
           color: #fff;
           background: linear-gradient(to right, #ed5226, #f86136);
           border-radius: 50rpx;
+        }
+        .button-hover {
+          opacity: 0.8;
         }
       }
       .li2-input {
