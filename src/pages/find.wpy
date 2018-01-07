@@ -22,14 +22,12 @@
                     <input class="li-item-input" type="text" name="input" placeholder="请留下你的微信，方便联系" placeholder-class="info_input" bindinput="bindWechat" bindblur="wechatOut" value="{{wechat}}" />
                     <!--<icon wx:if="{{errorWechat}}" type="warn"></icon>-->
                 </view>
-            </view>
-            
+            </view> 
             <view class="li">
               <form report-submit="true" style="width:100%;" bindsubmit="toPay">
-                <button type="primary" formType="submit" disabled="{{disableBind}}" style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
+                <button type="primary" hover-class="button-hover" formType="submit" disabled="{{disableBind}}" style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
               </form>
-            </view>
-            
+            </view>  
         </view>
         <view class="input" wx:if="{{type==2}}">
             <view class="li2">
@@ -271,10 +269,7 @@ export default class find extends wx.page {
     if (!that.redPacket || that.redPacket < 0) {
       return;
     }
-    request.request(
-      "App.Find_Pay.PrePay",
-      "POST",
-      {
+    request.request("App.Find_Pay.PrePay","POST",{
         total_fee: that.redPacket //*100
       },
       function(res) {
@@ -379,7 +374,9 @@ page {
             height: 100rpx;
             line-height: 100rpx;
             margin-top: 100rpx;
-            border-radius: 45rpx;
+          }
+          .button-hover {
+            opacity: 0.8 !important;
           }
         }
         .desc {
