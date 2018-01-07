@@ -57,7 +57,7 @@ function common_req() {
 			'content-type': 'application/x-www-form-urlencoded'
 		},
 		success: (res) => {
-			console.log('请求链接 >>>> ' + getServerUrl(args[0], res);
+			console.log('请求链接 >>>> ' + getServerUrl(args[0]), '返回 >>>> ', res);
 			wx.hideToast();
 			if (args[5] && args[5].getCodeSts && res.data.ret != 200) {//需要拿到返回码数据的情况
 				args[3].call(this, res.data);
@@ -76,6 +76,10 @@ function common_req() {
 			} else {//返回错误的情况
 				if (res.data.msg && !noModal) {
 					args[4] && args[4].call(this, res);
+					wx.showModal({
+						showCancel: false,
+						content: res.data.msg
+					})
 				} else if (res.statusCode && res.statusCode == 500) {
 					args[4].call(this, res);
 					wx.showModal({

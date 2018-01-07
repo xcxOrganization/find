@@ -1,6 +1,6 @@
 <template>
     <view class="container">
-        <findFlow></findFlow>
+        <findFlow :creatorAvatar.sync="creator_avatarUrl"></findFlow>
         <view class="input" wx:if="{{type==1}}">
             <view class="li">
                 <view class="desc">红包</view>
@@ -75,6 +75,7 @@ let imageSrc = ""; //海报背景图地址
 let appId = config.AppID; //小程序appid  用作获取二维码
 let url = config.apiQRCode + "QRCodeNew"; //二维码接口
 let qrcodeUrl = "";
+let out_trade_no = 0;
 let tempPath = ""; //导出图片的临时路径
 let ctx = null; //获取canvas组件
 let workSign = 0; //任务状态
@@ -97,6 +98,7 @@ export default class find extends wx.page {
     disableBind: !0,
     opacity: 0.4,
     findId: "",
+    creator_avatarUrl: "",
     errorRedPacket: !1,
     errorFind: !1,
     errorWechat: !1,
@@ -175,43 +177,84 @@ export default class find extends wx.page {
     let a = {
       money: that.redPacket,
       intro: "我想找" + that.find,
-      wx_self_code: that.wechat
+      wx_self_code: that.wechat,
+      out_trade_no
     };
     http.request(
       "App.Find_Record.Create",
       "POST",
       a,
       res => {
-        console.log("res", res);
-        that.findId = res;
-        let b = {
-          id: that.findId
-        };
-        http.request(
-          "App.Find_Record.GetIntroRecord",
-          "POST",
-          b,
-          res => {
-            console.log("res", res);
-            that.findNum = res.code;
-            that.$apply();
-          },
-          err => {},
-          {
-            noToast: true
-          }
-        );
-        that.$apply();
+        console.log('Create',res);
+        if (res && res.id) {
+          that.findNum = res.id;
+          that.type = 2;
+          that.$apply();
+        } else {
+          wx.showModal({
+            content: "创建找人记录失败",
+            showCancel: false,
+            confirmText: "知道了"
+          });
+        }
+        payCallBack();
       },
       err => {},
       {
         noToast: true
       }
     );
-    that.type = 2;
+    /*function createCallBack() {
+      //创建订单成功回调
+      request.request(
+        "App.Find_Pay.PrePay",
+        "POST",
+        {
+          total_fee: that.redPacket
+        },
+        function(res) {
+          let payData = res;
+          //微信支付
+          wx.requestPayment({
+            timeStamp: payData.timeStamp,
+            nonceStr: payData.nonceStr,
+            package: payData.package,
+            signType: payData.signType,
+            paySign: payData.paySign,
+            success: res => {
+              payCallBack();
+            },
+            fail: res => {},
+            complete: res => {}
+          });
+        },
+        function() {},
+        { noToast: true }
+      );
+    }*/
 
-    // 收集formId
-    that.saveFormId.call(e);
+    function payCallBack() {
+      //订单支付成功回调
+      that.type = 2;
+      that.findId = res;
+      that.$apply();
+      let b = {
+        id: that.findId
+      };
+      http.request(
+        "App.Find_Record.GetIntroRecord",
+        "POST",
+        b,
+        res => {
+          that.findNum = res.code;
+          that.$apply();
+        },
+        err => {},
+        {
+          noToast: true
+        }
+      );
+    }
   }
   onMoneyTip() {
     wx.showModal({
@@ -237,6 +280,7 @@ export default class find extends wx.page {
       function(res) {
         console.log("测试预支付接口返回>>>", res);
         let payData = res;
+        out_trade_no = res.out_trade_no;
         //微信支付
         wx.requestPayment({
           timeStamp: payData.timeStamp,
@@ -244,15 +288,41 @@ export default class find extends wx.page {
           package: payData.package,
           signType: payData.signType,
           paySign: payData.paySign,
-          success: function(res) {
-            that.eventHandle();
+          success: rs => {
+            that.payCheck.call(that);
           },
-          fail: function(res) {},
-          complete: function(res) {}
+          fail: res => {},
+          complete: res => {}
         });
       },
       function() {},
       { noToast: true }
+    );
+  }
+  payCheck() {
+    let that = this;
+    http.request(
+      "App.Find_Pay.PayCheck",
+      "POST",
+      {
+        out_trade_no
+      },
+      res => {
+        console.log("res", res);
+        if (res) {
+          that.eventHandle.call(that);
+        } else {
+          wx.showModal({
+            content: "发起找人失败，请重试",
+            showCancel: false,
+            confirmText: "知道了"
+          });
+        }
+      },
+      err => {},
+      {
+        noToast: true
+      }
     );
   }
   onShareAppMessage() {
@@ -275,7 +345,16 @@ export default class find extends wx.page {
       url: "/pages/poster"
     });
   }
-  onLoad(options) {}
+  onLoad(options) {
+    let that = this;
+    wx.getUserInfo({
+      success: res => {
+        that.creator_avatarUrl = res.userInfo.avatarUrl;
+        that.$apply();
+      },
+      fail: () => {}
+    });
+  }
 }
 </script>
 
