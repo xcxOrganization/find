@@ -75,15 +75,13 @@ export default class My extends wepy.page {
     showQuestion: false,
     preData: null,
     stitle: http.getImgServerApi() + "detail/stitle@2x.png",
-    frontImg: http.getImgServerApi() + "my/front.png",
-    backImg: http.getImgServerApi() + "my/back.png",
     imgApi: http.getImgServerApi(),
     userInfo: {
-      headimgurl: http.getImgServerApi() + "icon/noAvatar.png",
+      headimgurl: http.getImgServerApi() + "../assets/images/avatar.png",
       nickname: "加载中..."
     },
     cacheUserInfo: {
-      headimgurl: http.getImgServerApi() + "icon/noAvatar.png",
+      headimgurl: http.getImgServerApi() + "../assets/images/avatar.png",
       nickname: "加载中..."
     },
     zaCardId: 0,

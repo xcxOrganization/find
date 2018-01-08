@@ -9,17 +9,8 @@
             </view>
         </view>
 
-        <view wx-if="{{curIndex == 0}}" style="margin-top: 100rpx;">
-            <!--<view class='circle_bg'>
-                <view class='circle'>
-                    <view class='txt'>累计奖励</view>
-                    <view class='num'>{{rewardSum}}</view>
-                </view>
-            </view>-->
+        <view wx-if="{{curIndex == 0}}" class="container">
             <view class="historyContainer">
-                <!--<view class='list-title' @tap='showTip'>明细
-                    <image class='warning' src='{{warningImg}}'/>
-                </view>-->
                 <view class='listContainer' wx:for='{{inviteRewardRecords}}' wx:key='index' item='item' data-item='{{item}}'>
                   <view class='list flex-xy'>
                       <view class='list-left flex-xy'>
@@ -45,24 +36,39 @@
                     <view>
                         <image src='{{defaultImg}}'/>
                     </view>
-                    <view>暂无记录</view>
+                    <view>暂无找人记录</view>
                 </view>
             </view>
         </view>
 
         <view wx-if="{{curIndex == 1}}" class="container">
-            <view class='listContainer list flex-xy' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
-                <view class='list-left flex-xy'>
-                    <image src='{{item.wx_creator_avatarUrl}}'/>
-                    <view>{{item.create_time}}</view>
+            <view class="historyContainer">
+                <view class='listContainer' wx:for='{{list2}}' wx:key='index' item='item' data-item='{{item}}'>
+                  <view class='list flex-xy'>
+                      <view class='list-left flex-xy'>
+                        <image style="border-radius:50%" src='{{item.wx_creator_avatarUrl}}'/>
+                        {{item.wx_creator_nickName}}
+                      </view>
+                      <view class='list-right' style="color:#FEA157;font-size:34rpx;font-weight:700;">{{item.money}}元</view>
+                  </view>
+                  <view class='intro'>{{item.intro}}</view>
+                  <view class='list flex-xy'>
+                      <view class='list-left flex-xy'>
+                          <view class="listLabel">
+                              <view class="date">{{item.create_time}}</view>
+                          </view>
+                      </view>
+                      <view wx:if='{{item.oper_state==1}}' class='list-right circle' style="border-color:#5CA4FF;color:#5CA4FF">进行中</view>
+                      <view wx:if='{{item.oper_state==2}}' class='list-right circle' style="border-color:#ccc;color:#ccc">过期失效</view>
+                      <view wx:if='{{item.oper_state==3}}' class='list-right circle' style="border-color:#5CA4FF;color:#5CA4FF">引荐成功</view>
+                  </view>
                 </view>
-                <view class='list-right'>{{item.money}}元</view>
-            </view>
-            <view wx:if="{{!list2 || list2.length==0}}" class="default">
-                <view>
-                    <image src='{{defaultImg}}'/>
+                <view wx:if="{{!list2 || list2.length==0}}" class="default">
+                    <view>
+                        <image src='{{defaultImg}}'/>
+                    </view>
+                    <view>暂无引荐记录</view>
                 </view>
-                <view>暂无记录</view>
             </view>
         </view>
     </view>
@@ -139,7 +145,7 @@ export default class WithdrawHistory extends wepy.page {
         }
         that.curPage2 = newPage;
         list = that.list2;
-        let newList = res;//res.list;
+        let newList = res; //res.list;
         if (newList && newList.length > 0) {
           for (var i = 0, len = newList.length; i < len; i++) {
             list.push(newList[i]);
@@ -147,7 +153,6 @@ export default class WithdrawHistory extends wepy.page {
           that.total2 = res.total;
           that.list2 = list;
         }
-        console.log(123213);
         /*that.list2 = [
           {
             intro: "找人描述找人描述找人描述找人描述找人描述找人描述找人描述",
@@ -195,7 +200,7 @@ export default class WithdrawHistory extends wepy.page {
           : "0.00";
         that.curPage1 = newPage;
         list = that.inviteRewardRecords;
-        let newList = res;//res.list;
+        let newList = res; //res.list;
         if (newList && newList.length > 0) {
           for (var i = 0, len = newList.length; i < len; i++) {
             list.push(newList[i]);
@@ -359,11 +364,11 @@ page {
       width: 200rpx;
       text-align: right;
       margin-right: 20rpx;
-      &.circle{
-        border:1rpx solid #ccc;
-        padding:10rpx 20rpx;
-        text-align:center;
-        width:140rpx;
+      &.circle {
+        border: 1rpx solid #ccc;
+        padding: 10rpx 20rpx;
+        text-align: center;
+        width: 140rpx;
         border-radius: 8rpx;
       }
     }
@@ -388,8 +393,8 @@ page {
     padding: 30rpx 0;
     border-bottom: 1rpx solid #f3f3f7;
     font-size: 30rpx;
-    .intro{
-      padding:30rpx 0;
+    .intro {
+      padding: 30rpx 0;
     }
   }
   .list {

@@ -27,7 +27,6 @@
 
 <script>
 import wx from 'wepy'
-import http from "../utils/request.js"
 import mixin from '../mixins/redux'
 // import util from '../utils/util.js'
 export default class findFlow extends wx.component {
@@ -66,14 +65,6 @@ export default class findFlow extends wx.component {
             this.ruleModal = !1
         }
     }
-
-    onLoad(options) {
-        let that = this;
-        that.getUserInfo();
-    }
-
-    // 获取用户信息
-    getUserInfo() {}
 }
 </script>
 

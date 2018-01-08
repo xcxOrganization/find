@@ -26,7 +26,7 @@
 <script>
 import wx from "wepy";
 import http from "../utils/request.js";
-import config from "../config";
+//import config from "../config";
 let cRedPacket = 0; //提现金额
 export default class extends wx.page {
   config = {

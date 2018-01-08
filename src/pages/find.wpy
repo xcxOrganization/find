@@ -1,18 +1,18 @@
 <template>
     <view class="container">
-        <findFlow></findFlow>
+        <findFlow :creatorAvatar.sync="creator_avatarUrl"></findFlow>
         <view class="input" wx:if="{{type==1}}">
             <view class="li">
                 <view class="desc">红包</view>
                 <view class="li-item">
-                    <input class="li-item-input" name="input" type="number" placeholder="请输入红包金额" bindinput="bindRedPacket" placeholder-class="info_input" bindblur="redPacketOut" value="{{redPacket}}" />
+                    <input class="li-item-input" name="input" type="number" placeholder="请输入红包金额" bindinput="bindRedPacket" placeholder-class="info_input" value="{{redPacket}}" />
                     <!--<icon wx:if="{{errorRedPacket}}" type="warn"></icon>-->
                 </view>
             </view>
             <view class="li">
                 <view class="desc">我想找</view>
                 <view class="li-item">
-                    <textarea class="li-item-input" type="text" placeholder="一句话描述你想找的人，限25字" bindinput="bindFind" placeholder-class="info_input" bindblur="findOut" value="{{find}}" />
+                    <textarea class="li-item-input" type="text" maxlength="160" placeholder="一句话描述你想找的人，限25字" bindinput="bindFind" placeholder-class="info_input" bindblur="findOut" value="{{find}}" />
                     <!--<icon wx:if="{{errorFind}}" type="warn"></icon>-->
                 </view>
             </view>
@@ -22,10 +22,12 @@
                     <input class="li-item-input" type="text" name="input" placeholder="请留下你的微信，方便联系" placeholder-class="info_input" bindinput="bindWechat" bindblur="wechatOut" value="{{wechat}}" />
                     <!--<icon wx:if="{{errorWechat}}" type="warn"></icon>-->
                 </view>
-            </view>
+            </view> 
             <view class="li">
-                <button type="primary" hover-class="button-hover" disabled="{{disableBind}}" @tap='eventHandle' style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
-            </view>
+              <form report-submit="true" style="width:100%;" bindsubmit="toPay">
+                <button type="primary" hover-class="button-hover" formType="submit" disabled="{{disableBind}}" style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
+              </form>
+            </view>  
         </view>
         <view class="input" wx:if="{{type==2}}">
             <view class="li2">
@@ -50,7 +52,7 @@
                 <view class="tipCont">发起成功！</view>
             </view>
             <view class="li2">
-                <button type="primary" open-type="share">邀请好友帮忙</button>
+                <button type="primary" bindtouchstart="changeShareTxt" open-type="share">邀请好友帮忙</button>
                 <button type="primary" @tap="toPoster">生成找人海报</button>
                 <image class="findShare" src="../assets/images/findShare.png" style="width:45%; height: 120rpx;"/>
                 <image class="findPoster" src="../assets/images/findPoster.png" style="width:45%; height: 120rpx;" @tap="toPoster"/>
@@ -60,44 +62,82 @@
 </template>
 
 <script>
-import wx from 'wepy'
-import http from "../utils/request.js"
-import request from '../utils/request.js'
-import config from "../config"
-import mixin from '../mixins/redux'
-import util from '../utils/util.js'
-import findFlow from '../components/findFlow';
-let imageSrc = '';//海报背景图地址
+import wx from "wepy";
+import http from "../utils/request.js";
+import request from "../utils/request.js";
+import config from "../config";
+import mixin from "../mixins/redux";
+import util from "../utils/util.js";
+import findFlow from "../components/findFlow";
+let imageSrc = ""; //海报背景图地址
 let appId = config.AppID; //小程序appid  用作获取二维码
 let url = config.apiQRCode + "QRCodeNew"; //二维码接口
 let qrcodeUrl = "";
+let out_trade_no = 0;
 let tempPath = ""; //导出图片的临时路径
 let ctx = null; //获取canvas组件
-let workSign = 0;//任务状态
+let workSign = 0; //任务状态
+let shareTxt = "送红包：Hi，给你推荐个朋友";
 export default class find extends wx.page {
-    config = {
-        navigationBarBackgroundColor: "#fff",
-        navigationBarTitleText: '我要找人'
+  config = {
+    navigationBarBackgroundColor: "#fff",
+    navigationBarTitleText: "我要找人"
+  };
+  components = {
+    findFlow: findFlow
+  };
+  mixins = [mixin];
+  data = {
+    type: 1,
+    redPacket: "",
+    find: "",
+    wechat: "",
+    findNum: "",
+    disableBind: !0,
+    opacity: 0.4,
+    findId: "",
+    creator_avatarUrl: "",
+    errorRedPacket: !1,
+    errorFind: !1,
+    errorWechat: !1,
+    redPacket_status: !1,
+    find_status: !1,
+    wechat_status: !1
+  };
+  changeShareTxt() {
+    shareTxt = "送红包：我想找" + this.find;
+  }
+  bindRedPacket(e) {
+    let that = this;
+    let cRedPacket = util.trim(e.detail.value);
+    let tRedPacket = util.testRedPacket(cRedPacket);
+    if (tRedPacket) {
+      this.redPacket_status = !0;
+      this.errorRedPacket = !1;
+      this.redPacket = cRedPacket;
+    } else {
+      this.redPacket_status = !1;
+      this.errorRedPacket = !0;
     }
-    components = {
-        findFlow: findFlow
+    let redPacketStatus = this.redPacket_status;
+    let findStatus = this.find_status;
+    let wechatStatus = this.wechat_status;
+    if (redPacketStatus && findStatus && wechatStatus) {
+      that.disableBind = !1;
+      that.opacity = 1;
+    } else {
+      that.disableBind = !0;
+      that.opacity = 0.4;
     }
-    mixins = [mixin]
-    data = {
-        type: 1,
-        redPacket: '',
-        find: '',
-        wechat: '',
-        findNum: '',
-        disableBind: !0,
-        opacity: 0.4,
-        findId: '',
-        errorRedPacket: !1,
-        errorFind: !1,
-        errorWechat: !1,
-        redPacket_status: !1,
-        find_status: !1,
-        wechat_status: !1
+  }
+  bindFind(e) {
+    var that = this;
+    let cFind = util.trim(e.detail.value);
+    if (cFind !== "") {
+      this.find_status = !0;
+      this.find = cFind;
+    } else {
+      this.find_status = !1;
     }
     bindRedPacket(e) {
         let that = this
@@ -122,103 +162,207 @@ export default class find extends wx.page {
             that.opacity = 0.4
         }
     }
-    bindFind(e) {
-        var that = this
-        let cFind = util.trim(e.detail.value)
-        if (cFind!=='') {
-            this.find_status = !0
-            this.find = cFind
-        } else {
-            this.find_status = !1
-        }
-        let redPacketStatus = this.redPacket_status
-        let findStatus = this.find_status
-        let wechatStatus = this.wechat_status
-        if (redPacketStatus && findStatus && wechatStatus) {
-            that.disableBind = !1
-            that.opacity = 1
-        } else {
-            that.disableBind = !0
-            that.opacity = 0.4
-        }   
+  }
+  bindWechat(e) {
+    var that = this;
+    let cWechat = util.trim(e.detail.value);
+    if (cWechat !== "") {
+      this.wechat_status = !0;
+      this.wechat = cWechat;
+    } else {
+      this.wechat_status = !1;
     }
-    bindWechat(e) {
-        var that = this
-        let cWechat = util.trim(e.detail.value)
-        if (cWechat!=='') {
-            this.wechat_status = !0
-            this.wechat = cWechat
-        } else {
-            this.wechat_status = !1
-        }
-        let redPacketStatus = this.redPacket_status
-        let findStatus = this.find_status
-        let wechatStatus = this.wechat_status
-        if (redPacketStatus && findStatus && wechatStatus) {
-            that.disableBind = !1
-            that.opacity = 1
-        } else {
-            that.disableBind = !0
-            that.opacity = 0.4
-        }
+    let redPacketStatus = this.redPacket_status;
+    let findStatus = this.find_status;
+    let wechatStatus = this.wechat_status;
+    if (redPacketStatus && findStatus && wechatStatus) {
+      that.disableBind = !1;
+      that.opacity = 1;
+    } else {
+      that.disableBind = !0;
+      that.opacity = 0.4;
     }
-    eventHandle() {
-        let that = this;
-        let a = {
-            money: that.redPacket,
-            intro: '我想找'+that.find,
-            wx_self_code: that.wechat
-        }
-        http.request("App.Find_Record.Create", "POST", a, (res) => {
-            console.log('res',res);
-            that.findId = res;
-            let b = {
-                id: that.findId
-            }
-            http.request("App.Find_Record.GetIntroRecord", "POST", b, (res) => {
-                console.log('res',res);
-                that.findNum = res.code;
-                that.$apply();
-            }, (err) => {}, {
-                noToast: true
-            });
-            that.$apply();
-        }, (err) => {}, {
-            noToast: true
-        });
-        this.type = 2;
-    }
-    onMoneyTip() {
-        wx.showModal({
-            content: '引荐人、被引荐人平分红包',
+  }
+  eventHandle() {
+    let that = this;
+    let a = {
+      money: that.redPacket,
+      intro: "我想找" + that.find,
+      wx_self_code: that.wechat,
+      out_trade_no
+    };
+    http.request(
+      "App.Find_Record.Create",
+      "POST",
+      a,
+      res => {
+        console.log('Create',res);
+        if (res && res.id) {
+          that.findNum = res.id;
+          that.type = 2;
+          that.$apply();
+        } else {
+          wx.showModal({
+            content: "创建找人记录失败",
             showCancel: false,
-            confirmText: '知道了',
-            confirmColor: '#F86136'
-        });
-    }
-    onShareAppMessage() {
-        let that = this
-        let findId = that.findId
-        let type = 2
-        return {
-            title: "送红包：Hi，给你推荐个朋友",
-            path: 'pages/referrer?type=' + type + '&idOne=' + findId,
-            success: (res) => {
-                // 分享成功
-            },
-            fail: (res) => {
-                // 分享失败
-            }
+            confirmText: "知道了"
+          });
         }
-    }
-    toPoster() {
-        wx.navigateTo({
-            url: "/pages/poster"
-        });
-    }
-    onLoad(options) {
+        payCallBack();
+      },
+      err => {},
+      {
+        noToast: true
+      }
+    );
+    /*function createCallBack() {
+      //创建订单成功回调
+      request.request(
+        "App.Find_Pay.PrePay",
+        "POST",
+        {
+          total_fee: that.redPacket
+        },
+        function(res) {
+          let payData = res;
+          //微信支付
+          wx.requestPayment({
+            timeStamp: payData.timeStamp,
+            nonceStr: payData.nonceStr,
+            package: payData.package,
+            signType: payData.signType,
+            paySign: payData.paySign,
+            success: res => {
+              payCallBack();
+            },
+            fail: res => {},
+            complete: res => {}
+          });
+        },
+        function() {},
+        { noToast: true }
+      );
+    }*/
 
+    function payCallBack() {
+      //订单支付成功回调
+      that.type = 2;
+      that.findId = res;
+      that.$apply();
+      let b = {
+        id: that.findId
+      };
+      http.request(
+        "App.Find_Record.GetIntroRecord",
+        "POST",
+        b,
+        res => {
+          that.findNum = res.code;
+          that.$apply();
+        },
+        err => {},
+        {
+          noToast: true
+        }
+      );
     }
+  }
+  onMoneyTip() {
+    wx.showModal({
+      content: "引荐人、被引荐人平分红包",
+      showCancel: false,
+      confirmText: "知道了",
+      confirmColor: "#F86136"
+    });
+  }
+  toPay(e) {
+    let that = this;
+    // 收集formId
+    that.saveFormId.call(e);
+    if (!that.redPacket || that.redPacket < 0) {
+      return;
+    }
+    request.request("App.Find_Pay.PrePay","POST",{
+        total_fee: that.redPacket //*100
+      },
+      function(res) {
+        console.log("测试预支付接口返回>>>", res);
+        let payData = res;
+        out_trade_no = res.out_trade_no;
+        //微信支付
+        wx.requestPayment({
+          timeStamp: payData.timeStamp,
+          nonceStr: payData.nonceStr,
+          package: payData.package,
+          signType: payData.signType,
+          paySign: payData.paySign,
+          success: rs => {
+            that.payCheck.call(that);
+          },
+          fail: res => {},
+          complete: res => {}
+        });
+      },
+      function() {},
+      { noToast: true }
+    );
+  }
+  payCheck() {
+    let that = this;
+    http.request(
+      "App.Find_Pay.PayCheck",
+      "POST",
+      {
+        out_trade_no
+      },
+      res => {
+        console.log("res", res);
+        if (res) {
+          that.eventHandle.call(that);
+        } else {
+          wx.showModal({
+            content: "发起找人失败，请重试",
+            showCancel: false,
+            confirmText: "知道了"
+          });
+        }
+      },
+      err => {},
+      {
+        noToast: true
+      }
+    );
+  }
+  onShareAppMessage() {
+    let that = this;
+    let findId = that.findId;
+    let type = 2;
+    return {
+      title: shareTxt,
+      path: "pages/referrer?type=" + type + "&idOne=" + findId,
+      success: res => {
+        // 分享成功
+      },
+      fail: res => {
+        // 分享失败
+      }
+    };
+  }
+  toPoster() {
+    wx.navigateTo({
+      url: "/pages/poster"
+    });
+  }
+  onLoad(options) {
+    let that = this;
+    wx.getUserInfo({
+      success: res => {
+        that.creator_avatarUrl = res.userInfo.avatarUrl;
+        that.$apply();
+      },
+      fail: () => {}
+    });
+  }
 }
 </script>
 
@@ -243,7 +387,9 @@ page {
             height: 100rpx;
             line-height: 100rpx;
             margin-top: 100rpx;
-            border-radius: 45rpx;
+          }
+          .button-hover {
+            opacity: 0.8 !important;
           }
           .button-hover {
             opacity: 0.8 !important;
@@ -255,43 +401,43 @@ page {
           line-height: 2.5rem;
         }
         .li-item {
-            width: 80%;
-            background: #F2F2F2;
-            padding: 20rpx;
-            border: 1rpx solid #DDDDDD;
-            position: relative;
-            input {
-                width: 100%;
-                height: 1.2rem;
-                line-height: 1.2rem;
-                min-height: 1.2rem;
-            }
-            textarea {
-                width: 100%;
-                height: 3.6rem;
-                line-height: 1.2rem;
-                min-height: 1.2rem;
-            }
-            .info_input{
-                color: #AEAEAE;
-            }
-            icon {
-                position: absolute;
-                top: 20rpx;
-                right: 10rpx;
-            }
+          width: 80%;
+          background: #f2f2f2;
+          padding: 20rpx;
+          border: 1rpx solid #dddddd;
+          position: relative;
+          input {
+            width: 100%;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            min-height: 1.2rem;
+          }
+          textarea {
+            width: 100%;
+            height: 3.6rem;
+            line-height: 1.2rem;
+            min-height: 1.2rem;
+          }
+          .info_input {
+            color: #aeaeae;
+          }
+          icon {
+            position: absolute;
+            top: 20rpx;
+            right: 10rpx;
+          }
         }
         .li-item2 {
-            width: 75%;
-            padding: 20rpx;
+          width: 75%;
+          padding: 20rpx;
         }
       }
-      .li2{ 
+      .li2 {
         display: flex;
         margin-top: 25rpx;
         margin-left: 35rpx;
         margin-right: 35rpx;
-        border-bottom: 1rpx solid #EBEBEB;
+        border-bottom: 1rpx solid #ebebeb;
         padding-bottom: 10rpx;
         &:nth-child(3) {
           border-bottom: none;
@@ -300,13 +446,13 @@ page {
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #F7B602;
+          color: #f7b602;
           font-size: 36rpx;
           margin-top: 50rpx;
           padding-top: 40rpx;
           padding-bottom: 40rpx;
           border-bottom: none;
-          background: #FEF8E5;
+          background: #fef8e5;
         }
         &:nth-child(5) {
           display: flex;
@@ -314,42 +460,42 @@ page {
           border-bottom: none;
           margin-top: 50rpx;
           position: relative;
-          button{
-              opacity:0;
-              z-index: 11;
-              border-radius: 50rpx;
-              padding-left: 36rpx;
-              padding-right: 36rpx;
-              padding-top: 6rpx;
-              padding-bottom: 6rpx;
+          button {
+            opacity: 0;
+            z-index: 11;
+            border-radius: 50rpx;
+            padding-left: 36rpx;
+            padding-right: 36rpx;
+            padding-top: 6rpx;
+            padding-bottom: 6rpx;
           }
-          .findShare{
-              position: absolute;
-              top: 0rpx;
-              left: 5rpx;
+          .findShare {
+            position: absolute;
+            top: 0rpx;
+            left: 5rpx;
           }
-          .findPoster{
-              position: absolute;
-              top: 0rpx;
-              left: 350rpx;
+          .findPoster {
+            position: absolute;
+            top: 0rpx;
+            left: 350rpx;
           }
         }
         .desc {
-            width: 20%;
-            color: #343434;
-            line-height: 2.5rem;
+          width: 20%;
+          color: #343434;
+          line-height: 2.5rem;
         }
         .li-item2 {
-            width: 80%;
-            color: #000;
-            padding: 20rpx;
+          width: 80%;
+          color: #000;
+          padding: 20rpx;
         }
-        .li-item2-center{
-            .moneyTip{
-                margin-left: 20rpx;
-            }
-            display: flex;
-            align-items: center;
+        .li-item2-center {
+          .moneyTip {
+            margin-left: 20rpx;
+          }
+          display: flex;
+          align-items: center;
         }
       }
     }

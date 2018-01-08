@@ -22,16 +22,13 @@
             </view>
             
         </view>
-        <!--<view class="desc">
-            当前版本：{{version}}
-        </view>-->
     </view>
 </template>
 
 <script>
 import wx from "wepy";
-// import request from '../utils/request.js'
 import config from "../config";
+import Login from "../utils/login.js";
 export default class extends wx.page {
   config = {
     navigationBarTitleText: "帮忙找人"
@@ -41,13 +38,80 @@ export default class extends wx.page {
   };
   methods = {
     toFind() {
-      wx.navigateTo({
-        url: "/pages/find"
+      let that = this;
+      wx.getUserInfo({
+        success: () => {
+          if (!wx.getStorageSync(config.env + "_addUser")) {
+            new Login().getUserInfo(); //登录
+          }
+          wx.navigateTo({
+            url: "/pages/find"
+          });
+        },
+        fail: () => {
+          wx.showModal({
+            content: "需要授权用户信息才可进入哦",
+            confirmText: "前往授权",
+            showCancel: true,
+            success(res) {
+              if (res.confirm && wx.openSetting) {
+                wx.openSetting({
+                  success: function(res) {
+                    if (!res.authSetting["scope.userInfo"]) {
+                      wx.authorize({
+                        scope: "scope.userInfo",
+                        success() {
+                          that.methods.toFind.call(that);
+                        }
+                      });
+                    }
+                  }
+                });
+              } else if (res.cancel) {
+                that.methods.toFind.call(that);
+              }
+            }
+          });
+        }
       });
     },
     toReferrer() {
-      wx.navigateTo({
-        url: "/pages/referrer"
+      let that = this;
+      wx.getUserInfo({
+        success: () => {
+          if (!wx.getStorageSync(config.env + "_addUser")) {
+            new Login().getUserInfo(); //登录
+          }
+          wx.navigateTo({
+            url: "/pages/referrer"
+          });
+        },
+        fail: () => {
+          wx.showModal({
+            content: "需要授权用户信息才可进入哦",
+            confirmText: "前往授权",
+            showCancel: true,
+            success(res) {
+              if (res.confirm && wx.openSetting) {
+                wx.openSetting({
+                  success: function(res) {
+                    if (!res.authSetting["scope.userInfo"]) {
+                      wx.authorize({
+                        scope: "scope.userInfo",
+                        success() {
+                          that.methods.toReferrer.call(that);
+                        }
+                      });
+                    }
+                  }
+                });
+              } else if (res.cancel) {
+                console.log(that);
+                that.methods.toReferrer.call(that);
+              }
+            }
+          });
+        }
       });
     }
   };
@@ -56,21 +120,21 @@ export default class extends wx.page {
 
 <style lang="less">
 page {
-  background: #F3F3F7;
+  background: #f3f3f7;
   .container {
     position: relative;
-    color: #3D516C;
+    color: #3d516c;
     .top {
-      width: 729rpx;
-      height: 140rpx;
+      width: 691rpx;
+      height: 158rpx;
       text-align: center;
       margin: 20rpx auto -20rpx auto;
-      .topImg{
-        width: 93%;
-        height: 93%;
+      .topImg {
+        width: 100%;
+        height: 100%;
       }
     }
-    .box {   
+    .box {
       .left {
         .leftImg {
           width: 286rpx;
@@ -85,7 +149,7 @@ page {
         }
         .rightB {
           font-size: 32rpx;
-          color: #8D8D8D;
+          color: #8d8d8d;
         }
         width: 55%;
         padding-top: 60rpx;
@@ -95,7 +159,7 @@ page {
       position: relative;
       width: 86%;
       height: 272rpx;
-      background: #FFF;
+      background: #fff;
       margin: 30rpx auto;
       border-radius: 20rpx;
       padding: 0 15rpx;
