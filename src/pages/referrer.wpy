@@ -33,7 +33,7 @@
                         <view class="clear"></view>
                     </view>
                     <view class="findNum-btn">
-                        <button type="primary" @tap='toType2'>提交</button>
+                        <button type="primary" hover-class="button-hover" @tap='toType2'>提交</button>
                     </view>
                 </view>
             </view>
@@ -64,7 +64,7 @@
                         </view>
                     </view>
                     <view class="li2 li2-btn">
-                        <button type="primary" @tap='toTypeOne2'>给TA引荐朋友，领红包</button>
+                        <button type="primary" hover-class="button-hover" @tap='toTypeOne2'>给TA引荐朋友，领红包</button>
                     </view>
                 </view>
                 <view wx:if="{{typeOne==2}}">
@@ -81,7 +81,7 @@
                     </view>
                     <view wx:if="{{typeTwo==1}}">
                         <view class="li2 li2-btn">
-                            <button type="primary" open-type="share">分享给引荐的朋友</button>
+                            <button type="primary" hover-class="button-hover" open-type="share">分享给引荐的朋友</button>
                         </view>
                     </view>
                     <view wx:if="{{typeTwo==2}}">
@@ -275,22 +275,18 @@ export default class referrer extends wx.page {
                 http.request("App.Find_Record.GetOperRecord", "POST", b, (res) => {
                     console.log('res',res);
                     that.introducered_avatarUrl = res.wx_introducered_avatarUrl;
-                    that.referee = res.wx_introducered_code; 
+                    that.referee = res.wx_introducered_code;
                     that.$apply();
                 }, (err) => {}, {
                     noToast: true
                 });
             }
-          );
+            that.$apply();
+        },(err) => {
+            console.log("已存在引荐人和被引荐人！");
+        },{
+            noToast: true
         }
-        that.$apply();
-      },
-      (err) => {
-        console.log("已存在引荐人和被引荐人！");
-      },
-      {
-        noToast: true
-      }
     );
 
     // 收集formId
@@ -488,6 +484,9 @@ page {
             background: linear-gradient(to right, #ed5226, #f86136);
             border-radius: 50rpx;
           }
+          .button-hover {
+            opacity: 0.8;
+          }
         }
       }
     }
@@ -527,6 +526,9 @@ page {
           color: #fff;
           background: linear-gradient(to right, #ed5226, #f86136);
           border-radius: 50rpx;
+        }
+        .button-hover {
+          opacity: 0.8;
         }
       }
       .li2-input {

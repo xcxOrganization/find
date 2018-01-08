@@ -24,7 +24,7 @@
                 </view>
             </view>
             <view class="li">
-                <button type="primary" disabled="{{disableBind}}" @tap='eventHandle' style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
+                <button type="primary" hover-class="button-hover" disabled="{{disableBind}}" @tap='eventHandle' style="opacity: {{opacity}}; background: linear-gradient(to right, #ED5226 , #F86136);">发起找人</button>
             </view>
         </view>
         <view class="input" wx:if="{{type==2}}">
@@ -106,7 +106,7 @@ export default class find extends wx.page {
         if (tRedPacket) {
             this.redPacket_status = !0
             this.errorRedPacket = !1   
-            this.redPacket = cRedPacket       
+            this.redPacket = cRedPacket
         } else {
             this.redPacket_status = !1
             this.errorRedPacket = !0
@@ -244,6 +244,9 @@ page {
             line-height: 100rpx;
             margin-top: 100rpx;
             border-radius: 45rpx;
+          }
+          .button-hover {
+            opacity: 0.8 !important;
           }
         }
         .desc {
