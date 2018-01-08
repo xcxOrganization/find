@@ -290,6 +290,58 @@ export default class referrer extends wx.page {
     // 收集formId
     that.saveFormId.call(e);
   }
+  toType2() {
+    let that = this;
+    let a = {
+      code: that.inputVal
+    };
+    http.request(
+      "App.Find_Record.CheckCode",
+      "POST",
+      a,
+      res => {
+        console.log("res", res);
+        if (res == !1) {
+          wx.showModal({
+            content: "找人码不存在 或 已引荐成功！",
+            showCancel: false,
+            confirmText: "知道了",
+            confirmColor: "#F86136"
+          });
+          console.log("找人码不存在 或 已引荐成功！");
+        } else {
+          let a = {
+            id: res.id
+          };
+          http.request(
+            "App.Find_Record.GetIntroRecord",
+            "POST",
+            a,
+            res => {
+              console.log("res", res);
+              that.redPacket = res.money;
+              that.find = res.intro;
+              that.idOne = res.id;
+              that.creator_avatarUrl = res.wx_creator_avatarUrl;
+              that.type = 2;
+              that.$apply();
+            },
+            err => {},
+            {
+              noToast: true
+            }
+          );
+        }
+        that.$apply();
+      },
+      err => {
+        console.log("找人码为空！");
+      },
+      {
+        noToast: true
+      }
+    );
+  }
   toTypeTwo3(e) {
     let that = this;
     let a = {
