@@ -16,6 +16,10 @@
                     <input class="li-item-input" name="input" type="number" placeholder="请输入提现金额" bindinput="bindRedPacket" placeholder-class="info_input" value="{{redPacket}}" />
                 </view>
             </view>
+            <view class="li" style='margin:20rpx 60rpx'>
+                <view class="desc"></view>
+                <view>提现1-5天内到账</view>
+            </view>
             <view class="li">
                 <button type="primary" @tap='eventHandle' style="background-color: #F86136;">提交</button>
             </view>
@@ -154,7 +158,6 @@ page {
       color: #fff;
       height: 100rpx;
       line-height: 100rpx;
-      margin-top: 40rpx;
       border-radius: 45rpx;
       font-size: 36rpx;
     }

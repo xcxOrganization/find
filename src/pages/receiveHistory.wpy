@@ -10,6 +10,15 @@
                 </view>
                 <view class="time">
                     {{item.create_time}}
+                    <view wx-if="{{item.state==1}}" style="color:red" class="status">
+                    未发放
+                    </view>
+                    <view wx-if="{{item.state==2}}" style="color:green" class="status">
+                    已发放
+                    </view>
+                    <view wx-if="{{item.state==-1}}" class="status">
+                    提现失败
+                    </view>
                 </view>
             </view>
         </view>
@@ -23,58 +32,64 @@
 </template>
 
 <script>
-import wepy from 'wepy'
-import request from '../utils/request.js'
-import mixin from '../mixins/redux'
+import wepy from "wepy";
+import request from "../utils/request.js";
+import mixin from "../mixins/redux";
 
 export default class extends wepy.page {
-    data = {
-        inviteRewardTaskList: [],//提现记录
-        curPage: 0,
-        defaultImg: '',//request.getImgServerApi() + 'my/record_empty@2x.png',
-        warningImg: request.getImgServerApi() + 'my/warning.png'
+  data = {
+    inviteRewardTaskList: [], //提现记录
+    curPage: 0,
+    defaultImg: "", //request.getImgServerApi() + 'my/record_empty@2x.png',
+    warningImg: request.getImgServerApi() + "my/warning.png"
+  };
+  mixins = [mixin];
+  config = {
+    navigationBarTitleText: "提现明细"
+  };
+  props = {};
+  methods = {
+    back() {
+      wx.navigateBack();
     }
-    mixins = [mixin]
-    config = {
-        navigationBarTitleText: '提现明细'
+  };
+  events = {};
+  onLoad() {}
+  onShow() {
+    let that = this;
+    that.curPage = 0;
+    that.inviteRewardRecords = [];
+    that.$apply();
+    that.send_PackageList_req();
+  }
+  send_PackageList_req() {
+    //发起请求
+    let that = this,
+      newPage = that.curPage - 0 + 1,
+      list = [];
+    let sign = that.refuseMuchClick(); //防止多次触发
+    if (!sign) {
+      return;
     }
-    props = {}
-    methods = {
-        back(){
-            wx.navigateBack();
+    request.request(
+      "App.Find_Wallet.GetWalletWithdrawRecord",
+      "POST",
+      {},
+      res => {
+        if (!res) {
+          return;
         }
-    }
-    events = {}
-    onLoad() {
-
-    }
-    onShow() {
-        let that = this;
-        that.curPage = 0;
-        that.inviteRewardRecords = [];
-        that.$apply();
-        that.send_PackageList_req();
-    }
-    send_PackageList_req() { //发起请求
-    console.log(2123);
-        let that = this, newPage = that.curPage - 0 + 1, list = [];
-        let sign = that.refuseMuchClick();//防止多次触发
-        if (!sign) {
-            return;
+        that.curPage = newPage;
+        list = that.inviteRewardTaskList;
+        let newList = res;
+        if (newList && newList.length > 0) {
+          for (var i = 0, len = newList.length; i < len; i++) {
+            list.push(newList[i]);
+          }
+          that.inviteRewardTaskList = list;
         }
-        request.request('App.Find_Wallet.WalletRecord', 'POST', {}, (res) => {
-            if (!res) {
-                return;
-            }
-            that.curPage = newPage;
-            list = that.inviteRewardTaskList;
-            if (res.list && res.list.length > 0) {
-                for (var i = 0, len = res.list.length; i < len; i++) {
-                    list.push(res.list[i]);
-                }
-                that.inviteRewardTaskList = list;
-            }
-            /*测试数据
+        /*测试数据
+            state1、2、3分别是进行中、成功、失败
             that.inviteRewardTaskList = [{
                 create_time:'2017-09-02',
                 money:'213'
@@ -82,98 +97,106 @@ export default class extends wepy.page {
                 create_time:'2017-09-02',
                 money:'213'
             }]*/
-            that.$apply();
-        }, function() { });
-    }
-    onReachBottom() {
-        let that = this;
-        that.send_PackageList_req();
-    }
+        that.$apply();
+      },
+      function() {}
+    );
+  }
+  onReachBottom() {
+    let that = this;
+    that.send_PackageList_req();
+  }
 }
 </script>
 
 <style lang='less'>
 page {
-    .default {
-        margin-top: 80rpx;
-        text-align: center;
-        font-size: 26rpx;
-        color: #818183;
-        image {
-            width: 220rpx;
-            height: 220rpx;
-        }
+  .default {
+    margin-top: 80rpx;
+    text-align: center;
+    font-size: 26rpx;
+    color: #818183;
+    image {
+      width: 220rpx;
+      height: 220rpx;
     }
-    .btn{
-        width: 170rpx;
-        height: 60rpx;
-        line-height: 60rpx;
-        background-color: rgba(254,188,0,1);
-        position: fixed;
-        right: 0;
-        top: 30rpx;
-        color: #fff;
-        font-size: 26rpx;
-        text-align: center;
-        border-radius: 50rpx 0 0 50rpx;
-        opacity: .9;
-    }
-    .grayscale {
-        -webkit-filter: grayscale(1);
-        filter: grayscale(1);
-    }
-    button::after {
-        border: 0;
-    }
-    .no-button {
-        background: #fff;
-        margin: 0;
-        padding: 0;
-        font-size: 26rpx;
-        color: inherit;
-    }
-    .container {
+  }
+  .btn {
+    width: 170rpx;
+    height: 60rpx;
+    line-height: 60rpx;
+    background-color: rgba(254, 188, 0, 1);
+    position: fixed;
+    right: 0;
+    top: 30rpx;
+    color: #fff;
+    font-size: 26rpx;
+    text-align: center;
+    border-radius: 50rpx 0 0 50rpx;
+    opacity: 0.9;
+  }
+  .grayscale {
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
+  }
+  button::after {
+    border: 0;
+  }
+  .no-button {
+    background: #fff;
+    margin: 0;
+    padding: 0;
+    font-size: 26rpx;
+    color: inherit;
+  }
+  .container {
+    width: 100%;
+    overflow: hidden;
+  }
+  .list {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 30rpx;
+    margin-top: 50rpx;
+    .item {
+      padding: 36rpx 0; // background-color: #ccc;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      box-sizing: border-box;
+      padding-right: 30rpx;
+      .content {
         width: 100%;
-        overflow: hidden;
-    }
-    .list {
+        font-size: 32rpx;
+        height: 44rpx;
+        line-height: 44rpx;
+        .count {
+          float: right;
+        }
+      }
+      .time {
         position: relative;
         width: 100%;
-        box-sizing: border-box;
-        padding-left: 30rpx;
-        margin-top: 50rpx;
-        .item {
-            padding: 36rpx 0; // background-color: #ccc;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            box-sizing: border-box;
-            padding-right: 30rpx;
-            .content {
-                width: 100%;
-                font-size: 32rpx;
-                height: 44rpx;
-                line-height: 44rpx;
-                .count {
-                    float: right;
-                }
-            }
-            .time {
-                width: 100%;
-                font-size: 24rpx;
-                color: rgba(0, 0, 0, 0.3);
-                height: 34rpx;
-                line-height: 34rpx;
-            }
+        font-size: 24rpx;
+        color: rgba(0, 0, 0, 0.3);
+        height: 34rpx;
+        line-height: 34rpx;
+        .status {
+          position: absolute;
+          right: 0;
+          top: 0;
         }
+      }
     }
-    .parallelogram {
-        position: absolute;
-        top: 45rpx;
-        right: 45rpx;
-        width: 110rpx;
-        height: 46rpx;
-        transform: skew(-10deg);
-        border: 1px solid #EF7349;
-        border-radius: 10rpx;
-    }
+  }
+  .parallelogram {
+    position: absolute;
+    top: 45rpx;
+    right: 45rpx;
+    width: 110rpx;
+    height: 46rpx;
+    transform: skew(-10deg);
+    border: 1px solid #ef7349;
+    border-radius: 10rpx;
+  }
 }
 </style>

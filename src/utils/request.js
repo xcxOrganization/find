@@ -24,7 +24,6 @@ function request(route, method, data, success, fail, other) {
 	let args = arguments;
 	if (accessToken == '') {
 		new Login().init();//登录
-		console.log('observer.list.push');
 		observer.list.push(function () {
 			request.apply(null, args);
 		});
