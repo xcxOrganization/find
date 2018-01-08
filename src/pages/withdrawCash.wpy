@@ -4,7 +4,7 @@
             <view class="li">
                 <view class="desc">您的余额</view>
                 <view class="desc">
-                    15
+                    {{balance}}
                 </view>
                 <view class="toList" bindtap="toList">
                     提现记录
@@ -33,6 +33,27 @@ export default class extends wx.page {
     navigationBarBackgroundColor: "#fff",
     navigationBarTitleText: "我的钱包"
   };
+  data = {
+    disable: true,
+    balance: 0
+  };
+  onLoad() {
+    let that = this;
+    http.request(
+      "App.Find_User.GetUserProfile",
+      "POST",
+      {},
+      res => {
+        console.log(res);
+        that.balance = res.wallet;
+        that.$apply();
+      },
+      err => {},
+      {
+        noToast: true
+      }
+    );
+  }
   methods = {
     toList() {
       wx.navigateTo({
@@ -43,39 +64,32 @@ export default class extends wx.page {
       cRedPacket = e.detail.value;
     },
     eventHandle() {
-      console.log(123123);
       let that = this;
+      if (parseInt(cRedPacket) > parseInt(that.balance)) {
+        wx.showModal({
+          content: "可提现金额不足",
+          confirmText: "知道啦",
+          showCancel: false
+        });
+        return;
+      }
       http.request(
-        "App.Find_Record.Create",
+        "App.Find_WalletWithdrawRecord.Withdraw",
         "POST",
         {
-          money: 12,
-          intro:1,
-          wx_self_code:1
+          money: cRedPacket
         },
-        res => {},
-        () => {},
-        {
-          noToast: true
-        }
-      );
-      return;//下面return了，不会执行
-      http.request(
-        "App.Find_User.GetUserProfile",
-        "POST",
-        {
-          cRedPacket: cRedPacket
+        res => {
+          wx.showToast({
+            title: "提现成功"
+          });
         },
-        res => {},
         () => {},
         {
           noToast: true
         }
       );
     }
-  };
-  data = {
-    disable: true
   };
 }
 </script>

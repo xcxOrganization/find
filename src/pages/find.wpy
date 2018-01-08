@@ -197,11 +197,11 @@ export default class find extends wx.page {
       a,
       res => {
         console.log("Create", res);
-        if (res && res.id) {
-          that.findNum = res.id;
+        if (res && res.code) {
+          that.findNum = res.code;
           that.type = 2;
           that.$apply();
-          payCallBack(res.code);
+          payCallBack(res.id);
         } else {
           wx.showModal({
             content: "创建找人记录失败",
