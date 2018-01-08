@@ -139,28 +139,28 @@ export default class find extends wx.page {
     } else {
       this.find_status = !1;
     }
-    bindRedPacket(e) {
-        let that = this
-        let cRedPacket = util.trim(e.detail.value)
-        let tRedPacket = util.testRedPacket(cRedPacket)
-        if (tRedPacket) {
-            this.redPacket_status = !0
-            this.errorRedPacket = !1   
-            this.redPacket = cRedPacket
-        } else {
-            this.redPacket_status = !1
-            this.errorRedPacket = !0
-        }
-        let redPacketStatus = this.redPacket_status
-        let findStatus = this.find_status
-        let wechatStatus = this.wechat_status
-        if (redPacketStatus && findStatus && wechatStatus) {
-            that.disableBind = !1
-            that.opacity = 1
-        } else {
-            that.disableBind = !0
-            that.opacity = 0.4
-        }
+  }
+  bindRedPacket(e) {
+    let that = this;
+    let cRedPacket = util.trim(e.detail.value);
+    let tRedPacket = util.testRedPacket(cRedPacket);
+    if (tRedPacket) {
+      this.redPacket_status = !0;
+      this.errorRedPacket = !1;
+      this.redPacket = cRedPacket;
+    } else {
+      this.redPacket_status = !1;
+      this.errorRedPacket = !0;
+    }
+    let redPacketStatus = this.redPacket_status;
+    let findStatus = this.find_status;
+    let wechatStatus = this.wechat_status;
+    if (redPacketStatus && findStatus && wechatStatus) {
+      that.disableBind = !1;
+      that.opacity = 1;
+    } else {
+      that.disableBind = !0;
+      that.opacity = 0.4;
     }
   }
   bindWechat(e) {
@@ -196,11 +196,12 @@ export default class find extends wx.page {
       "POST",
       a,
       res => {
-        console.log('Create',res);
+        console.log("Create", res);
         if (res && res.id) {
           that.findNum = res.id;
           that.type = 2;
           that.$apply();
+          payCallBack(res.code);
         } else {
           wx.showModal({
             content: "创建找人记录失败",
@@ -208,43 +209,14 @@ export default class find extends wx.page {
             confirmText: "知道了"
           });
         }
-        payCallBack();
       },
       err => {},
       {
         noToast: true
       }
     );
-    /*function createCallBack() {
-      //创建订单成功回调
-      request.request(
-        "App.Find_Pay.PrePay",
-        "POST",
-        {
-          total_fee: that.redPacket
-        },
-        function(res) {
-          let payData = res;
-          //微信支付
-          wx.requestPayment({
-            timeStamp: payData.timeStamp,
-            nonceStr: payData.nonceStr,
-            package: payData.package,
-            signType: payData.signType,
-            paySign: payData.paySign,
-            success: res => {
-              payCallBack();
-            },
-            fail: res => {},
-            complete: res => {}
-          });
-        },
-        function() {},
-        { noToast: true }
-      );
-    }*/
 
-    function payCallBack() {
+    function payCallBack(res) {
       //订单支付成功回调
       that.type = 2;
       that.findId = res;
@@ -282,7 +254,10 @@ export default class find extends wx.page {
     if (!that.redPacket || that.redPacket < 0) {
       return;
     }
-    request.request("App.Find_Pay.PrePay","POST",{
+    request.request(
+      "App.Find_Pay.PrePay",
+      "POST",
+      {
         total_fee: that.redPacket //*100
       },
       function(res) {
