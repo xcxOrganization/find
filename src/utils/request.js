@@ -66,8 +66,9 @@ function common_req() {
 				args[3].call(this, res.data.data);
 			} else if (res.data.ret == -10000) {
 				wx.setStorageSync(server + 'token', '');
+				wx.setStorageSync(server + '_addUser', '');
 				//token已过期的约定，重新发起登录
-				new Login().init();//登录
+				new Login().getUserInfo();//登录
 				observer.list.push(function () {
 					request.apply(this, args);
 				}); //保存请求队列
