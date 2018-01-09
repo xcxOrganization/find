@@ -163,7 +163,6 @@ export default class My extends wepy.page {
   getUserInfo() {
     let that = this;
     http.request("App.Find_User.GetUserProfile", "POST", {}, (res) => {
-      console.log('res',res);
       that.userInfo.headimgurl = res.avatarUrl;
       that.userInfo.nickname = res.nickName;
       that.userInfo.balance = res.wallet;

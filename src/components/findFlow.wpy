@@ -33,6 +33,7 @@ export default class findFlow extends wx.component {
     mixins = [mixin]
     data = {
         ruleModal: !1,
+        creatorAvatar:'',
         avatar: '../assets/images/avatar.png',
         userInfo: {
             headimgurl: '',

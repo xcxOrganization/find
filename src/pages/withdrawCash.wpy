@@ -4,7 +4,7 @@
             <view class="li">
                 <view class="desc">您的余额</view>
                 <view class="desc">
-                    15
+                    {{balance}}
                 </view>
                 <view class="toList" bindtap="toList">
                     提现记录
@@ -15,6 +15,10 @@
                 <view class="li-item">
                     <input class="li-item-input" name="input" type="number" placeholder="请输入提现金额" bindinput="bindRedPacket" placeholder-class="info_input" value="{{redPacket}}" />
                 </view>
+            </view>
+            <view class="li" style='margin:20rpx 60rpx'>
+                <view class="desc"></view>
+                <view>提现1-5天内到账</view>
             </view>
             <view class="li">
                 <button type="primary" @tap='eventHandle' style="background-color: #F86136;">提交</button>
@@ -33,6 +37,27 @@ export default class extends wx.page {
     navigationBarBackgroundColor: "#fff",
     navigationBarTitleText: "我的钱包"
   };
+  data = {
+    disable: true,
+    balance: 0
+  };
+  onLoad() {
+    let that = this;
+    http.request(
+      "App.Find_User.GetUserProfile",
+      "POST",
+      {},
+      res => {
+        console.log(res);
+        that.balance = res.wallet;
+        that.$apply();
+      },
+      err => {},
+      {
+        noToast: true
+      }
+    );
+  }
   methods = {
     toList() {
       wx.navigateTo({
@@ -43,39 +68,32 @@ export default class extends wx.page {
       cRedPacket = e.detail.value;
     },
     eventHandle() {
-      console.log(123123);
       let that = this;
+      if (parseInt(cRedPacket) > parseInt(that.balance)) {
+        wx.showModal({
+          content: "可提现金额不足",
+          confirmText: "知道啦",
+          showCancel: false
+        });
+        return;
+      }
       http.request(
-        "App.Find_Record.Create",
+        "App.Find_WalletWithdrawRecord.Withdraw",
         "POST",
         {
-          money: 12,
-          intro:1,
-          wx_self_code:1
+          money: cRedPacket
         },
-        res => {},
-        () => {},
-        {
-          noToast: true
-        }
-      );
-      return;//下面return了，不会执行
-      http.request(
-        "App.Find_User.GetUserProfile",
-        "POST",
-        {
-          cRedPacket: cRedPacket
+        res => {
+          wx.showToast({
+            title: "提现成功"
+          });
         },
-        res => {},
         () => {},
         {
           noToast: true
         }
       );
     }
-  };
-  data = {
-    disable: true
   };
 }
 </script>
@@ -140,7 +158,6 @@ page {
       color: #fff;
       height: 100rpx;
       line-height: 100rpx;
-      margin-top: 40rpx;
       border-radius: 45rpx;
       font-size: 36rpx;
     }

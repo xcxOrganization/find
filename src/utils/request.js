@@ -24,7 +24,6 @@ function request(route, method, data, success, fail, other) {
 	let args = arguments;
 	if (accessToken == '') {
 		new Login().init();//登录
-		console.log('observer.list.push');
 		observer.list.push(function () {
 			request.apply(null, args);
 		});
@@ -57,7 +56,7 @@ function common_req() {
 			'content-type': 'application/x-www-form-urlencoded'
 		},
 		success: (res) => {
-			console.log('请求链接 >>>> ' + getServerUrl(args[0]), '返回 >>>> ', res);
+			console.log('请求data >>>> ',args[2],'请求链接 >>>> ' + getServerUrl(args[0]), '返回 >>>> ', res);
 			wx.hideToast();
 			if (args[5] && args[5].getCodeSts && res.data.ret != 200) {//需要拿到返回码数据的情况
 				args[3].call(this, res.data);
