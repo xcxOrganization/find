@@ -60,7 +60,8 @@
                     <view class="li2 li2-input">
                         <view class="desc">引荐人</view>
                         <view class="li-item2">
-                            <input class="li-item-input" name="input" placeholder="请留下你的微信，方便联系" bindinput="bindReferrer" placeholder-class="info_input" value="{{referrer}}"/>
+                            <input class="li-item-input" disabled="{{true}}" name="input" placeholder="请留下你的手机,方便联系" bindinput="bindReferrer" placeholder-class="info_input" value="{{referrer}}"/>
+                            <button class="getPhoneBtn" type="primary" hover-class="button-hover" open-type="getPhoneNumber" bindgetphonenumber="getReferrerPhoneNumber">一键输入</button>
                         </view>
                     </view>
                     <view class="li2 li2-btn">
@@ -90,7 +91,8 @@
                         <view class="li2 li2-input">
                             <view class="desc">被引荐人</view>
                             <view class="li-item2">
-                                <input class="li-item-input" name="input" placeholder="请留下你的微信，方便联系" bindinput="bindReferee" placeholder-class="info_input" bindblur="redfereeOut" value="{{referee}}" />
+                                <input class="li-item-input" disabled="{{true}}" name="input" placeholder="请留下你的手机，方便联系" bindinput="bindReferee" placeholder-class="info_input" bindblur="redfereeOut" value="{{referee}}" />
+                                <button class="getPhoneBtn" type="primary" hover-class="button-hover" open-type="getPhoneNumber" bindgetphonenumber="getRefereePhoneNumber">一键输入</button>
                             </view>
                         </view>
                         
@@ -114,7 +116,7 @@
                                     <image class="tipIcon-img" src="../assets/images/successTip.png" style="width:150rpx; height: 150rpx;"/>
                                 </view>
                                 <view class="tipCont">
-                                    <view class="tipContA">提交成功！</view>
+                                    <view class="tipContA">提交成功!</view>
                                     <view class="tipContB">请等待发起人联系</view>
                                 </view>
                             </view>
@@ -422,6 +424,74 @@ export default class referrer extends wx.page {
     // 收集formId
     that.saveFormId.call(e);
   }
+  getReferrerPhoneNumber(e) {
+    let that = this;
+    console.log(e.detail.errMsg, e.detail.iv, e.detail.encryptedData);
+    if (e.detail.errMsg == "getPhoneNumber:fail user deny") {
+      wx.showModal({
+        title: "提示",
+        showCancel: false,
+        content: "请允许授权",
+        success: function(res) {}
+      });
+    } else {
+      http.request(
+        "App.Find_User.GetPhoneNumber",
+        "POST",
+        {
+          encryptedData: e.detail.encryptedData,
+          iv: e.detail.iv
+        },
+        res => {
+          if (res) {
+            that.referrer = res;
+            that.$apply();
+          } else {
+            wx.showModal({
+              content: "授权失败，请重试",
+              showCancel: false,
+              confirmText: "知道了"
+            });
+          }
+        },
+        err => {}
+      );
+    }
+  }
+  getRefereePhoneNumber(e) {
+    let that = this;
+    console.log(e.detail.errMsg, e.detail.iv, e.detail.encryptedData);
+    if (e.detail.errMsg == "getPhoneNumber:fail user deny") {
+      wx.showModal({
+        title: "提示",
+        showCancel: false,
+        content: "请允许授权",
+        success: function(res) {}
+      });
+    } else {
+      http.request(
+        "App.Find_User.GetPhoneNumber",
+        "POST",
+        {
+          encryptedData: e.detail.encryptedData,
+          iv: e.detail.iv
+        },
+        res => {
+          if (res) {
+            that.referee = res;
+            that.$apply();
+          } else {
+            wx.showModal({
+              content: "授权失败，请重试",
+              showCancel: false,
+              confirmText: "知道了"
+            });
+          }
+        },
+        err => {}
+      );
+    }
+  }
   copyReferrer() {
     let that = this;
     wx.setClipboardData({
@@ -656,6 +726,24 @@ page {
           width: 80%;
           color: #000;
           padding: 20rpx;
+          .getPhoneBtn {
+            width: 165rpx;
+            height: 60rpx;
+            color: #fff;
+            border-radius: 15rpx;
+            padding-left: 5rpx;
+            padding-right: 5rpx;
+            line-height: 60rpx;
+            background: #ed5226;
+            font-size: 28rpx;
+            position: absolute;
+            top: 12rpx;
+            right: 10rpx;
+            z-index: 11;
+          }
+          .button-hover {
+            opacity: 0.8;
+          }
         }
         .li-item2-center {
           .moneyTip {
@@ -667,7 +755,7 @@ page {
       }
       .li2-btn {
         border-bottom: none;
-        margin-top: 200rpx;
+        margin-top: 100rpx;
         button {
           width: 80%;
           color: #fff;

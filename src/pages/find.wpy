@@ -12,14 +12,14 @@
             <view class="li">
                 <view class="desc">我想找</view>
                 <view class="li-item">
-                    <textarea class="li-item-input" type="text" maxlength="160" placeholder="一句话描述你想找的人，限25字" bindinput="bindFind" placeholder-class="info_input" value="{{find}}" />
+                    <textarea class="li-item-input" type="text" maxlength="160" placeholder="一句话描述你想找的人" bindinput="bindFind" placeholder-class="info_input" value="{{find}}" />
                     <!--<icon wx:if="{{errorFind}}" type="warn"></icon>-->
                 </view>
             </view>
             <view class="li">
                 <view class="desc">你的手机</view>
                 <view class="li-item">
-                    <input class="li-item-input" type="text" name="input" placeholder="手机只用来加微信" placeholder-class="info_input" bindinput="bindWechat" value="{{wechat}}" />
+                    <input class="li-item-input" disabled="{{true}}" type="text" name="input" placeholder="手机只用来加微信" placeholder-class="info_input" value="{{wechat}}" />
                     <button type="primary" hover-class="button-hover" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">一键输入</button>
                     <!--<icon wx:if="{{errorWechat}}" type="warn"></icon>-->
                 </view>
@@ -80,67 +80,33 @@ let ctx = null; //获取canvas组件
 let workSign = 0; //任务状态
 let shareTxt = "送红包：Hi，给你推荐个朋友";
 export default class find extends wx.page {
-    config = {
-        navigationBarBackgroundColor: "#fff",
-        navigationBarTitleText: "我要找人"
-    };
-    components = {
-        findFlow: findFlow
-    };
-    mixins = [mixin];
-    data = {
-        type: 1,
-        redPacket: "",
-        find: "",
-        wechat: "",
-        findNum: "",
-        disableBind: !0,
-        opacity: 0.4,
-        findId: "",
-        creator_avatarUrl: "",
-        errorRedPacket: !1,
-        errorFind: !1,
-        errorWechat: !1,
-        redPacket_status: !1,
-        find_status: !1,
-        wechat_status: !1
-    };
-    changeShareTxt() {
-        shareTxt = "送红包：我想找" + this.find;
-    }
-    bindRedPacket(e) {
-        let that = this;
-        let cRedPacket = util.trim(e.detail.value);
-        let tRedPacket = util.testRedPacket(cRedPacket);
-        if (tRedPacket) {
-        this.redPacket_status = !0;
-        this.errorRedPacket = !1;
-        this.redPacket = cRedPacket;
-        } else {
-        this.redPacket_status = !1;
-        this.errorRedPacket = !0;
-        }
-        let redPacketStatus = this.redPacket_status;
-        let findStatus = this.find_status;
-        let wechatStatus = this.wechat_status;
-        if (redPacketStatus && findStatus && wechatStatus) {
-        that.disableBind = !1;
-        that.opacity = 1;
-        } else {
-        that.disableBind = !0;
-        that.opacity = 0.4;
-        }
-    }
-    bindFind(e) {
-        var that = this;
-        let cFind = util.trim(e.detail.value);
-        if (cFind !== "") {
-        this.find_status = !0;
-        this.find = cFind;
-        } else {
-        this.find_status = !1;
-        }
-    }
+  config = {
+    navigationBarBackgroundColor: "#fff",
+    navigationBarTitleText: "我要找人"
+  };
+  components = {
+    findFlow: findFlow
+  };
+  mixins = [mixin];
+  data = {
+    type: 1,
+    redPacket: "",
+    find: "",
+    wechat: "",
+    findNum: "",
+    disableBind: !0,
+    opacity: 0.4,
+    findId: "",
+    creator_avatarUrl: "",
+    errorRedPacket: !1,
+    errorFind: !1,
+    errorWechat: !1,
+    redPacket_status: !1,
+    find_status: !1,
+    wechat_status: !1
+  };
+  changeShareTxt() {
+    shareTxt = "送红包：我想找" + this.find;
   }
   bindRedPacket(e) {
     let that = this;
@@ -165,14 +131,14 @@ export default class find extends wx.page {
       that.opacity = 0.4;
     }
   }
-  bindWechat(e) {
+  bindFind(e) {
     var that = this;
-    let cWechat = util.trim(e.detail.value);
-    if (cWechat !== "") {
-      this.wechat_status = !0;
-      this.wechat = cWechat;
+    let cFind = util.trim(e.detail.value);
+    if (cFind !== "") {
+      this.find_status = !0;
+      this.find = cFind;
     } else {
-      this.wechat_status = !1;
+      this.find_status = !1;
     }
     let redPacketStatus = this.redPacket_status;
     let findStatus = this.find_status;
@@ -189,7 +155,7 @@ export default class find extends wx.page {
     let that = this;
     let a = {
       money: that.redPacket,
-      intro: "我想找" + that.find,
+      intro: that.find,
       wx_self_code: that.wechat,
       out_trade_no
     };
@@ -205,201 +171,102 @@ export default class find extends wx.page {
           that.$apply();
           payCallBack(res.id);
         } else {
-        this.wechat_status = !1;
+          wx.showModal({
+            content: "创建找人记录失败",
+            showCancel: false,
+            confirmText: "知道了"
+          });
         }
-        let redPacketStatus = this.redPacket_status;
-        let findStatus = this.find_status;
-        let wechatStatus = this.wechat_status;
-        if (redPacketStatus && findStatus && wechatStatus) {
-        that.disableBind = !1;
-        that.opacity = 1;
-        } else {
-        that.disableBind = !0;
-        that.opacity = 0.4;
-        }
-    }
-    getPhoneNumber(e) {   
-        console.log(e.detail.errMsg, e.detail.iv, e.detail.encryptedData) 
-        if (e.detail.errMsg == 'getPhoneNumber:fail user deny'){  
-            wx.showModal({  
-                title: '提示',  
-                showCancel: false,  
-                content: '未授权',  
-                success: function (res) { }  
-            })  
-        } else {
-            wx.showModal({  
-                title: '提示',  
-                showCancel: false,  
-                content: '同意授权',  
-                success: function (res) { }  
-            })  
-        }  
-    }  
-    eventHandle() {
-        let that = this;
-        let a = {
-        money: that.redPacket,
-        intro: "我想找" + that.find,
-        wx_self_code: that.wechat,
-        out_trade_no
-        };
-        http.request(
-        "App.Find_Record.Create",
-        "POST",
-        a,
-        res => {
-            console.log('Create',res);
-            if (res && res.id) {
-            that.findNum = res.id;
-            that.type = 2;
-            that.$apply();
-            } else {
-            wx.showModal({
-                content: "创建找人记录失败",
-                showCancel: false,
-                confirmText: "知道了"
-            });
-            }
-            payCallBack();
-        },
-        err => {},
-        {
-            noToast: true
-        }
-        );
-        /*function createCallBack() {
-        //创建订单成功回调
-        request.request(
-            "App.Find_Pay.PrePay",
-            "POST",
-            {
-            total_fee: that.redPacket
-            },
-            function(res) {
-            let payData = res;
-            //微信支付
-            wx.requestPayment({
-                timeStamp: payData.timeStamp,
-                nonceStr: payData.nonceStr,
-                package: payData.package,
-                signType: payData.signType,
-                paySign: payData.paySign,
-                success: res => {
-                payCallBack();
-                },
-                fail: res => {},
-                complete: res => {}
-            });
-            },
-            function() {},
-            { noToast: true }
-        );
-        }*/
 
-        function payCallBack() {
-        //订单支付成功回调
-        that.type = 2;
-        that.findId = res;
-        that.$apply();
-        let b = {
+        function payCallBack(res) {
+          //订单支付成功回调
+          that.type = 2;
+          that.findId = res;
+          that.$apply();
+          let b = {
             id: that.findId
-        };
-        http.request(
+          };
+          http.request(
             "App.Find_Record.GetIntroRecord",
             "POST",
             b,
             res => {
-            that.findNum = res.code;
-            that.$apply();
+              that.findNum = res.code;
+              that.$apply();
             },
             err => {},
             {
-            noToast: true
+              noToast: true
             }
-        );
+          );
         }
-    }
-    onMoneyTip() {
-        wx.showModal({
-            content: "引荐人、被引荐人平分红包",
-            showCancel: false,
-            confirmText: "知道了",
-            confirmColor: "#F86136"
-        });
-    }
-    toPay(e) {
-        let that = this;
-        // 收集formId
-        that.saveFormId.call(e);
-        if (!that.redPacket || that.redPacket < 0) {
-        return;
-        }
-        request.request("App.Find_Pay.PrePay","POST",{
-            total_fee: that.redPacket //*100
-        },
-        function(res) {
-            console.log("测试预支付接口返回>>>", res);
-            let payData = res;
-            out_trade_no = res.out_trade_no;
-            //微信支付
-            wx.requestPayment({
-            timeStamp: payData.timeStamp,
-            nonceStr: payData.nonceStr,
-            package: payData.package,
-            signType: payData.signType,
-            paySign: payData.paySign,
-            success: rs => {
-                that.payCheck.call(that);
-            },
-            fail: res => {},
-            complete: res => {}
-            });
-        },
-        function() {},
-        { noToast: true }
-        );
-    }
-    payCheck() {
-        let that = this;
-        http.request(
-        "App.Find_Pay.PayCheck",
+      },
+      err => {},
+      {
+        noToast: true
+      }
+    );
+  }
+  getPhoneNumber(e) {
+    let that = this;
+    console.log(e.detail.errMsg, e.detail.iv, e.detail.encryptedData);
+    if (e.detail.errMsg == "getPhoneNumber:fail user deny") {
+      wx.showModal({
+        title: "提示",
+        showCancel: false,
+        content: "请允许授权",
+        success: function(res) {}
+      });
+    } else {
+      http.request(
+        "App.Find_User.GetPhoneNumber",
         "POST",
         {
-            out_trade_no
+          encryptedData: e.detail.encryptedData,
+          iv: e.detail.iv
         },
         res => {
-            console.log("res", res);
-            if (res) {
-            that.eventHandle.call(that);
+          if (res) {
+            that.wechat = res;
+            that.wechat_status = !0;
+
+            let redPacketStatus = that.redPacket_status;
+            let findStatus = that.find_status;
+            let wechatStatus = that.wechat_status;
+            if (redPacketStatus && findStatus && wechatStatus) {
+              that.disableBind = !1;
+              that.opacity = 1;
             } else {
-            wx.showModal({
-                content: "发起找人失败，请重试",
-                showCancel: false,
-                confirmText: "知道了"
-            });
+              that.disableBind = !0;
+              that.opacity = 0.4;
             }
+            that.$apply();
+          } else {
+            wx.showModal({
+              content: "授权失败，请重试",
+              showCancel: false,
+              confirmText: "知道了"
+            });
+          }
         },
-        err => {},
-        {
-            noToast: true
-        }
-        );
+        err => {}
+      );
     }
-    onShareAppMessage() {
-        let that = this;
-        let findId = that.findId;
-        let type = 2;
-        return {
-        title: shareTxt,
-        path: "pages/referrer?type=" + type + "&idOne=" + findId,
-        success: res => {
-            // 分享成功
-        },
-        fail: res => {
-            // 分享失败
-        }
-        };
+  }
+  onMoneyTip() {
+    wx.showModal({
+      content: "引荐人、被引荐人平分红包",
+      showCancel: false,
+      confirmText: "知道了",
+      confirmColor: "#F86136"
+    });
+  }
+  toPay(e) {
+    let that = this;
+    // 收集formId
+    that.saveFormId.call(e);
+    if (!that.redPacket || that.redPacket < 0) {
+      return;
     }
     request.request(
       "App.Find_Pay.PrePay",
@@ -424,17 +291,67 @@ export default class find extends wx.page {
           fail: res => {},
           complete: res => {}
         });
-    }
-    onLoad(options) {
-        let that = this;
-        wx.getUserInfo({
-        success: res => {
-            that.creator_avatarUrl = res.userInfo.avatarUrl;
-            that.$apply();
-        },
-        fail: () => {}
-        });
-    }
+      },
+      function() {},
+      { noToast: true }
+    );
+  }
+  payCheck() {
+    let that = this;
+    http.request(
+      "App.Find_Pay.PayCheck",
+      "POST",
+      {
+        out_trade_no
+      },
+      res => {
+        console.log("res", res);
+        if (res) {
+          that.eventHandle.call(that);
+        } else {
+          wx.showModal({
+            content: "发起找人失败，请重试",
+            showCancel: false,
+            confirmText: "知道了"
+          });
+        }
+      },
+      err => {},
+      {
+        noToast: true
+      }
+    );
+  }
+  onShareAppMessage() {
+    let that = this;
+    let findId = that.findId;
+    let type = 2;
+    return {
+      title: shareTxt,
+      path: "pages/referrer?type=" + type + "&idOne=" + findId,
+      success: res => {
+        // 分享成功
+      },
+      fail: res => {
+        // 分享失败
+      }
+    };
+  }
+  toPoster() {
+    wx.navigateTo({
+      url: "/pages/poster"
+    });
+  }
+  onLoad(options) {
+    let that = this;
+    wx.getUserInfo({
+      success: res => {
+        that.creator_avatarUrl = res.userInfo.avatarUrl;
+        that.$apply();
+      },
+      fail: () => {}
+    });
+  }
 }
 </script>
 
@@ -461,7 +378,7 @@ page {
             padding-left: 5rpx;
             padding-right: 5rpx;
             line-height: 60rpx;
-            background: #ED5226;
+            background: #ed5226;
             font-size: 28rpx;
             position: absolute;
             top: 12rpx;

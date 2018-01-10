@@ -31,7 +31,6 @@
 import wx from "wepy";
 import http from "../utils/request.js";
 //import config from "../config";
-let cRedPacket = 0; //提现金额
 export default class extends wx.page {
   config = {
     navigationBarBackgroundColor: "#fff",
@@ -39,7 +38,8 @@ export default class extends wx.page {
   };
   data = {
     disable: true,
-    balance: 0
+    balance: 0,
+    redPacket: '' //提现金额
   };
   onLoad() {
     let that = this;
@@ -65,34 +65,46 @@ export default class extends wx.page {
       });
     },
     bindRedPacket(e) {
-      cRedPacket = e.detail.value;
+      this.redPacket = e.detail.value;
     },
     eventHandle() {
       let that = this;
-      if (parseInt(cRedPacket) > parseInt(that.balance)) {
+      console.log("mmm",that.redPacket)
+      if(that.redPacket==''){
         wx.showModal({
-          content: "可提现金额不足",
-          confirmText: "知道啦",
-          showCancel: false
+          content: "请输入提现金额",
+          showCancel: false,
+          confirmText: "知道了",
+          confirmColor: "#F86136"
         });
-        return;
-      }
-      http.request(
-        "App.Find_WalletWithdrawRecord.Withdraw",
-        "POST",
-        {
-          money: cRedPacket
-        },
-        res => {
-          wx.showToast({
-            title: "提现成功"
+      }else{
+        if (parseInt(that.redPacket) > parseInt(that.balance)) {
+          wx.showModal({
+            content: "可提现金额不足",
+            showCancel: false,
+            confirmText: "知道了",
+            confirmColor: "#F86136"
           });
-        },
-        () => {},
-        {
-          noToast: true
+          return;
+        }else {
+          http.request(
+            "App.Find_WalletWithdrawRecord.Withdraw",
+            "POST",
+            {
+              money: that.redPacket
+            },
+            res => {
+              wx.showToast({
+                title: "提现成功"
+              });
+            },
+            () => {},
+            {
+              noToast: true
+            }
+          );
         }
-      );
+      } 
     }
   };
 }
