@@ -15,8 +15,8 @@ function getImgServerApi() {
 }
 
 //配置环境：本地、开发、生产 (区分活动、 common请求)
-function getServerUrl(route) {
-	return `${config.apiBase}${route}&thirdSessionKey=` + accessToken;
+function getServerUrl() {
+	return `${config.apiBase}`;
 }
 
 function request(route, method, data, success, fail, other) {
@@ -47,9 +47,14 @@ function common_req() {
 	if (args[5] && args[5].noModal) { //不需要加载modal的情况
 		noModal = true;
 	}
+	
+	if (args[2]) {
+		args[2].thirdSessionKey = accessToken;
+		args[2].service = args[0];
+	}
 
 	wepy.request({
-		url: getServerUrl(args[0]),
+		url: getServerUrl(),
 		method: args[1],
 		data: args[2],
 		header: {
